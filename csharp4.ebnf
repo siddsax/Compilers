@@ -158,15 +158,15 @@ simple_type =
 numeric_type =
 	integral_type| floating_point_type| 'decimal';
 integral_type =
-	'sbyte'| 'byte'| 'short'| 'ushort'| 'int'| 'uint'| 'long'| 'ulong'| 'char';
+	'int' | 'char';
 floating_point_type =
-	'float'| 'double';
+	;
 nullable_type =
 	non_nullable_value_type, '?';
 non_nullable_value_type =
 	type;
 enum_type =
-	type_name;
+	;
 reference_type =
 	class_type| interface_type| array_type| delegate_type;
 class_type =
@@ -206,7 +206,7 @@ parenthesized_expression =
 member_access =
 	primary_expression, '.', identifier, [type_argument_list]| predefined_type, '.', identifier, [type_argument_list]| qualified_alias_member, '.', identifier;
 predefined_type =
-	'byte' | 'char' | 'decimal' | 'double' | 'float' | 'int' | 'long'| 'object' | 'sbyte' | 'short' | 'string' | 'uint' | 'ulong' | 'ushort';
+	'char' | 'int' | 'string';
 invocation_expression =
 	primary_expression, '(', [argument_list], ')';
 element_access =
@@ -723,19 +723,6 @@ interface_indexer_declaration =
 
 
 (*B.2.11 Enums*) 
-enum_declaration =
-	[attributes], [enum_modifiers], 'enum', identifier, enum_body, [';'];
-enum_body =
-	'{', [enum_member_declarations], '}'| '{', enum_member_declarations, ',', '}';
-enum_modifiers =
-	enum_modifier| enum_modifiers, enum_modifier;
-enum_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private';
-enum_member_declarations =
-	enum_member_declaration| enum_member_declarations, ',', enum_member_declaration;
-enum_member_declaration =
-	[attributes], identifier| [attributes], identifier, '=', constant_expression;
-
 
 (*B.2.12 Delegates*) 
 delegate_declaration =
