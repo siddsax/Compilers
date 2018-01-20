@@ -198,7 +198,7 @@ argument_value =
 primary_expression =
 	primary_no_array_creation_expression| array_creation_expression;
 primary_no_array_creation_expression =
-	literal| simple_name| parenthesized_expression| member_access| element_access| this_access| post_increment_expression| post_decrement_expression| object_creation_expression| delegate_creation_expression| anonymous_object_creation_expression| typeof_expression| default_value_expression| anonymous_method_expression| primary_no_array_creation_expression_unsafe;
+	literal| simple_name| parenthesized_expression| member_access| element_access| this_access| post_increment_expression| post_decrement_expression| object_creation_expression| delegate_creation_expression| typeof_expression| default_value_expression;
 simple_name =
 	identifier, [type_argument_list];
 parenthesized_expression =
@@ -264,7 +264,7 @@ unchecked_expression =
 default_value_expression =
 	'default', '(', type, ')';
 unary_expression =
-	primary_expression| '+', unary_expression| '-', unary_expression| '!', unary_expression| '~', unary_expression| pre_increment_expression| pre_decrement_expression| cast_expression| unary_expression_unsafe;
+	primary_expression| '+', unary_expression| '-', unary_expression| '!', unary_expression| '~', unary_expression| pre_increment_expression| pre_decrement_expression| cast_expression;
 pre_increment_expression =
 	'++', unary_expression;
 pre_decrement_expression =
@@ -346,7 +346,7 @@ boolean_expression =
 statement =
 	labeled_statement| declaration_statement| embedded_statement;
 embedded_statement =
-	block| empty_statement| expression_statement| selection_statement| iteration_statement| jump_statement| try_statement| checked_statement| unchecked_statement| lock_statement| using_statement| yield_statement| embedded_statement_unsafe;
+	block| empty_statement| expression_statement| selection_statement| iteration_statement| jump_statement| try_statement| checked_statement| unchecked_statement| lock_statement| using_statement| yield_statement;
 block =
 	'{', [statement_list], '}';
 statement_list =
@@ -366,7 +366,7 @@ local_variable_declarators =
 local_variable_declarator =
 	identifier| identifier, '=', local_variable_initializer;
 local_variable_initializer =
-	expression| array_initializer| local_variable_initializer_unsafe;
+	expression| array_initializer;
 local_constant_declaration =
 	'const', type, constant_declarators;
 expression_statement =
@@ -482,7 +482,7 @@ class_declaration =
 class_modifiers =
 	class_modifier| class_modifiers, class_modifier;
 class_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| 'sealed'| 'static'| class_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private'| 'sealed'| 'static';
 type_parameter_list =
 	'<', type_parameters, '>';
 type_parameters =
@@ -524,7 +524,7 @@ field_declaration =
 field_modifiers =
 	field_modifier| field_modifiers, field_modifier;
 field_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'readonly'| 'volatile'| field_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'readonly'| 'volatile';
 variable_declarators =
 	variable_declarator| variable_declarators, ',', variable_declarator;
 variable_declarator =
@@ -538,7 +538,7 @@ method_header =
 method_modifiers =
 	method_modifier| method_modifiers, method_modifier;
 method_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'virtual'| 'sealed'| 'override'| 'extern'| method_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'virtual'| 'sealed'| 'override'| 'extern';
 return_type =
 	type| 'void';
 member_name =
@@ -562,7 +562,7 @@ property_declaration =
 property_modifiers =
 	property_modifier| property_modifiers, property_modifier;
 property_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'virtual'| 'sealed'| 'override'| 'extern'| property_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'virtual'| 'sealed'| 'override'| 'extern';
 accessor_declarations =
 	get_accessor_declaration, [set_accessor_declaration]| set_accessor_declaration, [get_accessor_declaration];
 get_accessor_declaration =
@@ -578,7 +578,7 @@ event_declaration =
 event_modifiers =
 	event_modifier| event_modifiers, event_modifier;
 event_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'virtual'| 'sealed'| 'override'| 'extern'| event_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'virtual'| 'sealed'| 'override'| 'extern';
 event_accessor_declarations =
 	add_accessor_declaration, remove_accessor_declaration| remove_accessor_declaration, add_accessor_declaration;
 add_accessor_declaration =
@@ -590,7 +590,7 @@ indexer_declaration =
 indexer_modifiers =
 	indexer_modifier| indexer_modifiers, indexer_modifier;
 indexer_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| 'virtual'| 'sealed'| 'override'| 'extern'| indexer_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private'| 'virtual'| 'sealed'| 'override'| 'extern';
 indexer_declarator =
 	type, 'this', '[', formal_parameter_list, ']'| type, interface_type, '.', 'this', '[', formal_parameter_list, ']';
 operator_declaration =
@@ -598,7 +598,7 @@ operator_declaration =
 operator_modifiers =
 	operator_modifier| operator_modifiers, operator_modifier;
 operator_modifier =
-	'public'| 'static'| 'extern'| operator_modifier_unsafe;
+	'public'| 'static'| 'extern';
 operator_declarator =
 	unary_operator_declarator| binary_operator_declarator| conversion_operator_declarator;
 unary_operator_declarator =
@@ -618,7 +618,7 @@ constructor_declaration =
 constructor_modifiers =
 	constructor_modifier| constructor_modifiers, constructor_modifier;
 constructor_modifier =
-	'public'| 'protected'| 'internal'| 'private'| 'extern'| constructor_modifier_unsafe;
+	'public'| 'protected'| 'internal'| 'private'| 'extern';
 constructor_declarator =
 	identifier, '(', [formal_parameter_list], ')', [constructor_initializer];
 constructor_initializer =
@@ -628,11 +628,11 @@ constructor_body =
 static_constructor_declaration =
 	[attributes], static_constructor_modifiers, identifier, '(', ')', static_constructor_body;
 static_constructor_modifiers =
-	['extern'], 'static'| 'static', ['extern']| static_constructor_modifiers_unsafe;
+	['extern'], 'static'| 'static', ['extern'];
 static_constructor_body =
 	block| ';';
 destructor_declaration =
-	[attributes], ['extern'], '~', identifier, '(', ')', destructor_body| destructor_declaration_unsafe;
+	[attributes], ['extern'], '~', identifier, '(', ')', destructor_body;
 destructor_body =
 	block| ';';
 
@@ -643,7 +643,7 @@ struct_declaration =
 struct_modifiers =
 	struct_modifier| struct_modifiers, struct_modifier;
 struct_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| struct_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private';
 struct_interfaces =
 	':', interface_type_list;
 struct_body =
@@ -651,7 +651,7 @@ struct_body =
 struct_member_declarations =
 	struct_member_declaration| struct_member_declarations, struct_member_declaration;
 struct_member_declaration =
-	constant_declaration| field_declaration| method_declaration| property_declaration| event_declaration| indexer_declaration| operator_declaration| constructor_declaration| static_constructor_declaration| type_declaration| struct_member_declaration_unsafe;
+	constant_declaration| field_declaration| method_declaration| property_declaration| event_declaration| indexer_declaration| operator_declaration| constructor_declaration| static_constructor_declaration| type_declaration;
 
 (*B.2.9 Arrays*) 
 array_type =
@@ -679,7 +679,7 @@ delegate_declaration =
 delegate_modifiers =
 	delegate_modifier| delegate_modifiers, delegate_modifier;
 delegate_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| delegate_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private';
 
 
 (*B.2.13 Attributes*) 
