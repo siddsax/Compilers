@@ -73,7 +73,7 @@ formatting_character =
 
 (*B.1.7 Keywords*) 
 keyword =
-	 'as' | 'base' | 'bool' | 'break'| 'byte' | 'case' | 'catch' | 'char' | 'checked'| 'class' | 'const' | 'continue' | 'decimal' | 'default'| 'delegate' | 'do' | 'double' | 'else' | 'enum'| 'event' | 'explicit' | 'extern' | 'false' | 'finally'| 'fixed' | 'float' | 'for' | 'foreach' | 'goto'| 'if' | 'implicit' | 'in' | 'int' | 'interface'| 'internal' | 'is' | 'lock' | 'long' | 'namespace'| 'new' | 'null' | 'object' | 'operator' | 'out'| 'override' | 'params' | 'private' | 'protected' | 'public'| 'readonly' | 'ref' | 'return' | 'sbyte' | 'sealed'| 'short' | 'sizeof' | 'stackalloc' | 'static' | 'string'| 'struct' | 'switch' | 'this' | 'throw' | 'true'| 'try' | 'typeof' | 'uint' | 'ulong' | 'unchecked'| 'unsafe' | 'ushort' | 'using' | 'virtual' | 'void'| 'volatile' | 'while';
+	 'as' | 'bool' | 'break'| 'byte' | 'case' | 'catch' | 'char' | 'checked'| 'class' | 'const' | 'continue' | 'decimal' | 'default'| 'delegate' | 'do' | 'double' | 'else' | 'enum'| 'event' | 'explicit' | 'extern' | 'false' | 'finally'| 'fixed' | 'float' | 'for' | 'foreach' | 'goto'| 'if' | 'implicit' | 'in' | 'int' | 'interface'| 'internal' | 'is' | 'lock' | 'long' | 'namespace'| 'new' | 'null' | 'object' | 'operator' | 'out'| 'override' | 'params' | 'private' | 'protected' | 'public'| 'readonly' | 'ref' | 'return' | 'sbyte' | 'sealed'| 'short' | 'sizeof' | 'stackalloc' | 'static' | 'string'| 'struct' | 'switch' | 'this' | 'throw' | 'true'| 'try' | 'typeof' | 'uint' | 'ulong' | 'unchecked'| 'unsafe' | 'ushort' | 'using' | 'virtual' | 'void'| 'volatile' | 'while';
 
 (*B.1.8 Literals*) 
 literal =
@@ -282,7 +282,7 @@ argument_value =
 primary_expression =
 	primary_no_array_creation_expression| array_creation_expression;
 primary_no_array_creation_expression =
-	literal| simple_name| parenthesized_expression| member_access| invocation_expression| element_access| this_access| base_access| post_increment_expression| post_decrement_expression| object_creation_expression| delegate_creation_expression| anonymous_object_creation_expression| typeof_expression| checked_expression| unchecked_expression| default_value_expression| anonymous_method_expression| primary_no_array_creation_expression_unsafe;
+	literal| simple_name| parenthesized_expression| member_access| invocation_expression| element_access| this_access| post_increment_expression| post_decrement_expression| object_creation_expression| delegate_creation_expression| anonymous_object_creation_expression| typeof_expression| checked_expression| unchecked_expression| default_value_expression| anonymous_method_expression| primary_no_array_creation_expression_unsafe;
 simple_name =
 	identifier, [type_argument_list];
 parenthesized_expression =
@@ -299,8 +299,6 @@ expression_list =
 	expression| expression_list, ',', expression;
 this_access =
 	'this';
-base_access =
-	'base', '.', identifier| 'base', '[', expression_list, ']';
 post_increment_expression =
 	primary_expression, '++';
 post_decrement_expression =
@@ -334,7 +332,7 @@ anonymous_object_initializer =
 member_declarator_list =
 	member_declarator| member_declarator_list, ',', member_declarator;
 member_declarator =
-	simple_name| member_access| base_access| identifier, '=', expression;
+	simple_name| member_access| identifier, '=', expression;
 typeof_expression =
 	'typeof', '(', type, ')'| 'typeof', '(', unbound_type_name, ')'| 'typeof', '(', 'void', ')';
 unbound_type_name =
@@ -586,19 +584,17 @@ qualified_alias_member =
 
 (*B.2.7 Classes;*) 
 class_declaration =
-	[attributes], [class_modifiers], ['partial'], 'class', identifier, [type_parameter_list], [class_base], [type_parameter_constraints_clauses], class_body, [';'];
+	[attributes], [class_modifiers], ['partial'], 'class', identifier, [type_parameter_list], [type_parameter_constraints_clauses], class_body, [';'];
 class_modifiers =
 	class_modifier| class_modifiers, class_modifier;
 class_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| 'abstract'| 'sealed'| 'static'| class_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private'| 'sealed'| 'static'| class_modifier_unsafe;
 type_parameter_list =
 	'<', type_parameters, '>';
 type_parameters =
 	[attributes], type_parameter| type_parameters, ',', [attributes], type_parameter;
 type_parameter =
 	identifier;
-class_base =
-	':', class_type| ':', interface_type_list| ':', class_type, ',', interface_type_list;
 interface_type_list =
 	interface_type| interface_type_list, ',', interface_type;
 type_parameter_constraints_clauses =
@@ -648,7 +644,7 @@ method_header =
 method_modifiers =
 	method_modifier| method_modifiers, method_modifier;
 method_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'virtual'| 'sealed'| 'override'| 'abstract'| 'extern'| method_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'virtual'| 'sealed'| 'override'| 'extern'| method_modifier_unsafe;
 return_type =
 	type| 'void';
 member_name =
@@ -672,7 +668,7 @@ property_declaration =
 property_modifiers =
 	property_modifier| property_modifiers, property_modifier;
 property_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'virtual'| 'sealed'| 'override'| 'abstract'| 'extern'| property_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'virtual'| 'sealed'| 'override'| 'extern'| property_modifier_unsafe;
 accessor_declarations =
 	get_accessor_declaration, [set_accessor_declaration]| set_accessor_declaration, [get_accessor_declaration];
 get_accessor_declaration =
@@ -688,7 +684,7 @@ event_declaration =
 event_modifiers =
 	event_modifier| event_modifiers, event_modifier;
 event_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'virtual'| 'sealed'| 'override'| 'abstract'| 'extern'| event_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'virtual'| 'sealed'| 'override'| 'extern'| event_modifier_unsafe;
 event_accessor_declarations =
 	add_accessor_declaration, remove_accessor_declaration| remove_accessor_declaration, add_accessor_declaration;
 add_accessor_declaration =
@@ -700,7 +696,7 @@ indexer_declaration =
 indexer_modifiers =
 	indexer_modifier| indexer_modifiers, indexer_modifier;
 indexer_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| 'virtual'| 'sealed'| 'override'| 'abstract'| 'extern'| indexer_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private'| 'virtual'| 'sealed'| 'override'| 'extern'| indexer_modifier_unsafe;
 indexer_declarator =
 	type, 'this', '[', formal_parameter_list, ']'| type, interface_type, '.', 'this', '[', formal_parameter_list, ']';
 operator_declaration =
@@ -732,7 +728,7 @@ constructor_modifier =
 constructor_declarator =
 	identifier, '(', [formal_parameter_list], ')', [constructor_initializer];
 constructor_initializer =
-	':', 'base', '(', [argument_list], ')'| ':', 'this', '(', [argument_list], ')';
+	':', '(', [argument_list], ')'| ':', 'this', '(', [argument_list], ')';
 constructor_body =
 	block| ';';
 static_constructor_declaration =
@@ -781,7 +777,7 @@ variable_initializer_list =
 
 (*B.2.10 Interfaces*) 
 interface_declaration =
-	[attributes], [interface_modifiers], ['partial'], 'interface', identifier, [variant_type_parameter_list], [interface_base], [type_parameter_constraints_clauses], interface_body, [';'];
+	[attributes], [interface_modifiers], ['partial'], 'interface', identifier, [variant_type_parameter_list], [type_parameter_constraints_clauses], interface_body, [';'];
 interface_modifiers =
 	interface_modifier| interface_modifiers, interface_modifier;
 interface_modifier =
@@ -792,8 +788,6 @@ variant_type_parameters =
 	[attributes], [variance_annotation], type_parameter| variant_type_parameters, ',', [attributes], [variance_annotation], type_parameter;
 variance_annotation =
 	'in'| 'out';
-interface_base =
-	':', interface_type_list;
 interface_body =
 	'{', [interface_member_declarations], '}';
 interface_member_declarations =
@@ -814,9 +808,7 @@ interface_indexer_declaration =
 
 (*B.2.11 Enums*) 
 enum_declaration =
-	[attributes], [enum_modifiers], 'enum', identifier, [enum_base], enum_body, [';'];
-enum_base =
-	':', integral_type;
+	[attributes], [enum_modifiers], 'enum', identifier, enum_body, [';'];
 enum_body =
 	'{', [enum_member_declarations], '}'| '{', enum_member_declarations, ',', '}';
 enum_modifiers =
