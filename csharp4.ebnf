@@ -258,11 +258,11 @@ generic_dimension_specifier =
 commas =
 	','| commas, ',';
 checked_expression =
-	'checked', '(', expression, ')';
+	;
 unchecked_expression =
-	'unchecked', '(', expression, ')';
+	;
 default_value_expression =
-	'default', '(', type, ')';
+	;
 unary_expression =
 	primary_expression| '+', unary_expression| '-', unary_expression| '!', unary_expression| '~', unary_expression| pre_increment_expression| pre_decrement_expression| cast_expression;
 pre_increment_expression =
@@ -374,27 +374,13 @@ expression_statement =
 statement_expression =
 	invocation_expression| object_creation_expression| assignment| post_increment_expression| post_decrement_expression| pre_increment_expression| pre_decrement_expression;
 selection_statement =
-	if_statement| switch_statement;
+	if_statement;
 if_statement =
 	'if', '(', boolean_expression, ')', embedded_statement| 'if', '(', boolean_expression, ')', embedded_statement, 'else', embedded_statement;
-switch_statement =
-	'switch', '(', expression, ')', switch_block;
-switch_block =
-	'{', [switch_sections], '}';
-switch_sections =
-	switch_section| switch_sections, switch_section;
-switch_section =
-	switch_labels, statement_list;
-switch_labels =
-	switch_label| switch_labels, switch_label;
-switch_label =
-	'case', constant_expression, ':'| 'default', ':';
 iteration_statement =
-	while_statement| do_statement| for_statement| foreach_statement;
+	while_statement | for_statement;
 while_statement =
 	'while', '(', boolean_expression, ')', embedded_statement;
-do_statement =
-	'do', embedded_statement, 'while', '(', boolean_expression, ')', ';';
 for_statement =
 	'for', '(', [for_initializer], ';', [for_condition], ';', [for_iterator], ')', embedded_statement;
 for_initializer =
@@ -405,8 +391,6 @@ for_iterator =
 	statement_expression_list;
 statement_expression_list =
 	statement_expression| statement_expression_list, ',', statement_expression;
-foreach_statement =
-	'foreach', '(', local_variable_type, identifier, 'in', expression, ')', embedded_statement;
 jump_statement =
 	break_statement| continue_statement| goto_statement| return_statement| throw_statement;
 break_statement =
