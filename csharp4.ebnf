@@ -198,7 +198,7 @@ argument_value =
 primary_expression =
 	primary_no_array_creation_expression| array_creation_expression;
 primary_no_array_creation_expression =
-	literal| simple_name| parenthesized_expression| member_access| invocation_expression| element_access| this_access| post_increment_expression| post_decrement_expression| object_creation_expression| delegate_creation_expression| anonymous_object_creation_expression| typeof_expression| checked_expression| unchecked_expression| default_value_expression| anonymous_method_expression| primary_no_array_creation_expression_unsafe;
+	literal| simple_name| parenthesized_expression| member_access| element_access| this_access| post_increment_expression| post_decrement_expression| object_creation_expression| delegate_creation_expression| anonymous_object_creation_expression| typeof_expression| default_value_expression| anonymous_method_expression| primary_no_array_creation_expression_unsafe;
 simple_name =
 	identifier, [type_argument_list];
 parenthesized_expression =
@@ -208,7 +208,7 @@ member_access =
 predefined_type =
 	'char' | 'int' | 'string';
 invocation_expression =
-	primary_expression, '(', [argument_list], ')';
+	;
 element_access =
 	primary_no_array_creation_expression, '[', expression_list, ']';
 expression_list =
@@ -242,9 +242,9 @@ array_creation_expression =
 delegate_creation_expression =
 	'new', delegate_type, '(', expression, ')';
 anonymous_object_creation_expression =
-	'new', anonymous_object_initializer;
+	;
 anonymous_object_initializer =
-	'{', [member_declarator_list], '}'| '{', member_declarator_list, ',', '}';
+	;
 member_declarator_list =
 	member_declarator| member_declarator_list, ',', member_declarator;
 member_declarator =
@@ -295,28 +295,6 @@ null_coalescing_expression =
 	conditional_or_expression| conditional_or_expression, '??', null_coalescing_expression;
 conditional_expression =
 	null_coalescing_expression| null_coalescing_expression, '?', expression, ':', expression;
-lambda_expression =
-	anonymous_function_signature, '=>', anonymous_function_body;
-anonymous_method_expression =
-	'delegate', [explicit_anonymous_function_signature], block;
-anonymous_function_signature =
-	explicit_anonymous_function_signature| implicit_anonymous_function_signature;
-explicit_anonymous_function_signature =
-	'(', [explicit_anonymous_function_parameter_list], ')';
-explicit_anonymous_function_parameter_list =
-	explicit_anonymous_function_parameter| explicit_anonymous_function_parameter_list, ',', explicit_anonymous_function_parameter;
-explicit_anonymous_function_parameter =
-	[anonymous_function_parameter_modifier], type, identifier;
-anonymous_function_parameter_modifier =
-	'ref'| 'out';
-implicit_anonymous_function_signature =
-	'(', [implicit_anonymous_function_parameter_list], ')'| implicit_anonymous_function_parameter;
-implicit_anonymous_function_parameter_list =
-	implicit_anonymous_function_parameter| implicit_anonymous_function_parameter_list, ',', implicit_anonymous_function_parameter;
-implicit_anonymous_function_parameter =
-	identifier;
-anonymous_function_body =
-	expression| block;
 query_expression =
 	from_clause, query_body;
 from_clause =
@@ -358,7 +336,7 @@ assignment_operator =
 expression =
 	non_assignment_expression| assignment;
 non_assignment_expression =
-	conditional_expression| lambda_expression| query_expression;
+	conditional_expression| query_expression;
 constant_expression =
 	expression;
 boolean_expression =
