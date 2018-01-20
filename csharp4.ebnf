@@ -194,7 +194,7 @@ argument =
 argument_name =
 	identifier, ':';
 argument_value =
-	expression| 'ref', variable_reference;
+	expression;
 primary_expression =
 	primary_no_array_creation_expression| array_creation_expression;
 primary_no_array_creation_expression =
