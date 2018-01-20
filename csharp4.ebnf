@@ -170,7 +170,7 @@ enum_type =
 reference_type =
 	class_type| array_type| delegate_type;
 class_type =
-	type_name| 'object'| 'dynamic'| 'string';
+	type_name| 'object'| 'string';
 interface_type =
 	;
 delegate_type =
