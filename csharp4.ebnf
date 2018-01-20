@@ -72,14 +72,11 @@ formatting_character =
 	?A Unicode character of the class Cf?| ?A unicode_escape_sequence representing a character of the class Cf?;
 
 (*B.1.7 Keywords*) 
-keyword =
-	 'as' | 'bool' | 'break'| 'byte' | 'case' | 'catch' | 'char' | 'checked'| 'class' | 'const' | 'continue' | 'decimal' | 'default'| 'delegate' | 'do' | 'double' | 'else' | 'enum'| 'event' | 'explicit' | 'extern' | 'false' | 'finally'| 'fixed' | 'float' | 'for' | 'foreach' | 'goto'| 'if' | 'implicit' | 'in' | 'int' | 'interface'| 'internal' | 'is' | 'lock' | 'long' | 'namespace'| 'new' | 'null' | 'object' | 'operator' | 'out'| 'override' | 'params' | 'private' | 'protected' | 'public'| 'readonly' | 'ref' | 'return' | 'sbyte' | 'sealed'| 'short' | 'sizeof' | 'stackalloc' | 'static' | 'string'| 'struct' | 'switch' | 'this' | 'throw' | 'true'| 'try' | 'typeof' | 'uint' | 'ulong' | 'unchecked'| 'unsafe' | 'ushort' | 'using' | 'virtual' | 'void'| 'volatile' | 'while';
+keyword = break | char | class | continue | else | for | if | int | new | null | object | whlie | void | protected | private | public | return | sizeof | string | this | struct;
 
 (*B.1.8 Literals*) 
 literal =
-	boolean_literal| integer_literal| real_literal| character_literal| string_literal| null_literal;
-boolean_literal =
-	'true'| 'false';
+	integer_literal| character_literal| string_literal| null_literal;
 integer_literal =
 	decimal_integer_literal| hexadecimal_integer_literal;
 decimal_integer_literal =
@@ -96,14 +93,8 @@ hex_digits =
 	hex_digit| hex_digits, hex_digit;
 hex_digit =
 	'0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'| 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'a' | 'b' | 'c' | 'd' | 'e' | 'f';
-real_literal =
-	decimal_digits, '.', decimal_digits, [exponent_part], [real_type_suffix]| '.', decimal_digits, [exponent_part], [real_type_suffix]| decimal_digits, exponent_part, [real_type_suffix]| decimal_digits, real_type_suffix;
-exponent_part =
-	'e', [sign], decimal_digits| 'E', [sign], decimal_digits;
 sign =
 	'+' | '-';
-real_type_suffix =
-	'F' | 'f' | 'D' | 'd' | 'M' | 'm';
 character_literal =
 	"'", character, "'";
 character =
@@ -139,86 +130,11 @@ null_literal =
 
 (*B.1.9 Operators and punctuators*) 
 operator_or_punctuator =
-	'{' | '}' | '[' | ']' | '(' | ')' | '.' | ',' | ':' | ';'| '+' | '-' | '*' | '/' | '%' | '&' | '|' | '^' | '!' | '~'| '=' | '<' | '>' | '?' | '??' | '::' | '++' | '--' | '&&' | '||'| '->' | '==' | '!=' | '<=' | '>=' | '+=' | '-=' | '*=' | '/=' | '%='| '&=' | '|=' | '^=' | '<<' | '<<=' | '=>';
+	'{' | '}' | '[' | ']' | '(' | ')' | '.' | ',' | ':' | ';'| '+' | '-' | '*' | '/' | '%' | '&' | '|' | '^' | '!' | '~'| '=' | '<' | '>' | '?' | '??' | '::' | '++' | '--' | '&&' | '||'| '->' | '==' | '!=' | '<=' | '>=' | '+=' | '-=' | '*=' | '/=' | '%='| '&=' | '|=' | '^=' | '<<' | '=>';
 right_shift =
 	'>>';
-right_shift_assignment =
-	'>>=';
 
 (*B.1.10 Pre_processing directives*) 
-pp_directive =
-	pp_declaration| pp_conditional| pp_line| pp_diagnostic| pp_region| pp_pragma;
-conditional_symbol =
-	?Any identifier_or_keyword except true or false?;
-pp_expression =
-	[whitespace], pp_or_expression, [whitespace];
-pp_or_expression =
-	pp_and_expression| pp_or_expression, [whitespace], '||', [whitespace], pp_and_expression;
-pp_and_expression =
-	pp_equality_expression| pp_and_expression, [whitespace], '&&', [whitespace], pp_equality_expression;
-pp_equality_expression =
-	pp_unary_expression| pp_equality_expression, [whitespace], '==', [whitespace], pp_unary_expression| pp_equality_expression, [whitespace], '!=', [whitespace], pp_unary_expression;
-pp_unary_expression =
-	pp_primary_expression| '!', [whitespace], pp_unary_expression;
-pp_primary_expression =
-	'true'| 'false'| conditional_symbol| '(', [whitespace], pp_expression, [whitespace], ')';
-pp_declaration =
-	[whitespace], '#', [whitespace], 'define', whitespace, conditional_symbol, pp_new_line| [whitespace], '#', [whitespace], 'undef', whitespace, conditional_symbol, pp_new_line;
-pp_new_line =
-	[whitespace], [single_line_comment], new_line;
-pp_conditional =
-	pp_if_section, [pp_elif_sections], [pp_else_section], pp_endif;
-pp_if_section =
-	[whitespace], '#', [whitespace], 'if', whitespace, pp_expression, pp_new_line, [conditional_section];
-pp_elif_sections =
-	pp_elif_section| pp_elif_sections, pp_elif_section;
-pp_elif_section =
-	[whitespace], '#', [whitespace], 'elif', whitespace, pp_expression, pp_new_line, [conditional_section];
-pp_else_section =
-	[whitespace], '#', [whitespace], 'else', pp_new_line, [conditional_section];
-pp_endif =
-	[whitespace], '#', [whitespace], 'endif', pp_new_line;
-conditional_section =
-	input_section| skipped_section;
-skipped_section =
-	skipped_section_part| skipped_section, skipped_section_part;
-skipped_section_part =
-	[skipped_characters], new_line| pp_directive;
-skipped_characters =
-	[whitespace], not_number_sign, [input_characters];
-not_number_sign =
-	?Any input_character except #?;
-pp_diagnostic =
-	[whitespace], '#', [whitespace], 'error', pp_message| [whitespace], '#', [whitespace], 'warning', pp_message;
-pp_message =
-	new_line| whitespace, [input_characters], new_line;
-pp_region =
-	pp_start_region, [conditional_section], pp_end_region;
-pp_start_region =
-	[whitespace], '#', [whitespace], 'region', pp_message;
-pp_end_region =
-	[whitespace], '#', [whitespace], 'endregion', pp_message;
-pp_line =
-	[whitespace], '#', [whitespace], 'line', whitespace, line_indicator, pp_new_line;
-line_indicator =
-	decimal_digits, whitespace, file_name| decimal_digits| 'default'| 'hidden';
-file_name =
-	'"', file_name_characters, '"';
-file_name_characters =
-	file_name_character| file_name_characters, file_name_character;
-file_name_character =
-	?Any input_character except "?;
-pp_pragma =
-	[whitespace], '#', [whitespace], 'pragma', whitespace, pragma_body, pp_new_line;
-pragma_body =
-	pragma_warning_body;
-pragma_warning_body =
-	'warning', whitespace, warning_action| 'warning', whitespace, warning_action, whitespace, warning_list;
-warning_action =
-	'disable'| 'restore';
-warning_list =
-	decimal_digits| warning_list, [whitespace], ',', [whitespace], decimal_digits;
-
 
 (*B.2 Syntactic grammar*) 
 
@@ -232,7 +148,7 @@ namespace_or_type_name =
 
 (*B.2.2 Types*) 
 type =
-	value_type| reference_type| type_parameter| type_unsafe;
+	value_type| reference_type| type_parameter;
 value_type =
 	struct_type| enum_type;
 struct_type =
