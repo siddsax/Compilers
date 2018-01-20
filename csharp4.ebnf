@@ -150,7 +150,7 @@ namespace_or_type_name =
 type =
 	value_type| reference_type| type_parameter;
 value_type =
-	struct_type| enum_type;
+	struct_type;
 struct_type =
 	type_name| simple_type| nullable_type;
 simple_type =
