@@ -72,14 +72,11 @@ formatting_character =
 	?A Unicode character of the class Cf?| ?A unicode_escape_sequence representing a character of the class Cf?;
 
 (*B.1.7 Keywords*) 
-keyword =
-	 'as' | 'bool' | 'break'| 'byte' | 'case' | 'catch' | 'char' | 'checked'| 'class' | 'const' | 'continue' | 'decimal' | 'default'| 'delegate' | 'do' | 'double' | 'else' | 'enum'| 'event' | 'explicit' | 'extern' | 'false' | 'finally'| 'fixed' | 'float' | 'for' | 'foreach' | 'goto'| 'if' | 'implicit' | 'in' | 'int' | 'interface'| 'internal' | 'is' | 'lock' | 'long' | 'namespace'| 'new' | 'null' | 'object' | 'operator' | 'out'| 'override' | 'params' | 'private' | 'protected' | 'public'| 'readonly' | 'ref' | 'return' | 'sbyte' | 'sealed'| 'short' | 'sizeof' | 'stackalloc' | 'static' | 'string'| 'struct' | 'switch' | 'this' | 'throw' | 'true'| 'try' | 'typeof' | 'uint' | 'ulong' | 'unchecked'| 'unsafe' | 'ushort' | 'using' | 'virtual' | 'void'| 'volatile' | 'while';
+keyword = break | char | class | continue | else | for | if | int | new | null | object | whlie | void | protected | private | public | return | sizeof | string | this | struct;
 
 (*B.1.8 Literals*) 
 literal =
-	boolean_literal| integer_literal| real_literal| character_literal| string_literal| null_literal;
-boolean_literal =
-	'true'| 'false';
+	integer_literal| character_literal| string_literal| null_literal;
 integer_literal =
 	decimal_integer_literal| hexadecimal_integer_literal;
 decimal_integer_literal =
@@ -96,14 +93,8 @@ hex_digits =
 	hex_digit| hex_digits, hex_digit;
 hex_digit =
 	'0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'| 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'a' | 'b' | 'c' | 'd' | 'e' | 'f';
-real_literal =
-	decimal_digits, '.', decimal_digits, [exponent_part], [real_type_suffix]| '.', decimal_digits, [exponent_part], [real_type_suffix]| decimal_digits, exponent_part, [real_type_suffix]| decimal_digits, real_type_suffix;
-exponent_part =
-	'e', [sign], decimal_digits| 'E', [sign], decimal_digits;
 sign =
 	'+' | '-';
-real_type_suffix =
-	'F' | 'f' | 'D' | 'd' | 'M' | 'm';
 character_literal =
 	"'", character, "'";
 character =
@@ -139,86 +130,11 @@ null_literal =
 
 (*B.1.9 Operators and punctuators*) 
 operator_or_punctuator =
-	'{' | '}' | '[' | ']' | '(' | ')' | '.' | ',' | ':' | ';'| '+' | '-' | '*' | '/' | '%' | '&' | '|' | '^' | '!' | '~'| '=' | '<' | '>' | '?' | '??' | '::' | '++' | '--' | '&&' | '||'| '->' | '==' | '!=' | '<=' | '>=' | '+=' | '-=' | '*=' | '/=' | '%='| '&=' | '|=' | '^=' | '<<' | '<<=' | '=>';
+	'{' | '}' | '[' | ']' | '(' | ')' | '.' | ',' | ':' | ';'| '+' | '-' | '*' | '/' | '%' | '&' | '|' | '^' | '!' | '~'| '=' | '<' | '>' | '?' | '??' | '::' | '++' | '--' | '&&' | '||'| '->' | '==' | '!=' | '<=' | '>=' | '+=' | '-=' | '*=' | '/=' | '%='| '&=' | '|=' | '^=' | '<<' | '=>';
 right_shift =
 	'>>';
-right_shift_assignment =
-	'>>=';
 
 (*B.1.10 Pre_processing directives*) 
-pp_directive =
-	pp_declaration| pp_conditional| pp_line| pp_diagnostic| pp_region| pp_pragma;
-conditional_symbol =
-	?Any identifier_or_keyword except true or false?;
-pp_expression =
-	[whitespace], pp_or_expression, [whitespace];
-pp_or_expression =
-	pp_and_expression| pp_or_expression, [whitespace], '||', [whitespace], pp_and_expression;
-pp_and_expression =
-	pp_equality_expression| pp_and_expression, [whitespace], '&&', [whitespace], pp_equality_expression;
-pp_equality_expression =
-	pp_unary_expression| pp_equality_expression, [whitespace], '==', [whitespace], pp_unary_expression| pp_equality_expression, [whitespace], '!=', [whitespace], pp_unary_expression;
-pp_unary_expression =
-	pp_primary_expression| '!', [whitespace], pp_unary_expression;
-pp_primary_expression =
-	'true'| 'false'| conditional_symbol| '(', [whitespace], pp_expression, [whitespace], ')';
-pp_declaration =
-	[whitespace], '#', [whitespace], 'define', whitespace, conditional_symbol, pp_new_line| [whitespace], '#', [whitespace], 'undef', whitespace, conditional_symbol, pp_new_line;
-pp_new_line =
-	[whitespace], [single_line_comment], new_line;
-pp_conditional =
-	pp_if_section, [pp_elif_sections], [pp_else_section], pp_endif;
-pp_if_section =
-	[whitespace], '#', [whitespace], 'if', whitespace, pp_expression, pp_new_line, [conditional_section];
-pp_elif_sections =
-	pp_elif_section| pp_elif_sections, pp_elif_section;
-pp_elif_section =
-	[whitespace], '#', [whitespace], 'elif', whitespace, pp_expression, pp_new_line, [conditional_section];
-pp_else_section =
-	[whitespace], '#', [whitespace], 'else', pp_new_line, [conditional_section];
-pp_endif =
-	[whitespace], '#', [whitespace], 'endif', pp_new_line;
-conditional_section =
-	input_section| skipped_section;
-skipped_section =
-	skipped_section_part| skipped_section, skipped_section_part;
-skipped_section_part =
-	[skipped_characters], new_line| pp_directive;
-skipped_characters =
-	[whitespace], not_number_sign, [input_characters];
-not_number_sign =
-	?Any input_character except #?;
-pp_diagnostic =
-	[whitespace], '#', [whitespace], 'error', pp_message| [whitespace], '#', [whitespace], 'warning', pp_message;
-pp_message =
-	new_line| whitespace, [input_characters], new_line;
-pp_region =
-	pp_start_region, [conditional_section], pp_end_region;
-pp_start_region =
-	[whitespace], '#', [whitespace], 'region', pp_message;
-pp_end_region =
-	[whitespace], '#', [whitespace], 'endregion', pp_message;
-pp_line =
-	[whitespace], '#', [whitespace], 'line', whitespace, line_indicator, pp_new_line;
-line_indicator =
-	decimal_digits, whitespace, file_name| decimal_digits| 'default'| 'hidden';
-file_name =
-	'"', file_name_characters, '"';
-file_name_characters =
-	file_name_character| file_name_characters, file_name_character;
-file_name_character =
-	?Any input_character except "?;
-pp_pragma =
-	[whitespace], '#', [whitespace], 'pragma', whitespace, pragma_body, pp_new_line;
-pragma_body =
-	pragma_warning_body;
-pragma_warning_body =
-	'warning', whitespace, warning_action| 'warning', whitespace, warning_action, whitespace, warning_list;
-warning_action =
-	'disable'| 'restore';
-warning_list =
-	decimal_digits| warning_list, [whitespace], ',', [whitespace], decimal_digits;
-
 
 (*B.2 Syntactic grammar*) 
 
@@ -232,31 +148,31 @@ namespace_or_type_name =
 
 (*B.2.2 Types*) 
 type =
-	value_type| reference_type| type_parameter| type_unsafe;
+	value_type| reference_type| type_parameter;
 value_type =
-	struct_type| enum_type;
+	struct_type;
 struct_type =
 	type_name| simple_type| nullable_type;
 simple_type =
-	numeric_type| 'bool';
+	numeric_type;
 numeric_type =
 	integral_type| floating_point_type| 'decimal';
 integral_type =
-	'sbyte'| 'byte'| 'short'| 'ushort'| 'int'| 'uint'| 'long'| 'ulong'| 'char';
+	'int' | 'char';
 floating_point_type =
-	'float'| 'double';
+	;
 nullable_type =
 	non_nullable_value_type, '?';
 non_nullable_value_type =
 	type;
 enum_type =
-	type_name;
+	;
 reference_type =
-	class_type| interface_type| array_type| delegate_type;
+	class_type| array_type| delegate_type;
 class_type =
-	type_name| 'object'| 'dynamic'| 'string';
+	type_name| 'object'| 'string';
 interface_type =
-	type_name;
+	;
 delegate_type =
 	type_name;
 type_argument_list =
@@ -278,11 +194,11 @@ argument =
 argument_name =
 	identifier, ':';
 argument_value =
-	expression| 'ref', variable_reference| 'out', variable_reference;
+	expression;
 primary_expression =
 	primary_no_array_creation_expression| array_creation_expression;
 primary_no_array_creation_expression =
-	literal| simple_name| parenthesized_expression| member_access| invocation_expression| element_access| this_access| post_increment_expression| post_decrement_expression| object_creation_expression| delegate_creation_expression| anonymous_object_creation_expression| typeof_expression| checked_expression| unchecked_expression| default_value_expression| anonymous_method_expression| primary_no_array_creation_expression_unsafe;
+	literal| simple_name| parenthesized_expression| member_access| element_access| this_access| post_increment_expression| post_decrement_expression| object_creation_expression| delegate_creation_expression| typeof_expression| default_value_expression;
 simple_name =
 	identifier, [type_argument_list];
 parenthesized_expression =
@@ -290,9 +206,9 @@ parenthesized_expression =
 member_access =
 	primary_expression, '.', identifier, [type_argument_list]| predefined_type, '.', identifier, [type_argument_list]| qualified_alias_member, '.', identifier;
 predefined_type =
-	'bool' | 'byte' | 'char' | 'decimal' | 'double' | 'float' | 'int' | 'long'| 'object' | 'sbyte' | 'short' | 'string' | 'uint' | 'ulong' | 'ushort';
+	'char' | 'int' | 'string';
 invocation_expression =
-	primary_expression, '(', [argument_list], ')';
+	;
 element_access =
 	primary_no_array_creation_expression, '[', expression_list, ']';
 expression_list =
@@ -326,9 +242,9 @@ array_creation_expression =
 delegate_creation_expression =
 	'new', delegate_type, '(', expression, ')';
 anonymous_object_creation_expression =
-	'new', anonymous_object_initializer;
+	;
 anonymous_object_initializer =
-	'{', [member_declarator_list], '}'| '{', member_declarator_list, ',', '}';
+	;
 member_declarator_list =
 	member_declarator| member_declarator_list, ',', member_declarator;
 member_declarator =
@@ -342,13 +258,13 @@ generic_dimension_specifier =
 commas =
 	','| commas, ',';
 checked_expression =
-	'checked', '(', expression, ')';
+	;
 unchecked_expression =
-	'unchecked', '(', expression, ')';
+	;
 default_value_expression =
-	'default', '(', type, ')';
+	;
 unary_expression =
-	primary_expression| '+', unary_expression| '-', unary_expression| '!', unary_expression| '~', unary_expression| pre_increment_expression| pre_decrement_expression| cast_expression| unary_expression_unsafe;
+	primary_expression| '+', unary_expression| '-', unary_expression| '!', unary_expression| '~', unary_expression| pre_increment_expression| pre_decrement_expression| cast_expression;
 pre_increment_expression =
 	'++', unary_expression;
 pre_decrement_expression =
@@ -379,28 +295,6 @@ null_coalescing_expression =
 	conditional_or_expression| conditional_or_expression, '??', null_coalescing_expression;
 conditional_expression =
 	null_coalescing_expression| null_coalescing_expression, '?', expression, ':', expression;
-lambda_expression =
-	anonymous_function_signature, '=>', anonymous_function_body;
-anonymous_method_expression =
-	'delegate', [explicit_anonymous_function_signature], block;
-anonymous_function_signature =
-	explicit_anonymous_function_signature| implicit_anonymous_function_signature;
-explicit_anonymous_function_signature =
-	'(', [explicit_anonymous_function_parameter_list], ')';
-explicit_anonymous_function_parameter_list =
-	explicit_anonymous_function_parameter| explicit_anonymous_function_parameter_list, ',', explicit_anonymous_function_parameter;
-explicit_anonymous_function_parameter =
-	[anonymous_function_parameter_modifier], type, identifier;
-anonymous_function_parameter_modifier =
-	'ref'| 'out';
-implicit_anonymous_function_signature =
-	'(', [implicit_anonymous_function_parameter_list], ')'| implicit_anonymous_function_parameter;
-implicit_anonymous_function_parameter_list =
-	implicit_anonymous_function_parameter| implicit_anonymous_function_parameter_list, ',', implicit_anonymous_function_parameter;
-implicit_anonymous_function_parameter =
-	identifier;
-anonymous_function_body =
-	expression| block;
 query_expression =
 	from_clause, query_body;
 from_clause =
@@ -442,7 +336,7 @@ assignment_operator =
 expression =
 	non_assignment_expression| assignment;
 non_assignment_expression =
-	conditional_expression| lambda_expression| query_expression;
+	conditional_expression| query_expression;
 constant_expression =
 	expression;
 boolean_expression =
@@ -452,7 +346,7 @@ boolean_expression =
 statement =
 	labeled_statement| declaration_statement| embedded_statement;
 embedded_statement =
-	block| empty_statement| expression_statement| selection_statement| iteration_statement| jump_statement| try_statement| checked_statement| unchecked_statement| lock_statement| using_statement| yield_statement| embedded_statement_unsafe;
+	block| empty_statement| expression_statement| selection_statement| iteration_statement| jump_statement| try_statement| checked_statement| unchecked_statement| lock_statement| using_statement| yield_statement;
 block =
 	'{', [statement_list], '}';
 statement_list =
@@ -472,7 +366,7 @@ local_variable_declarators =
 local_variable_declarator =
 	identifier| identifier, '=', local_variable_initializer;
 local_variable_initializer =
-	expression| array_initializer| local_variable_initializer_unsafe;
+	expression| array_initializer;
 local_constant_declaration =
 	'const', type, constant_declarators;
 expression_statement =
@@ -480,27 +374,13 @@ expression_statement =
 statement_expression =
 	invocation_expression| object_creation_expression| assignment| post_increment_expression| post_decrement_expression| pre_increment_expression| pre_decrement_expression;
 selection_statement =
-	if_statement| switch_statement;
+	if_statement;
 if_statement =
 	'if', '(', boolean_expression, ')', embedded_statement| 'if', '(', boolean_expression, ')', embedded_statement, 'else', embedded_statement;
-switch_statement =
-	'switch', '(', expression, ')', switch_block;
-switch_block =
-	'{', [switch_sections], '}';
-switch_sections =
-	switch_section| switch_sections, switch_section;
-switch_section =
-	switch_labels, statement_list;
-switch_labels =
-	switch_label| switch_labels, switch_label;
-switch_label =
-	'case', constant_expression, ':'| 'default', ':';
 iteration_statement =
-	while_statement| do_statement| for_statement| foreach_statement;
+	while_statement | for_statement;
 while_statement =
 	'while', '(', boolean_expression, ')', embedded_statement;
-do_statement =
-	'do', embedded_statement, 'while', '(', boolean_expression, ')', ';';
 for_statement =
 	'for', '(', [for_initializer], ';', [for_condition], ';', [for_iterator], ')', embedded_statement;
 for_initializer =
@@ -511,8 +391,6 @@ for_iterator =
 	statement_expression_list;
 statement_expression_list =
 	statement_expression| statement_expression_list, ',', statement_expression;
-foreach_statement =
-	'foreach', '(', local_variable_type, identifier, 'in', expression, ')', embedded_statement;
 jump_statement =
 	break_statement| continue_statement| goto_statement| return_statement| throw_statement;
 break_statement =
@@ -577,7 +455,7 @@ namespace_member_declarations =
 namespace_member_declaration =
 	namespace_declaration| type_declaration;
 type_declaration =
-	class_declaration| struct_declaration| interface_declaration| enum_declaration| delegate_declaration;
+	class_declaration| struct_declaration| delegate_declaration;
 qualified_alias_member =
 	identifier, '::', identifier, [type_argument_list];
 
@@ -588,7 +466,7 @@ class_declaration =
 class_modifiers =
 	class_modifier| class_modifiers, class_modifier;
 class_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| 'sealed'| 'static'| class_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private'| 'sealed'| 'static';
 type_parameter_list =
 	'<', type_parameters, '>';
 type_parameters =
@@ -596,7 +474,7 @@ type_parameters =
 type_parameter =
 	identifier;
 interface_type_list =
-	interface_type| interface_type_list, ',', interface_type;
+	;
 type_parameter_constraints_clauses =
 	type_parameter_constraints_clause| type_parameter_constraints_clauses, type_parameter_constraints_clause;
 type_parameter_constraints_clause =
@@ -630,7 +508,7 @@ field_declaration =
 field_modifiers =
 	field_modifier| field_modifiers, field_modifier;
 field_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'readonly'| 'volatile'| field_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'readonly'| 'volatile';
 variable_declarators =
 	variable_declarator| variable_declarators, ',', variable_declarator;
 variable_declarator =
@@ -644,7 +522,7 @@ method_header =
 method_modifiers =
 	method_modifier| method_modifiers, method_modifier;
 method_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'virtual'| 'sealed'| 'override'| 'extern'| method_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'virtual'| 'sealed'| 'override'| 'extern';
 return_type =
 	type| 'void';
 member_name =
@@ -668,7 +546,7 @@ property_declaration =
 property_modifiers =
 	property_modifier| property_modifiers, property_modifier;
 property_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'virtual'| 'sealed'| 'override'| 'extern'| property_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'virtual'| 'sealed'| 'override'| 'extern';
 accessor_declarations =
 	get_accessor_declaration, [set_accessor_declaration]| set_accessor_declaration, [get_accessor_declaration];
 get_accessor_declaration =
@@ -684,7 +562,7 @@ event_declaration =
 event_modifiers =
 	event_modifier| event_modifiers, event_modifier;
 event_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'virtual'| 'sealed'| 'override'| 'extern'| event_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private'| 'static'| 'virtual'| 'sealed'| 'override'| 'extern';
 event_accessor_declarations =
 	add_accessor_declaration, remove_accessor_declaration| remove_accessor_declaration, add_accessor_declaration;
 add_accessor_declaration =
@@ -696,7 +574,7 @@ indexer_declaration =
 indexer_modifiers =
 	indexer_modifier| indexer_modifiers, indexer_modifier;
 indexer_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| 'virtual'| 'sealed'| 'override'| 'extern'| indexer_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private'| 'virtual'| 'sealed'| 'override'| 'extern';
 indexer_declarator =
 	type, 'this', '[', formal_parameter_list, ']'| type, interface_type, '.', 'this', '[', formal_parameter_list, ']';
 operator_declaration =
@@ -704,7 +582,7 @@ operator_declaration =
 operator_modifiers =
 	operator_modifier| operator_modifiers, operator_modifier;
 operator_modifier =
-	'public'| 'static'| 'extern'| operator_modifier_unsafe;
+	'public'| 'static'| 'extern';
 operator_declarator =
 	unary_operator_declarator| binary_operator_declarator| conversion_operator_declarator;
 unary_operator_declarator =
@@ -724,7 +602,7 @@ constructor_declaration =
 constructor_modifiers =
 	constructor_modifier| constructor_modifiers, constructor_modifier;
 constructor_modifier =
-	'public'| 'protected'| 'internal'| 'private'| 'extern'| constructor_modifier_unsafe;
+	'public'| 'protected'| 'internal'| 'private'| 'extern';
 constructor_declarator =
 	identifier, '(', [formal_parameter_list], ')', [constructor_initializer];
 constructor_initializer =
@@ -734,11 +612,11 @@ constructor_body =
 static_constructor_declaration =
 	[attributes], static_constructor_modifiers, identifier, '(', ')', static_constructor_body;
 static_constructor_modifiers =
-	['extern'], 'static'| 'static', ['extern']| static_constructor_modifiers_unsafe;
+	['extern'], 'static'| 'static', ['extern'];
 static_constructor_body =
 	block| ';';
 destructor_declaration =
-	[attributes], ['extern'], '~', identifier, '(', ')', destructor_body| destructor_declaration_unsafe;
+	[attributes], ['extern'], '~', identifier, '(', ')', destructor_body;
 destructor_body =
 	block| ';';
 
@@ -749,7 +627,7 @@ struct_declaration =
 struct_modifiers =
 	struct_modifier| struct_modifiers, struct_modifier;
 struct_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| struct_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private';
 struct_interfaces =
 	':', interface_type_list;
 struct_body =
@@ -757,7 +635,7 @@ struct_body =
 struct_member_declarations =
 	struct_member_declaration| struct_member_declarations, struct_member_declaration;
 struct_member_declaration =
-	constant_declaration| field_declaration| method_declaration| property_declaration| event_declaration| indexer_declaration| operator_declaration| constructor_declaration| static_constructor_declaration| type_declaration| struct_member_declaration_unsafe;
+	constant_declaration| field_declaration| method_declaration| property_declaration| event_declaration| indexer_declaration| operator_declaration| constructor_declaration| static_constructor_declaration| type_declaration;
 
 (*B.2.9 Arrays*) 
 array_type =
@@ -776,50 +654,8 @@ variable_initializer_list =
 	variable_initializer| variable_initializer_list, ',', variable_initializer;
 
 (*B.2.10 Interfaces*) 
-interface_declaration =
-	[attributes], [interface_modifiers], ['partial'], 'interface', identifier, [variant_type_parameter_list], [type_parameter_constraints_clauses], interface_body, [';'];
-interface_modifiers =
-	interface_modifier| interface_modifiers, interface_modifier;
-interface_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| interface_modifier_unsafe;
-variant_type_parameter_list =
-	'<', variant_type_parameters, '>';
-variant_type_parameters =
-	[attributes], [variance_annotation], type_parameter| variant_type_parameters, ',', [attributes], [variance_annotation], type_parameter;
-variance_annotation =
-	'in'| 'out';
-interface_body =
-	'{', [interface_member_declarations], '}';
-interface_member_declarations =
-	interface_member_declaration| interface_member_declarations, interface_member_declaration;
-interface_member_declaration =
-	interface_method_declaration| interface_property_declaration| interface_event_declaration| interface_indexer_declaration;
-interface_method_declaration =
-	[attributes], ['new'], return_type, identifier, type_parameter_list, '(', [formal_parameter_list], ')', [type_parameter_constraints_clauses], ';';
-interface_property_declaration =
-	[attributes], ['new'], type, identifier, '{', interface_accessors, '}';
-interface_accessors =
-	[attributes], 'get', ';'| [attributes], 'set', ';'| [attributes], 'get', ';', [attributes], 'set', ';'| [attributes], 'set', ';', [attributes], 'get', ';';
-interface_event_declaration =
-	[attributes], ['new'], 'event', type, identifier, ';';
-interface_indexer_declaration =
-	[attributes], ['new'], type, 'this', '[', formal_parameter_list, ']', '{', interface_accessors, '}';
-
 
 (*B.2.11 Enums*) 
-enum_declaration =
-	[attributes], [enum_modifiers], 'enum', identifier, enum_body, [';'];
-enum_body =
-	'{', [enum_member_declarations], '}'| '{', enum_member_declarations, ',', '}';
-enum_modifiers =
-	enum_modifier| enum_modifiers, enum_modifier;
-enum_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private';
-enum_member_declarations =
-	enum_member_declaration| enum_member_declarations, ',', enum_member_declaration;
-enum_member_declaration =
-	[attributes], identifier| [attributes], identifier, '=', constant_expression;
-
 
 (*B.2.12 Delegates*) 
 delegate_declaration =
@@ -827,7 +663,7 @@ delegate_declaration =
 delegate_modifiers =
 	delegate_modifier| delegate_modifiers, delegate_modifier;
 delegate_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| delegate_modifier_unsafe;
+	'new'| 'public'| 'protected'| 'internal'| 'private';
 
 
 (*B.2.13 Attributes*) 
@@ -870,87 +706,4 @@ named_argument =
 attribute_argument_expression =
 	expression;
 
-
 (*B.3 Grammar extensions for unsafe code*) 
-class_modifier_unsafe =
-	'unsafe';
-struct_modifier_unsafe =
-	'unsafe';
-interface_modifier_unsafe =
-	'unsafe';
-delegate_modifier_unsafe =
-	'unsafe';
-field_modifier_unsafe =
-	'unsafe';
-method_modifier_unsafe =
-	'unsafe';
-property_modifier_unsafe =
-	'unsafe';
-event_modifier_unsafe =
-	'unsafe';
-indexer_modifier_unsafe =
-	'unsafe';
-operator_modifier_unsafe =
-	'unsafe';
-constructor_modifier_unsafe =
-	'unsafe';
-destructor_declaration_unsafe =
-	[attributes], ['extern'], ['unsafe'], '~', identifier, '(', ')', destructor_body| [attributes], ['unsafe'], ['extern'], '~', identifier, '(', ')', destructor_body;
-static_constructor_modifiers_unsafe =
-	['extern'], ['unsafe'], 'static'| ['unsafe'], ['extern'], 'static'| ['extern'], 'static', ['unsafe']| ['unsafe'], 'static', ['extern']| 'static', ['extern'], ['unsafe']| 'static', ['unsafe'], ['extern'];
-embedded_statement_unsafe =
-	unsafe_statement| fixed_statement;
-unsafe_statement =
-	'unsafe', block;
-type_unsafe =
-	pointer_type;
-pointer_type =
-	unmanaged_type, '*'| 'void', '*';
-unmanaged_type =
-	type;
-primary_no_array_creation_expression_unsafe =
-	pointer_member_access| pointer_element_access| sizeof_expression;
-unary_expression_unsafe =
-	pointer_indirection_expression| addressof_expression;
-pointer_indirection_expression =
-	'*', unary_expression;
-pointer_member_access =
-	primary_expression, '->', identifier;
-pointer_element_access =
-	primary_no_array_creation_expression, '[', expression, ']';
-addressof_expression =
-	'&', unary_expression;
-sizeof_expression =
-	'sizeof', '(', unmanaged_type, ')';
-fixed_statement =
-	'fixed', '(', pointer_type, fixed_pointer_declarators, ')', embedded_statement;
-fixed_pointer_declarators =
-	fixed_pointer_declarator| fixed_pointer_declarators, ',', fixed_pointer_declarator;
-fixed_pointer_declarator =
-	identifier, '=', fixed_pointer_initializer;
-fixed_pointer_initializer =
-	'&', variable_reference| expression;
-struct_member_declaration_unsafe =
-	fixed_size_buffer_declaration;
-fixed_size_buffer_declaration =
-	[attributes], [fixed_size_buffer_modifiers], 'fixed', buffer_element_type, fixed_size_buffer_declarators, ';';
-fixed_size_buffer_modifiers =
-	fixed_size_buffer_modifier| fixed_size_buffer_modifier, fixed_size_buffer_modifiers;
-fixed_size_buffer_modifier =
-	'new'| 'public'| 'protected'| 'internal'| 'private'| 'unsafe';
-buffer_element_type =
-	type;
-fixed_size_buffer_declarators =
-	fixed_size_buffer_declarator| fixed_size_buffer_declarator, fixed_size_buffer_declarators;
-fixed_size_buffer_declarator =
-	identifier, '[', constant_expression, ']';
-local_variable_initializer_unsafe =
-	stackalloc_initializer;
-stackalloc_initializer =
-	'stackalloc', unmanaged_type, '[', expression, ']';
-
-(* A.1. Documentation comments*) 
-single_line_doc_comment =
-	'///', [input_characters];
-delimited_doc_comment =
-	'/**', [delimited_comment_text], asterisks, '/';
