@@ -4,100 +4,94 @@
 # ------------------------------------------------------------------
 import ply.lex as lex
 import sys
-# import itertools
+# import itertoldfj
 
 # THE LIST OF RESERVED KEYWORDS IN C# 
 reserved = {
-	'abstract' : 'ABSTRACT',
 	'break' : 'BREAK',
 	'char' : 'CHAR',
 	'continue' : 'CONTINUE',
-	'do' : 'DO',
-	'event' : 'EVENT',
-	'finally' : 'FINALLY',
-	'foreach' : 'FOREACH',
-	'in' : 'IN',
-	'internal' : 'INTERNAL',
-	'namespace' : 'NAMESPACE',
-	'operator' : 'OPERATOR',
-	'params' : 'PARAMS',
-	'readonly' : 'READONLY',
-	'sealed' : 'SEALED',
-	'static' : 'STATIC',
-	'this' : 'THIS',
-	'typeof' : 'TYPEOF',
-	'unsafe' : 'UNSAFE',
+	# 'foreach' : 'FOREACH',
+	# 'in' : 'IN',
+	# 'operator' : 'OPERATOR',
+	# 'params' : 'PARAMS',
+	# 'readonly' : 'READONLY',
+	# 'sealed' : 'SEALED',
+	# 'static' : 'STATIC',
+	# 'this' : 'THIS',
+	# 'typeof' : 'TYPEOF',
+	# 'unsafe' : 'UNSAFE',
 	'void' : 'VOID',
-	'as' : 'AS',
-	'byte' : 'BYTE',
-	'checked' : 'CHECKED',
-	'decimal' : 'DECIMAL',
-	'double' : 'DOUBLE',
-	'explicit' : 'EXPLICIT',
-	'fixed' : 'FIXED',
-	'goto' : 'GOTO',
-	'in' : 'IN',
-	'is' : 'IS',
+	# 'as' : 'AS',
+	# 'byte' : 'BYTE',
+	# 'checked' : 'CHECKED',
+	# 'decimal' : 'DECIMAL',
+	# 'double' : 'DOUBLE',
+	# 'explicit' : 'EXPLICIT',
+	# 'fixed' : 'FIXED',
+	# 'goto' : 'GOTO',
+	# 'is' : 'IS',
 	'new' : 'NEW',
-	'out' : 'OUT',
+	# 'out' : 'OUT',
 	'private' : 'PRIVATE',
-	'ref' : 'REF',
-	'short' : 'SHORT',
+	# 'ref' : 'REF',
+	# 'short' : 'SHORT',
 	'string' : 'STRING',
-	'throw' : 'THROW',
-	'uint' : 'UINT',
-	'ushort' : 'USHORT',
-	'volatile' : 'VOLATILE',
-	'base' : 'BASE',
-	'case' : 'CASE',
+	# 'throw' : 'THROW',
+	# 'uint' : 'UINT',
+	# 'ushort' : 'USHORT',
+	# 'volatile' : 'VOLATILE',
+	# 'base' : 'BASE',
+	# 'case' : 'CASE',
 	'class' : 'CLASS',
-	'default' : 'DEFAULT',
+	# 'default' : 'DEFAULT',
 	'else' : 'ELSE',
-	'extern' : 'EXTERN',
-	'float' : 'FLOAT',
+	# 'extern' : 'EXTERN',
+	# 'float' : 'FLOAT',
 	'if' : 'IF',
 	'int' : 'INT',
-	'lock' : 'LOCK',
+	# 'lock' : 'LOCK',
 	'null' : 'NULL',
-	'out' : 'OUT',
+	# 'out' : 'OUT',
 	'protected' : 'PROTECTED',
 	'return' : 'RETURN',
 	'sizeof' : 'SIZEOF',
-	'struct' : 'STRUCT',
-	'TRUE' : 'TRUE',
-	'ulong' : 'ULONG',
-	'using' : 'USING',
+	# 'struct' : 'STRUCT',
+	# 'TRUE' : 'TRUE',
+	# 'ulong' : 'ULONG',
+	# 'using' : 'USING',
 	'while' : 'WHILE',
-	'bool' : 'BOOL',
-	'catch' : 'CATCH',
-	'const' : 'CONST',
-	'delegate' : 'DELEGATE',
-	'enum' : 'ENUM',
-	'FALSE' : 'FALSE',
-	'for' : 'FOR',
-	'implicit' : 'IMPLICIT',
-	'interface' : 'INTERFACE',
-	'long' : 'LONG',
+	# 'bool' : 'BOOL',
+	# 'catch' : 'CATCH',
+	# 'const' : 'CONST',
+	# 'delegate' : 'DELEGATE',
+	# 'enum' : 'ENUM',
+	# 'FALSE' : 'FALSE',
+	# 'for' : 'FOR',
+	# 'implicit' : 'IMPLICIT',
+	# 'interface' : 'INTERFACE',
+	# 'long' : 'LONG',
 	'object' : 'OBJECT',
-	'override' : 'OVERRIDE',
+	# 'override' : 'OVERRIDE',
 	'public' : 'PUBLIC',
-	'sbyte' : 'SBYTE',
-	'stackalloc' : 'STACKALLOC',
-	'switch' : 'SWITCH',
-	'try' : 'TRY',
-	'unchecked' : 'UNCHECKED',
-	'virtual' : 'VIRTUAL'
+	# 'sbyte' : 'SBYTE',
+	# 'stackalloc' : 'STACKALLOC',
+	# 'switch' : 'SWITCH',
+	# 'try' : 'TRY',
+	# 'unchecked' : 'UNCHECKED',
+	# 'virtual' : 'VIRTUAL'
+	'using'  :  'USING'
 }
 
 # THE LIST OF TOKENS
 tokens = [
 	# Literals: Identifiers, Int-Constants, Char-Constant, String-Constant 
-	'IDENTIFIER', 'INTCONST', 'CHCONST', 'STRCONST',
+	'IDENTIFIER', 'INTCONST', 'CHARCONST', 'STRCONST',
 
-	# Primary Operators: . ?. ++ -- ->
-	'MEMBERACCESS', 'CONDMEMBACCESS', 'INCREMENT', 'DECREMENT', 'ARROW',
+	# Primary Operators: . ?. ++ -- 
+	'MEMBERACCESS', 'INCREMENT', 'DECREMENT',
 	# Unary Operators: ~ ! 
-	'NOT', 'LNOT',
+	'LNOT', 'TILDE',
 	# Multiplicative Operators: * / %
 	'TIMES', 'DIVIDE', 'MOD',
 	# Additive Operators + -
@@ -105,27 +99,24 @@ tokens = [
 	# Shift Operators: << >>
 	'LSHIFT', 'RSHIFT',
 	# Relational Operators: < > <= >=
-	'LT', 'GT', 'LE', 'GE',
+	'LT', 'GT', 'LEQ', 'GEQ',
 	# Equality Operators == !=
 	'EQ', 'NE',
 	# Logical Operators: & ^ | && ||
-	'AND', 'XOR', 'OR', 'CAND', 'COR',
-	# Conditional Operator: ?
-	'CONDOP',
-	# Assignment and Lambda Operators: = += -= *= /= %= &= |= ^= <<= >>= =>
-	'EQUALS', 'PLUSEQUAL', 'MINUSEQUAL', 'TIMESEQUAL', 'DIVEQUAL', 'MODEQUAL',
-	'ANDEQUAL', 'OREQUAL', 'XOREQUAL', 'LSHIFTEQUAL', 'RSHIFTEQUAL',
-	'LAMBDADEC',
+	'AND', 'XOR', 'OR', 'CONAND', 'CONOR',
 
-	# Delimiters: ( ) { } [ ] , . ; :
-	'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE', 'LBRACKET', 'RBRACKET', 'COMMA', 'PERIOD', 'STMT_TERMINATOR', 'COLON',
-	# Others: \n // ...
-	'NEWLINE', 'COMMENT', 'ELLIPSIS', 'PREPROCESSOR'
+	# Assignment and Lambda Operators: = += -= 
+	'EQUALS', 'PLUSEQUAL', 'MINUSEQUAL',
+
+	# Delimiters: ( ) { } [ ] , ; :
+	'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE', 'LBRACKET', 'RBRACKET', 'COMMA', 'STATTERMINATOR', 'COLON',
+	# Others: \n // ... \'" | '\"' | '\\' | '\0' '\t' 
+	'NEWLINE', 'COMMENTDELIM', 'COMMENTSLINE', 'SINGLEQUOTE', 'DOUBLEQUOTE', 'BACKSLASH'
 
 ] + list(reserved.values())
 
 # Completely ignored characters
-t_ignore = ' \t\x0c'
+t_ignore = ' \t\x0c '
 
 # Define a rule so we can track line numbers
 def t_NEWLINE(t):
@@ -134,11 +125,9 @@ def t_NEWLINE(t):
 
 # Operators
 t_MEMBERACCESS		= r'\.'
-t_CONDMEMBACCESS	= r'\?\.'
 t_INCREMENT			= r'\+\+'
 t_DECREMENT			= r'--'
-t_ARROW				= r'->'
-t_NOT 				= r'~'
+t_TILDE				= r'~'
 t_LNOT				= r'!'
 t_TIMES				= r'\*'
 t_DIVIDE 			= r'/'
@@ -149,28 +138,18 @@ t_LSHIFT 			= r'<<'
 t_RSHIFT 			= r'>>'
 t_LT				= r'<'
 t_GT				= r'>'
-t_LE 				= r'<='
-t_GE  				= r'>='
+t_LEQ 				= r'<='
+t_GEQ  				= r'>='
 t_EQ   				= r'=='
 t_NE   				= r'!='
 t_AND  				= r'&'
 t_XOR   			= r'\^'
 t_OR     			= r'\|'
-t_CAND  			= r'&&'
-t_COR    			= r'\|\|'
-t_CONDOP  			= r'\?'
+t_CONAND  			= r'&&'
+t_CONOR    		= r'\|\|'
 t_EQUALS     		= r'='
 t_PLUSEQUAL   		= r'\+='
 t_MINUSEQUAL  		= r'-='
-t_TIMESEQUAL 		= r'\*='
-t_DIVEQUAL  		= r'/='
-t_MODEQUAL 			= r'%='
-t_ANDEQUAL   		= r'&='
-t_OREQUAL    		= r'\|='
-t_XOREQUAL    		= r'\^='
-t_LSHIFTEQUAL  		= r'<<='
-t_RSHIFTEQUAL  		= r'>>='
-t_LAMBDADEC  		= r'=>'
 
 # Delimiters
 t_LPAREN           = r'\('
@@ -180,36 +159,37 @@ t_RBRACKET         = r'\]'
 t_LBRACE           = r'\{'
 t_RBRACE           = r'\}'
 t_COMMA            = r','
-t_PERIOD           = r'\.'
-t_STMT_TERMINATOR  = r';'
+t_STATTERMINATOR  = r';'
 t_COLON            = r':'
-t_ELLIPSIS         = r'\.\.\.'
+t_SINGLEQUOTE     = r'\''
+t_DOUBLEQUOTE	   = r'\"'
+t_BACKSLASH	   = r'\\'
 
 # Identifiers and Keywords
 def t_IDENTIFIER(t):
-	r'[a-zA-Z_@][a-zA-Z_0-9]*'
+	r'[a-zA-Z_][a-zA-Z_0-9]*'
 	t.type = reserved.get(t.value,'IDENTIFIER')    #  Check for reserved words
 	return t
 
 # Integer literal
-t_INTCONST = r'\d+([uU]|[lL]|[uU][lL]|[lL][uU])?'
-
-# String literal
+# ? is once or none
+t_INTCONST = r'\d+'
 t_STRCONST = r'\"([^\\\n]|(\\.))*?\"'
+#If doing float
+# t_INTCONST = r'\d+([uU]|[lL]|[uU][lL]|[lL][uU])?'
 
 # Character constant 'c' or L'c'
-t_CHCONST = r'(L)?\'([^\\\n]|(\\.))*?\''
+t_CHARCONST = r'(L)?\'([^\\\n]|(\\.))*?\''
 
-# Comments (Only delimited comments for now)
-def t_COMMENT(t):
+# Comments (Only delimited comments)
+def t_COMMENTDELIM(t):
 	r' /\*(.|\n)*?\*/'
 	t.lineno += t.value.count('\n')
 
-# Preprocessor directive (ignored)
-def t_PREPROCESSOR(t):
-	r'\#(.)*?\n'
+def t_COMMENTSLINE(t):
+	r'//(.)*?\n'
 	t.lineno += 1
-
+	
 # Error handling rule
 def t_error(t):
 	print("Illegal character '%s'" % t.value[0])
@@ -269,4 +249,4 @@ for types in tokentype:
 	print("{0:<20s} {1:>5s}".format(types, (str)(tokentype[types])))
 	for lexlist in lexeme[types]:
 		print("{0:>40s}".format(lexlist))
-print("----------------------------------------")
+	print("----------------------------------------")
