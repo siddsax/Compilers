@@ -1,13 +1,9 @@
 using System;
-namespace HelloWorld
+class Test
 {
-    class Hello 
+    void Main() 
     {
-        static void Main() 
-        {
-            Console.WriteLine("Hello World!");
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();
-        }
+        Console.WriteLine("Test 1");
+        Console.WriteLine("Test 2");
     }
 }
