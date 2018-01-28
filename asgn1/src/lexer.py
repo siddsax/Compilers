@@ -66,7 +66,6 @@ def t_COMMENTSLINE(t):
 def t_COMMENTDELIM(t):
     r' /\*(.|\n)*?\*/'
     t.lexer.lineno += t.value.count('\n')
-    return t
 
 t_MEMBERACCESS             = r'\.'
 t_INCREMENT         = r'\+\+'
