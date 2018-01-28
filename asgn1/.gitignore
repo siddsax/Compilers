@@ -1,0 +1,3 @@
+bin/*
+src/lex.py
+src/yacc.py
