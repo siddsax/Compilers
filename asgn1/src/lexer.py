@@ -3,25 +3,26 @@ import ply.lex as lex
 import sys
 
 reserved = {
-    'break' : 'BREAK',
     'char' : 'CHAR',
     'continue' : 'CONTINUE',
     'void' : 'VOID',
     'new' : 'NEW',
-    'private' : 'PRIVATE',
     'short' : 'SHORT',
     'string' : 'STRING',
     'class' : 'CLASS',
-    'else' : 'ELSE',
+    'private' : 'PRIVATE',
+    'public' : 'PUBLIC',
     'if' : 'IF',
-    'int' : 'INT',
+    'else' : 'ELSE',
     'null' : 'NULL',
     'return' : 'RETURN',
-    'sizeof' : 'SIZEOF',
-    'while' : 'WHILE',
     'object' : 'OBJECT',
-    'public' : 'PUBLIC',
-    'using'  :  'USING'
+    'sizeof' : 'SIZEOF',
+    'int' : 'INT',
+    'while' : 'WHILE',
+    'using'  :  'USING',
+    'break' : 'BREAK',
+    'goto'  : 'GOTO'
 }
 
 tokens = [
@@ -37,19 +38,19 @@ tokens = [
     'PLUS', 'MINUS',
     # Shift Operators: << >>
     'LSHIFT', 'RSHIFT',
+    # Assignment and Lambda Operators: = += -= 
+    'EQUALS', 'PLUSEQUAL', 'MINUSEQUAL',
+    # Others: \n // ... \'" | '\"' | '\\' | '\0' '\t' 
+    'NEWLINE', 'COMMENTDELIM','COMMENTSLINE', 'SINGLEQUOTE', 'DOUBLEQUOTE', 'BACKSLASH',
     # Relational Operators: < > <= >=
     'LT', 'GT', 'LEQ', 'GEQ',
     # Equality Operators == !=
     'EQ', 'NE',
-    # Logical Operators: & ^ | && ||
-    'AND', 'XOR', 'OR', 'CONAND', 'CONOR',
-    # Assignment and Lambda Operators: = += -= 
-    'EQUALS', 'PLUSEQUAL', 'MINUSEQUAL',
     # Delimiters: ( ) { } [ ] , ; :
     'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE', 'LBRACKET', 'RBRACKET', 'COMMA', 'TERMINATOR', 'COLON',
-    # Others: \n // ... \'" | '\"' | '\\' | '\0' '\t' 
-    'NEWLINE', 'COMMENTDELIM','COMMENTSLINE', 'SINGLEQUOTE', 'DOUBLEQUOTE', 'BACKSLASH'
-
+    # Logical Operators: & ^ | && ||
+    'AND', 'XOR', 'OR', 'CONAND', 'CONOR'
+    
 ] + list(reserved.values())
 
 t_ignore = ' \t\x0c '
@@ -65,6 +66,7 @@ def t_COMMENTSLINE(t):
 def t_COMMENTDELIM(t):
     r' /\*(.|\n)*?\*/'
     t.lexer.lineno += t.value.count('\n')
+    return t
 
 t_MEMBERACCESS             = r'\.'
 t_INCREMENT         = r'\+\+'
@@ -78,10 +80,10 @@ t_PLUS             = r'\+'
 t_MINUS            = r'-'
 t_LSHIFT        = r'<<'
 t_RSHIFT        = r'>>'
-t_LT            = r'<'
-t_GT            = r'>'
 t_LEQ            = r'<='
 t_GEQ            = r'>='
+t_LT            = r'<'
+t_GT            = r'>'
 t_EQ            = r'=='
 t_NE            = r'!='
 t_AND            = r'&'
@@ -124,13 +126,10 @@ lexer = lex.lex()
 
 strinputfile = sys.argv[1]
 inputfile = open(strinputfile, 'r')
-
 data = inputfile.read()
-
 lexer.input(data)
 
 tokentype = {}
-
 lexeme = {}            
 
 non_recountable = ['IDENTIFIER']
