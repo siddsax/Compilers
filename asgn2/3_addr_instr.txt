@@ -1,0 +1,35 @@
+<line number,operator, operator_specific >
+# Assignment
+# =
+operator_specific := destination,target
+# + , -, /, %, .....
+operator_specific := destination,arg1,arg2
+
+# conditional
+# if
+operator_specific := condition_op,arg1,arg2,line_no
+
+# ------------------------------------
+
+# function def
+line_number, label, function_name
+# function return
+line_number, return, variable_name
+line_number, return
+
+# Goto
+line_number, goto, line_number_to_jump
+
+# Print
+line_number, print, arg
+
+# Scan 
+line_number, scan, targ_var
+
+# Exit
+line_number, Exit
+
+# function all - assign
+line_number, fc, label, =, target
+line_number, fc, label
+
