@@ -1,0 +1,9 @@
+1, =, a, 2
+2, =, b, 7
+3, +, a, a, b
+4, conditional_goto, leq, a, 50, 2
+5, fn_call, foo
+6, return
+7, fn_def, foo
+8, print, a
+9, return
