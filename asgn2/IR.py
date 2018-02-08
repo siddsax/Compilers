@@ -153,10 +153,8 @@ class IR:
 
 		if instr[1] == 'return':
 			if instr[-1] in self.variable_list:
-				varz["used"].append(instr[-1])			
-				
+				varz["used"].append(instr[-1])
 		return varz
-		
 example = IR('example.ir')
 # print(example.next_use_table)
 table = example.next_use_table
@@ -173,7 +171,6 @@ for keys, vals in varz.iteritems():
 	print('================================')
 
 # print(example.variable_list)
-			
 
 
 			# if(bb_no == 0):
