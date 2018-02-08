@@ -51,7 +51,7 @@ class IR:
 		self.instrtype = ['=', '+', '-', '/', '*', '%', 'conditional_goto', 'goto', 'fn_call', 'fn_def', 'print', 'scan', 'return', 'exit',]
 		self.Blocks = self.Build_Blocks() #  dict { leader_no. : last_line_no }
 		self.variable_list = self.Build_varlist()
-		self.next_use_table = self.Build_next_use_table() # list of dicts(blocks) where each key(variables) is a list pf list (use lines of that var in that live range)
+		self.next_use_table,self.lineVars = self.Build_next_use_table() # list of dicts(blocks) where each key(variables) is a list pf list (use lines of that var in that live range)
 
 	def Build_Blocks(self):
 		Blocks = {}
@@ -86,87 +86,88 @@ class IR:
 
 	def Build_next_use_table(self):
 		table = {} # dict of dicts of dicts
+		lineVars = {}
 		for start, end in self.Blocks.iteritems():	
 			line = {}
+			line_2 = {}
 			for i in range(end, start-1, -1):
-
-				instr = self.instrlist[i-1]
-				instr = instr.split(', ')
-
-				if i is not end:
-					line[i] = dict(line[i+1])
-				else:
+				if start == end:
 					line[i] = {}
 
-				if instr[1] == '=':
-					v = instr[-2]
-					line[i][v] = 0
-					if instr[-1] in self.variable_list:
-						line[i][instr[-1]] = int(instr[0])
+				else:
+					if i is not end:
+						instr = self.instrlist[i]
+						instr = instr.split(', ')
+						line[i] = dict(line[i+1])
+						for v in varz["killed"]:
+							line[i][v] = 0
+						for v in varz["used"]:
+							line[i][v] = int(instr[0])
+					else:
+						line[i] = {}
+				instr = self.instrlist[i-1]
+				instr = instr.split(', ')
+				varz = self.parser(instr)
 
-				if instr[1] == '+' or instr[1] == '-' or instr[1] == '*' or instr[1] == '/' or instr[1] == '%':
-					line[i][instr[-3]] = 0
-					if instr[-1] in self.variable_list:
-						line[i][instr[-1]] = int(instr[0])
-					if instr[-2] in self.variable_list:
-						line[i][instr[-2]] = int(instr[0])
-
-				# print(instr[1])	
-				if instr[1] == 'conditional_goto':
-					# print(instr[1])
-					if instr[-3] in self.variable_list:
-						line[i][instr[-3]] = int(instr[0])
-					if instr[-2] in self.variable_list:
-						line[i][instr[-2]] = int(instr[0])
-					# print(instr[-2], instr[-3])
-
-				if instr[1] == 'print':
-					if instr[-1] in self.variable_list:
-						line[i][instr[-1]] = int(instr[0])
-
-				if instr[1] == 'scan':
-					line[i][instr[-1]] = 0
-
-				if instr[1] == 'return':
-					if instr[-1] in self.variable_list:
-						line[i][instr[-1]] = int(instr[0])
+				line_2[i] = []
+				for v in varz["killed"]:
+					line_2[i].append(v)
+				for v in varz["used"]:
+					line_2[i].append(v)
 
 			table[start] = line
-		return table				
-					# if(instr[1] == '='):
-					# 	v = instr[-2]
-					# 	if(v in block.keys()):
-					# 		block[v].append([int(instr[0])])
+			lineVars[start] = line_2
+		return table,lineVars
 
-					# 	else:
-					# 		block[v] = []
-					# 		block[v].append([int(instr[0])])
+	def parser(self,instr):
 
-					# 	if(instr[-1] in self.variable_list):
-					# 		v = instr[-1]
-					# 		if(v in block.keys()):
-					# 			block[v][-1].append(int(instr[0]))
+		varz = {
+			"killed" : [],
+			"used"   : []
+		}
 
-					# 		else:
-					# 			print("Error variable used before initialization")
-					
-					# elif((instr[1] == '+') or (instr[1] == '-') or instr[1] == '*' or instr[1] == '/' or instr[1] == '%')
-					# 	if((instr[-1] in self.variable_list) and (instr[-1] in self.variable_list)):
-					# 		v = instr[-1]
-					# 		if(v in block.keys()):
-					# 			block[v][-1].append(int(instr[0]))
+		if instr[1] == '=':
+			varz["killed"].append(instr[-2])
+			if instr[-1] in self.variable_list:
+				varz["used"].append(instr[-1])
 
-					# 		else:
-					# 			print("Error variable used before initialization")
+		if instr[1] == '+' or instr[1] == '-' or instr[1] == '*' or instr[1] == '/' or instr[1] == '%':
+			varz["killed"].append(instr[-3])
+			if instr[-1] in self.variable_list:
+				varz["used"].append(instr[-1])
+			if instr[-2] in self.variable_list:
+				varz["used"].append(instr[-2])
 
-							
+		if instr[1] == 'conditional_goto':
+			if instr[-3] in self.variable_list:
+				varz["used"].append(instr[-3])
+			if instr[-2] in self.variable_list:
+				varz["used"].append(instr[-2])
 
+		if instr[1] == 'print':
+			if instr[-1] in self.variable_list:
+				varz["used"].append(instr[-1])
 
+		if instr[1] == 'scan':
+			varz["killed"].append(instr[-1])
 
+		if instr[1] == 'return':
+			if instr[-1] in self.variable_list:
+				varz["used"].append(instr[-1])			
+				
+		return varz
 		
 example = IR('example.ir')
 # print(example.next_use_table)
-for keys, vals in example.next_use_table.iteritems():
+table = example.next_use_table
+varz = example.lineVars
+for keys, vals in table.iteritems():
+	print(keys)
+	print(vals)
+	print('================================')
+
+print("---------------")
+for keys, vals in varz.iteritems():
 	print(keys)
 	print(vals)
 	print('================================')
@@ -274,4 +275,3 @@ for keys, vals in example.next_use_table.iteritems():
 # # print("--------------------------------------------------------------------")
 
 # # Save the x86 code in a file here as output.s
-
