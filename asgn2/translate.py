@@ -89,19 +89,16 @@ def translate(instruction, leader, ir,register):
 			generated_code += "mov $" + str(int(instruction[3])*int(instruction[4])) + ", " + "%edx" + "\n"
 		
 		elif isNumeric(instruction[3]) and not isNumeric(instruction[4]):
-			ir.address_descriptor = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list)
 			generated_code +="mov $" + str(int(instruction[3])) + ", " + "%eax" + "\n"
 			generated_code +="mov " + ir.address_descriptor[instruction[4]] + ", " + "%edx" + "\n"
 			generated_code += "imul %edx\n"
 
 		elif not isNumeric(instruction[3]) and isNumeric(instruction[4]):
-			ir.address_descriptor = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list)
 			generated_code +="mov $" + str(int(instruction[4])) + ", " + "%eax" + "\n"
 			generated_code +="mov " + ir.address_descriptor[instruction[3]] + ", " + "%edx" + "\n"
 			generated_code += "imul %edx\n"
 
 		else:
-			ir.address_descriptor = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list)
 			generated_code +="mov " + ir.address_descriptor[instruction[3]] + ", " + "%eax" + "\n"
 			print(instruction[4])
 			print(ir.address_descriptor[instruction[4]])
@@ -128,21 +125,18 @@ def translate(instruction, leader, ir,register):
 				generated_code += "mov $" + str(int(instruction[3]) % int(instruction[4])) + ", " + "%edx" + "\n"
 
 		elif isNumeric(instruction[3]) and not isNumeric(instruction[4]):
-			ir.address_descriptor = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list)
 			generated_code += "mov $0, %edx" + "\n"
 			generated_code +="mov $" + str(int(instruction[3])) + ", " + "%eax" + "\n"
 			generated_code +="mov " + ir.address_descriptor[instruction[4]] + ", " + "%ecx" + "\n"
 			generated_code += "idiv %ecx\n"
 
 		elif not isNumeric(instruction[3]) and isNumeric(instruction[4]):
-			ir.address_descriptor = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list)
 			generated_code += "mov $0, %edx" + "\n"
 			generated_code +="mov " + ir.address_descriptor[instruction[3]] + ", " + "%eax" + "\n"
 			generated_code +="mov $" + str(int(instruction[4])) + ", " + "%ecx" + "\n"
 			generated_code += "idiv %ecx\n"
 
 		else:
-			ir.address_descriptor = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list)
 			generated_code += "mov $0, %edx" + "\n"
 			generated_code +="mov " + ir.address_descriptor[instruction[3]] + ", " + "%eax" + "\n"
 			generated_code +="mov " + ir.address_descriptor[instruction[4]] + ", " + "%ecx" + "\n"
