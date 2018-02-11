@@ -1,0 +1,16 @@
+1, =, a, 2
+2, =, b, 7
+4, *, a, b, a
+5, conditional_goto, leq, b, a, zoo
+6, label, koo
+7, -, b, b, 1
+8, =, c, 6
+9, fn_call_2, c, foo
+10, +, c, a, b
+11, return
+12, label, foo
+13, +, c, c, 4
+14, return c
+15, label, zoo
+16, =, a, 96
+17, goto, koo

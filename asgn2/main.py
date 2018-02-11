@@ -11,20 +11,21 @@ registers = Reg()
 #--------------------------------------------------------------------------------------------------
 data_section = ".section .data\n"
 for var in example.variable_list:
-	data_section += var + ":\n" + ".int 0\n"
+	data_section += var + ":\n" + '\t'+".int 0\n"
+data_section += 'format:\n'+'\t' + '.ascii \"%d\\n\\0\"\n'
 # data_section +=  "str:\n.ascii \"%d\\n\\0\"\n"
 
 bss_section = ".section .bss\n"
 text_section = ".section .text\n" + ".globl main\n" + "main:\n"
 # print(example.instrlist)
 for key,val in example.Blocks.items():
-	text_section = text_section + "L" + str(key) + ":\n"
+	# text_section = text_section + "L" + str(key) + ":\n"
 	# print(key,val)
 	for line in range(key,val+1):
+		# print(key, val)
 		# print()
 		generated_code,example,registers = translate(example.instrlist[line-1], key, example, registers)
 		text_section += generated_code
-print("hello")
 # for line in IR.ircode:
 	# generated_code,example,register = translate(line,example,registers)
 	# text_section += generated_code

@@ -1,5 +1,6 @@
 import sys 
 from parser import parser
+import collections
 
 class IR:
 
@@ -27,7 +28,8 @@ class IR:
 			instr = instr.split(', ')
 			if((instr[1]=='conditional_goto') or (instr[1] == 'goto')):
 				leaders.append(int(instr[0])+1)
-				leaders.append(int(instr[-1]))
+			if(instr[1] == 'label'):
+				leaders.append(int(instr[0]))
 			if((instr[1]=='fn_call') or (instr[1]=='fn_def')):
 				leaders.append(int(instr[0]))
 
@@ -37,6 +39,8 @@ class IR:
 			Blocks[leaders[i]] = leaders[i+1]-1
 
 		Blocks[leaders[-1]] = int(self.instrlist[-1].split(', ')[0])
+
+		Blocks = collections.OrderedDict(sorted(Blocks.items()))
 		return Blocks
 
 
@@ -101,5 +105,3 @@ class IR:
 # 	print(keys)
 # 	print(vals)
 # 	print('================================')
-
-
