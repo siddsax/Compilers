@@ -103,6 +103,7 @@ def translate(instruction, leader, ir,register):
 
 	elif instruction[1] == '*':
 		#<line number,operator,destination, arg1, arg2>
+		print("shit*")
 		regs = ['%eax','%edx']
 		for reg in regs:
 			var = register.regdict[reg]
