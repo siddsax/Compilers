@@ -225,7 +225,6 @@ def translate(instruction, leader, ir,register):
 		else:
 			if instruction[3] in register.regdict.values():
 				generated_code += '\t' + 'cmp $' + instruction[-2] + ' , ' + isMem(ir.address_descriptor[instruction[3]],register.regdict.keys()) + '\n'
-				# print(ir.address_descriptor)
 			else:
 				ir.address_descriptor , asm = register.getRegister(instruction[-2], ir.address_descriptor, ir.next_use_table[leader], int(instruction[0]))
 				generated_code += '\t' + asm

@@ -77,6 +77,27 @@ class Reg:
                 address_descriptor[var] = k
                 return address_descriptor
 
+    # Assigns register for a given variable
+    def getRegister(self, var, address_descriptor, blockNextUseTable, lineno):
+        latest = 0
+        best_k = ''
+        best_v = ''
+        for reg, v in self.regdict.items():
+            if v:
+                nextUseList = blockNextUseTable[lineno]
+                if v in nextUseList.keys():
+                    if nextUseList[v] > latest:
+                        best_v = v
+                        best_k = k
+                        latest = nextUseList[v]
+                else:
+                    self.regdict[k] = var1
+                    address_descriptor[var1] = k
+            else:
+                self.regdict[k] = var
+                address_descriptor[var] = k
+                return address_descriptor
+
         asm = ''
         asm += 'movl ' + best_k + ', ' + best_v + '\n'
         asm += 'movl (' + var + '), ' + best_k + '\n'
