@@ -2,18 +2,19 @@
 # Assignment
 # =
 operator_specific := destination,target
-# + , -, *, /, %, << , >> ,
+# + , -, *, /, %, << , >> , < , > <=, >=, ==, ~=
 operator_specific := destination,arg1,arg2
 
 # conditional
 # if
-operator_specific := condition_op,arg1,arg2,line_no
+operator_specific := condition_op,arg1,arg2,label
 
 # ------------------------------------
 #Label
 line_number, label, label
 # function def
-line_number, label, function_name
+line_number, function_name
+line_number,  
 # function return
 line_number, return, variable_name
 line_number, return
@@ -30,7 +31,16 @@ line_number, scan, targ_var
 # Exit
 line_number, Exit
 
-# function all - assign
-line_number, fc, label, =, target
+# function call - assign
+line_number, fc, label, target
 line_number, fc, label
 
+#Todo
+3. Boolean Expression
+4. At the end of the block 
+	> Saving the register values to the corresponding memory location
+	> Flushing the register
+6. Testing and Debugging.
+7. Basic Library Support	
+	> Scannning
+	> 

@@ -49,12 +49,33 @@ class Reg:
         asm += 'movl ' + best_k + ', ' + best_v + '\n'
         self.regdict[best_k] = var1
         address_descriptor[var1] = best_k
-        address_descriptor[best_v] = "$" + var1
+        address_descriptor[best_v] = var1
         return asm
 
     def condition_4(self, var1, address_descriptor):
         # TODO: Save var1 to memory
-        address_descriptor[var1] = "$" + var1
+        address_descriptor[var1] = var1
+
+    # Assigns register for a given variable
+    def getRegister(self, var, address_descriptor, blockNextUseTable, lineno):
+        latest = 0
+        best_k = ''
+        best_v = ''
+        for reg, v in self.regdict.items():
+            if v:
+                nextUseList = blockNextUseTable[lineno]
+                if v in nextUseList.keys():
+                    if nextUseList[v] > latest:
+                        best_v = v
+                        best_k = k
+                        latest = nextUseList[v]
+                else:
+                    self.regdict[k] = var1
+                    address_descriptor[var1] = k
+            else:
+                self.regdict[k] = var
+                address_descriptor[var] = k
+                return address_descriptor
 
     # Assigns register for a given variable
     def getRegister(self, var, address_descriptor, blockNextUseTable, lineno):

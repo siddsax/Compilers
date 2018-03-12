@@ -1,0 +1,10 @@
+1, =, a, 2
+2, label, kshit
+3, =, b, 7
+4, +, a, a, b
+5, conditional_goto, leq, a, 50, kshit
+6, fn_call_1, foo
+7, return
+8, fn_def, foo
+9, print, a
+10, return

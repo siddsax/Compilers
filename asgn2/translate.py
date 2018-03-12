@@ -10,7 +10,12 @@ def isNumeric(strg):
 
 # check for if the variable is in the memory
 
-
+def isMem(inp, reglist):
+	# fuckoff
+	if inp not in reglist:
+		return '(' + inp + ')'
+	else:
+		return inp
 
 def translate(instruction, leader, ir,register):
 	generated_code = ""
@@ -75,7 +80,7 @@ def translate(instruction, leader, ir,register):
 				generated_code += ops[instruction[1]] + " $" + str(int(instruction[3])) + ", " + new_place + "\n"
 			else:
 				generated_code +="movl $" + str(int(instruction[3])) + ", " + new_place + "\n"
-				generated_code += ops[instruction[1]] + " " + ir.address_descriptor[instruction[4]] + ", " + new_place + "\n"
+				generated_code += ops[instruction[1]] + " " + isMem(ir.address_descriptor[instruction[4]],register.regdict.keys()) + ", " + new_place + "\n"
 
 		elif not isNumeric(instruction[3]) and isNumeric(instruction[4]):
 			ir.address_descriptor, asm  = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list)
@@ -85,32 +90,30 @@ def translate(instruction, leader, ir,register):
 				generated_code += ops[instruction[1]] + " $" + str(int(instruction[4])) + ", " + new_place + "\n"
 			else:
 				generated_code += "movl $" + str(int(instruction[4])) + ", " + new_place + "\n"
-				generated_code += ops[instruction[1]] + " " + ir.address_descriptor[instruction[3]] + ", " + new_place + "\n"
+				generated_code += ops[instruction[1]] + " " + isMem(ir.address_descriptor[instruction[3]],register.regdict.keys()) + ", " + new_place + "\n"
 
 		else:
 			ir.address_descriptor , asm = register.getReg(ir.next_use_table[leader], instruction, ir.address_descriptor, ir.variable_list)
 			generated_code += '\t' + asm
 			new_place = ir.address_descriptor[instruction[2]]
 			if(new_place==ir.address_descriptor[instruction[3]]):
-				generated_code += ops[instruction[1]] + " " + ir.address_descriptor[instruction[4]] + ", " + new_place + "\n"
+				generated_code += ops[instruction[1]] + " " + isMem(ir.address_descriptor[instruction[4]],register.regdict.keys()) + ", " + new_place + "\n"
 			elif(new_place==ir.address_descriptor[instruction[4]]):
-				generated_code += ops[instruction[1]] + " " + ir.address_descriptor[instruction[3]] + ", " + new_place + "\n"
+				generated_code += ops[instruction[1]] + " " + isMem(ir.address_descriptor[instruction[3]],register.regdict.keys()) + ", " + new_place + "\n"
 			else:
 				generated_code += "movl " + ir.address_descriptor[instruction[4]] + ", " + new_place + "\n"
-				generated_code += ops[instruction[1]] + " " + ir.address_descriptor[instruction[3]] + ", " + new_place + "\n"
+				generated_code += ops[instruction[1]] + " " + isMem(ir.address_descriptor[instruction[3]],register.regdict.keys()) + ", " + new_place + "\n"
 
 # # --------------------------------------------------------------------------------------- 
-
 	elif instruction[1] == '*':
 		#<line number,operator,destination, arg1, arg2>
-		print("shit*")
 		regs = ['%eax','%edx']
 		for reg in regs:
 			var = register.regdict[reg]
 			#If the register is in use
 			if(len(var)):
-				generated_code += '\t' + "movl " + reg + ", $" + var + "\n"
-				ir.address_descriptor[var] = "$" + var
+				generated_code += '\t' + "movl " + reg + ", " + var + "\n"
+				ir.address_descriptor[var] = var
 
 		if isNumeric(instruction[3]) and isNumeric(instruction[4]):
 			generated_code += '\t' + "movl $" + str(int(instruction[3])*int(instruction[4])) + ", " + "%edx" + "\n"
@@ -122,14 +125,14 @@ def translate(instruction, leader, ir,register):
 
 		elif not isNumeric(instruction[3]) and isNumeric(instruction[4]):
 			generated_code += '\t' +"movl $" + str(int(instruction[4])) + ", " + "%eax" + "\n"
-			generated_code += '\t' +"movl " + ir.address_descriptor[instruction[3]] + ", " + "%edx" + "\n"
+			generated_code += '\t' +"movl " + isMem(ir.address_descriptor[instruction[3]],register.regdict.keys()) + ", " + "%edx" + "\n"
 			generated_code += '\t' + "imul %edx\n"
 
 		else:
-			generated_code += '\t' +"movl " + ir.address_descriptor[instruction[3]] + ", " + "%eax" + "\n"
+			generated_code += '\t' +"movl " + isMem(ir.address_descriptor[instruction[3]],register.regdict.keys()) + ", " + "%eax" + "\n"
 			# print(instruction[4])
 			# print(ir.address_descriptor[instruction[4]])
-			generated_code += '\t' +"movl " + ir.address_descriptor[instruction[4]] + ", " + "%edx" + "\n"
+			generated_code += '\t' +"movl " + isMem(ir.address_descriptor[instruction[4]],register.regdict.keys()) + ", " + "%edx" + "\n"
 			generated_code += '\t' + "imul %edx\n"
 
 		ir.address_descriptor[instruction[2]] = "%edx"
@@ -154,19 +157,19 @@ def translate(instruction, leader, ir,register):
 		elif isNumeric(instruction[3]) and not isNumeric(instruction[4]):
 			generated_code += '\t' + "movl $0, %edx" + "\n"
 			generated_code += '\t' +"movl $" + str(int(instruction[3])) + ", " + "%eax" + "\n"
-			generated_code += '\t' +"movl " + ir.address_descriptor[instruction[4]] + ", " + "%ecx" + "\n"
+			generated_code += '\t' +"movl " + isMem(ir.address_descriptor[instruction[4]],register.regdict.keys()) + ", " + "%ecx" + "\n"
 			generated_code += '\t' + "idiv %ecx\n"
 
 		elif not isNumeric(instruction[3]) and isNumeric(instruction[4]):
 			generated_code += '\t' + "movl $0, %edx" + "\n"
-			generated_code += '\t' +"movl " + ir.address_descriptor[instruction[3]] + ", " + "%eax" + "\n"
+			generated_code += '\t' +"movl " + isMem(ir.address_descriptor[instruction[3]],register.regdict.keys()) + ", " + "%eax" + "\n"
 			generated_code += '\t' +"movl $" + str(int(instruction[4])) + ", " + "%ecx" + "\n"
 			generated_code += '\t' + "idiv %ecx\n"
 
 		else:
 			generated_code += '\t' + "movl $0, %edx" + "\n"
-			generated_code += '\t' +"movl " + ir.address_descriptor[instruction[3]] + ", " + "%eax" + "\n"
-			generated_code += '\t' +"movl " + ir.address_descriptor[instruction[4]] + ", " + "%ecx" + "\n"
+			generated_code += '\t' +"movl " + isMem(ir.address_descriptor[instruction[3]],register.regdict.keys()) + ", " + "%eax" + "\n"
+			generated_code += '\t' +"movl " + isMem(ir.address_descriptor[instruction[4]],register.regdict.keys()) + ", " + "%ecx" + "\n"
 			generated_code += '\t' + "idiv %ecx\n"
 
 		if instruction[1] == '/':
@@ -191,7 +194,7 @@ def translate(instruction, leader, ir,register):
 			new_place = ir.address_descriptor[instruction[2]]
 			# generated_code += "movl " + ir.address_descriptor[instruction[4]] + ", " + new_place + "\n"
 			if(ir.address_descriptor[instruction[3]] is not new_place):
-				generated_code += "movl " + ir.address_descriptor[instruction[3]] + ", " + new_place + "\n"
+				generated_code += "movl " + isMem(ir.address_descriptor[instruction[3]],register.regdict.keys()) + ", " + new_place + "\n"
 			# else:
 				# generated_code += "movl " + ir.address_descriptor[instruction[3]] + ", " + new_place + "\n"
 			if(instruction[1] == '~'):
@@ -209,24 +212,23 @@ def translate(instruction, leader, ir,register):
 
 	elif instruction[1] == 'goto':
 		#Syntax <line_number, goto, label>
-		generated_code += '\t' + "jmp" + instruction[2] + "\n"
+		generated_code += '\t' + "jmp " + instruction[2] + "\n"
 
 	elif instruction[1] == 'conditional_goto':
 		if not isNumeric(instruction[-2]):
 			if instruction[-2] in register.regdict.values():
-				generated_code += '\t' + 'cmp ' + ir.address_descriptor[instruction[-2]] + ' , ' + ir.address_descriptor[instruction[3]] +'\n'
+				generated_code += '\t' + 'cmp ' + isMem(ir.address_descriptor[instruction[-2]],register.regdict.keys()) + ' , ' + isMem(ir.address_descriptor[instruction[3]],register.regdict.keys()) +'\n'
 			else:
 				ir.address_descriptor , asm = register.getRegister(instruction[-2], ir.address_descriptor, ir.next_use_table[leader], int(instruction[0]))
 				generated_code += '\t' + asm
-				generated_code += '\t' + 'cmp ' + ir.address_descriptor[instruction[-2]] + ' , ' + ir.address_descriptor[instruction[3]] + '\n'
+				generated_code += '\t' + 'cmp ' + isMem(ir.address_descriptor[instruction[-2]],register.regdict.keys()) + ' , ' + isMem(ir.address_descriptor[instruction[3]],register.regdict.keys()) + '\n'
 		else:
 			if instruction[3] in register.regdict.values():
-				generated_code += '\t' + 'cmp $' + instruction[-2] + ' , ' + ir.address_descriptor[instruction[3]] + '\n'
-				# print(ir.address_descriptor)
+				generated_code += '\t' + 'cmp $' + instruction[-2] + ' , ' + isMem(ir.address_descriptor[instruction[3]],register.regdict.keys()) + '\n'
 			else:
 				ir.address_descriptor , asm = register.getRegister(instruction[-2], ir.address_descriptor, ir.next_use_table[leader], int(instruction[0]))
 				generated_code += '\t' + asm
-				generated_code += '\t' + 'cmp $' + instruction[-2] + ' , ' + ir.address_descriptor[instruction[3]] + '\n'
+				generated_code += '\t' + 'cmp $' + instruction[-2] + ' , ' + isMem(ir.address_descriptor[instruction[3]],register.regdict.keys()) + '\n'
 
 		if instruction[2] == 'leq':
 			generated_code += '\t' + 'jle '
@@ -275,7 +277,7 @@ def translate(instruction, leader, ir,register):
 			generated_code += '\t'+ "pushl $format\n"
 			generated_code += '\t'+ "call printf\n"
 
-	elif instruction[1] == '\t'+ 'exit':
+	elif instruction[1] == 'exit':
 		generated_code += '\t'+ 'call exit\n'
 
 	# elif operator == "print":
