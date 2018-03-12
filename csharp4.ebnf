@@ -1,5 +1,8 @@
 start =    compilation_unit;
 
+compilation_unit = class_declarations;
+class_declarations = class_declarations, class_declaration | class_declaration;
+
 (*B.1 Lexical grammar*)
 input =    [input_section];
 input_section =    input_section_part | input_section, input_section_part;
