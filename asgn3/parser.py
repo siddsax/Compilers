@@ -40,10 +40,10 @@ def p_class_declarations(p):
 
 	"""
 def p_class_declaration(p):
-	"""class_declaration : class_modifiers CLASS IDENTIFIER class_body TERMINATOR
-							| CLASS IDENTIFIER class_body TERMINATOR
-							| CLASS IDENTIFIER class_body
-							| class_modifiers CLASS IDENTIFIER class_body
+	"""class_declaration : class_modifiers CLASS identifier class_body TERMINATOR
+							| CLASS identifier class_body TERMINATOR
+							| CLASS identifier class_body
+							| class_modifiers CLASS identifier class_body
 	"""
 def p_class_modifiers(p):
 	"""class_modifiers : class_modifier
@@ -60,13 +60,9 @@ def p_class_body(p):
 	"""
 
 def p_identifier(p):
-	"""identifier : available_identifier
+	"""identifier : IDENTIFIER
 	"""
-
-def p_available_identifier(p):
-	"""available_identifier : IDENTIFIER
-	"""
-
+	
 def p_class_member_declarations(p):
 	"""class_member_declarations : class_member_declaration
 									| class_member_declarations class_member_declaration
@@ -112,13 +108,13 @@ def p_type_name(p):
 	"""
 
 def p_proper_identifier(p):
-	"""proper_identifier : IDENTIFIER
-							| prefix IDENTIFIER
+	"""proper_identifier : identifier
+							| prefix identifier
 	"""
 
 def p_prefix(p):
-	"""prefix : IDENTIFIER MEMBERACCESS 
-		| prefix IDENTIFIER MEMBERACCESS 
+	"""prefix : identifier MEMBERACCESS 
+		| prefix identifier MEMBERACCESS 
 	"""
 
 def p_array_type(p):
@@ -130,7 +126,7 @@ def p_non_array_type(p):
 	"""
 
 def p_type_parameter(p):
-	"""type_parameter : IDENTIFIER
+	"""type_parameter : identifier
 						| INT
 						| CHAR
 	"""
@@ -150,8 +146,8 @@ def p_variable_declarators(p):
 							| variable_declarators COMMA variable_declarator
 	"""
 def p_variable_declarator(p):
-	"""variable_declarator : IDENTIFIER
-							| IDENTIFIER EQUALS variable_initializer
+	"""variable_declarator : identifier
+							| identifier EQUALS variable_initializer
 	"""
 
 def p_variable_initializer(p):
@@ -241,13 +237,11 @@ def p_fixed_parameter(p):
 def p_default_argument(p):
 	"""default_argument : EQUALS expression
 	"""
-def p_destructor_declaration(p):
-	"""destructor_declaration : empty
-	"""
+
 def p_constructor_declaration(p):
 	"""constructor_declaration : constructor_declarator constructor_body
 	"""
-
+	
 def p_constructor_declarator(p):
 	"""constructor_declarator : identifier LPAREN fixed_parameters RPAREN
 								| identifier LPAREN  RPAREN

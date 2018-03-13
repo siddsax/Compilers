@@ -11,9 +11,11 @@ input_elements = input_element | input_elements, input_element;
 input_element =     whitespace | comment| ?any token?;
 
 (*B.1.1 Line terminators*)
-new_line =     ?Carriage return character (U+000D)? | ?Line feed character (U+000A)? | ?Carriage return character (U+000D) followed by line feed character (U+000A)? | ?Next line character (U+0085)? | ?Line separator character (U+2028)? | ?Paragraph separator character (U+2029)?;
+(* Hanled by lexer *)
+(* new_line =     ?Carriage return character (U+000D)? | ?Line feed character (U+000A)? | ?Carriage return character (U+000D) followed by line feed character (U+000A)? | ?Next line character (U+0085)? | ?Line separator character (U+2028)? | ?Paragraph separator character (U+2029)?; *)
 
 (*B.1.2 Comments*) 
+(* TO DO LATER *)
 comment =
 	single_line_comment
 	 | delimited_comment;
@@ -45,12 +47,15 @@ not_slash_or_asterisk =
 	?Any Unicode character except / or *?;
 
 (*B.1.3 White space*)
-whitespace =     ?Any character with Unicode class Zs? | ?Horizontal tab character (U+0009)?| ?Vertical tab character (U+000B)? | ?Form feed character (U+000C)?;
+(* Handled by Lexer *)
+(* whitespace =     ?Any character with Unicode class Zs? | ?Horizontal tab character (U+0009)?| ?Vertical tab character (U+000B)? | ?Form feed character (U+000C)?; *)
 
 (*B.1.4 Tokens*)
+(* Handled by Lexer *)
 token =     identifier| keyword| integer_literal| character_literal| operator_or_punctuator;
 
 (*B.1.6 Identifiers*)
+(* Handled by Lexer *)
 identifier =     available_identifier;
 available_identifier =     ?An identifier_or_keyword that is not a keyword?;
 identifier_or_keyword =     identifier_start_character, [identifier_part_characters];
@@ -64,7 +69,8 @@ connecting_character =     ?A Unicode character of the class Pc?| ?A unicode_esc
 formatting_character =     ?A Unicode character of the class Cf?| ?A unicode_escape_sequence representing a character of the class Cf?;
 
 (*B.1.7 Keywords*)
-keyword = break | char | class | continue | else | if | int | new | null | object | while | void | private | public | return | sizeof | string;
+(* Handled by Lexer *)
+(* keyword = break | char | class | continue | else | if | int | new | null | object | while | void | private | public | return | sizeof | string; *)
 
 (*B.1.8 Literals*)
 literal =     integer_literal| character_literal| null_literal;
@@ -166,7 +172,7 @@ return_statement =     'return', [expression], ';';
 boolean_expression = expression;
 
 (*Classes*)
-class_declaration =    [class_modifiers], 'class', identifier, class_body, [';'];
+(* class_declaration =    [class_modifiers], 'class', identifier, class_body, [';'];
 class_modifiers =     class_modifier| class_modifiers, class_modifier;
 class_modifier =     'public'| 'private';
 class_body =     '{', [class_member_declarations], '}';
@@ -175,24 +181,24 @@ class_member_declaration =  field_declaration| method_declaration| constructor_d
 field_declaration =     [field_modifiers], type, variable_declarators, ';';
 field_modifiers =     field_modifier| field_modifiers, field_modifier;
 field_modifier =     'public'| 'private';
-(* variable_declarators =     variable_declarator| variable_declarators, ',', variable_declarator; *)
-(* variable_declarator =     identifier| identifier, '=', variable_initializer; *)
-(* variable_initializer =     expression| array_initializer; *)
-(* method_declaration =     method_header, method_body; *)
-(* method_header =     [method_modifiers],  return_type, member_name, '(', [fixed_parameters], ')'; *)
-(* method_modifiers =     method_modifier| method_modifiers, method_modifier; *)
-(* method_modifier =     'public' | 'private'; *)
-(* return_type =     type| 'void'; *)
-(* member_name =     identifier; *)
-(* method_body =     block | ';'; *)
-(* fixed_parameters =     fixed_parameter | fixed_parameters, ',', fixed_parameter; *)
-(* fixed_parameter =     type, identifier, [default_argument]; *)
-(* default_argument =     '=', expression; *)
-(* constructor_declaration =  constructor_declarator, constructor_body; *)
-(* constructor_declarator =     identifier, '(', [fixed_parameters], ')'; *)
-(* constructor_body =     block| ';'; *)
-(* destructor_declaration =     '~', identifier, '(', ')', destructor_body; *)
-(* destructor_body =     block | ';'; *)
+variable_declarators =     variable_declarator| variable_declarators, ',', variable_declarator;
+variable_declarator =     identifier| identifier, '=', variable_initializer;
+variable_initializer =     expression| array_initializer;
+method_declaration =     method_header, method_body;
+method_header =     [method_modifiers],  return_type, member_name, '(', [fixed_parameters], ')';
+method_modifiers =     method_modifier| method_modifiers, method_modifier;
+method_modifier =     'public' | 'private';
+return_type =     type| 'void';
+member_name =     identifier;
+method_body =     block | ';';
+fixed_parameters =     fixed_parameter | fixed_parameters, ',', fixed_parameter;
+fixed_parameter =     type, identifier, [default_argument];
+default_argument =     '=', expression;
+constructor_declaration =  constructor_declarator, constructor_body;
+constructor_declarator =     identifier, '(', [fixed_parameters], ')';
+constructor_body =     block| ';';
+destructor_declaration =     '~', identifier, '(', ')', destructor_body;
+destructor_body =     block | ';'; *)
 
 (*B.2.9 Arrays*)
 array_type =     non_array_type, ‘[‘, ‘]’;
