@@ -150,26 +150,26 @@ expression =     non_assignment_expression| assignment;
 non_assignment_expression =     conditional_expression;
 
 (*B.2.5 Statements*)
-statement =    declaration_statement| embedded_statement;
-embedded_statement =     block | empty_statement | expression_statement | if_statement| iteration_statement;
-block =     '{', [statement_list], '}';
-statement_list =     statement| statement_list, statement;
-empty_statement =     ';';
-declaration_statement =     local_variable_declaration, ';’;
-local_variable_declaration =     local_variable_type, local_variable_declarators;
-local_variable_type =     type;
-local_variable_declarators =     local_variable_declarator| local_variable_declarators, ',', local_variable_declarator;
-local_variable_declarator =     identifier| identifier, '=', local_variable_initializer;
-local_variable_initializer =     expression| array_initializer;
-expression_statement =     statement_expression, ';';
-statement_expression =     object_creation_expression| assignment| post_increment_expression| post_decrement_expression;
-if_statement =     'if', '(', boolean_expression, ')', embedded_statement| 'if', '(', boolean_expression, ')', embedded_statement, 'else', embedded_statement;
-iteration_statement =   while_statement ;
-while_statement =     'while', '(', boolean_expression, ')', embedded_statement;
-break_statement =     'break', ';';
-continue_statement =     'continue', ';';
-return_statement =     'return', [expression], ';';
-boolean_expression = expression;
+(* statement =    declaration_statement| embedded_statement; *)
+(* embedded_statement =     block | empty_statement | expression_statement | if_statement| iteration_statement
+							| break_statement | continue_statement | return_statement | while_statement *)
+(* block =     '{', [statement_list], '}'; *)
+(* statement_list =     statement| statement_list, statement; *)
+(* empty_statement =     ';'; *)
+(* declaration_statement =     local_variable_declaration, ';’; *)
+(* local_variable_declaration =     local_variable_type, local_variable_declarators; *)
+(* local_variable_type =     type; *)
+(* local_variable_declarators =     local_variable_declarator| local_variable_declarators, ',', local_variable_declarator; *)
+(* local_variable_declarator =     identifier| identifier, '=', local_variable_initializer; *)
+(* local_variable_initializer =     expression| array_initializer; *)
+(* expression_statement =     statement_expression, ';'; *)
+(* statement_expression =     object_creation_expression| assignment| post_increment_expression| post_decrement_expression; *)
+(* if_statement =     'if', '(', boolean_expression, ')', embedded_statement| 'if', '(', boolean_expression, ')', embedded_statement, 'else', embedded_statement; *)
+(* while_statement =     'while', '(', boolean_expression, ')', embedded_statement; *)
+(* break_statement =     'break', ';'; *)
+(* continue_statement =     'continue', ';'; *)
+(* return_statement =     'return', [expression], ';'; *)
+(* boolean_expression = expression; *)
 
 (*Classes*)
 (* class_declaration =    [class_modifiers], 'class', identifier, class_body, [';'];
