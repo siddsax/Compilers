@@ -99,18 +99,52 @@ def p_field_modifier(p):
 	"""
 
 def p_type(p):
-	"""type : 
+	"""type : reference_type
+			| type_parameter
+	"""
+def p_reference_type(p):
+	"""reference_type : class_type
+						| array_type
+	"""
+def p_class_type(p):
+	"""class_type : type_name
+					| OBJECT
 	"""
 
-def p_(p):
-	"""
-	"""
-
-def p_(p):
-	"""
+def p_type_name(p):
+	"""type_name : 
 	"""
 
+def p_array_type(p):
+	"""array_type : non_array_type LBRACKET RBRACKET
+	"""
 
+def p_non_array_type(p):
+	"""non_array_type : type
+	"""
+
+# def p_(p):
+# 	"""
+# 	"""
+
+# def p_(p):
+# 	"""
+# 	"""
+
+
+def p_simple_type(p):
+	"""simple_type : 
+	"""
+
+# def p_type_parameter(p):
+# 	"""type_parameter : 
+# 	"""
+
+
+
+def p_variable_declarators(p):
+	"""variable_declarators : empty
+	"""
 
 def p_method_declaration(p):
 	"""method_declaration : empty
@@ -119,11 +153,6 @@ def p_method_declaration(p):
 def p_constructor_declaration(p):
 	"""constructor_declaration : empty
 	"""
-
-def p_method_declaration(p):
-	"""method_declaration : empty
-	"""
-
 
 def p_empty(p):
 	"""empty : 
