@@ -194,21 +194,22 @@ def p_method_declaration(p):
 							| method_body
 	"""
 
+# def p_method_header(p):
+# 	"""method_header : return_type member_name LPAREN fixed_parameters RPAREN
+# 						| method_modifiers  return_type member_name LPAREN fixed_parameters RPAREN
+# 						| return_type member_name LPAREN RPAREN
+# 						| method_modifiers return_type member_name LPAREN RPAREN
+# 	"""
 def p_method_header(p):
-	"""method_header : return_type, member_name LPAREN fixed_parameters RPAREN
-						| method_modifier return_type, member_name LPAREN fixed_parameters RPAREN
-						| method_modifiers method_modifier return_type member_name LPAREN fixed_parameters RPAREN
-						| return_type, member_name LPAREN RPAREN
-						| method_modifier return_type, member_name LPAREN RPAREN
-						| method_modifiers method_modifier return_type member_name LPAREN RPAREN
+	"""method_header : method_modifiers return_type member_name LPAREN RPAREN
 	"""
 
-def P_method_modifiers(p):
+def p_method_modifiers(p):
 	"""method_modifiers : method_modifier
 						| method_modifiers method_modifier
 	"""
 	
-def P_method_modifier(p):
+def p_method_modifier(p):
 	"""method_modifier : PUBLIC
 						| PRIVATE
 	"""			
@@ -218,8 +219,8 @@ def p_return_type(p):
 					| VOID
 	"""
 
-def p_method_name(p):
-	"""method_name : identifier
+def p_member_name(p):
+	"""member_name : identifier
 	"""
 
 def p_method_body(p):
@@ -229,7 +230,7 @@ def p_method_body(p):
 
 def p_fixed_parameters(p):
 	"""fixed_parameters : fixed_parameter 
-						| fixed_parameters COMMA fixed parameter
+						| fixed_parameters COMMA fixed_parameter
 	"""
 
 def p_fixed_parameter(p):
@@ -238,7 +239,7 @@ def p_fixed_parameter(p):
 	"""
 
 def p_default_argument(p):
-	"""default_argument = EQUALS expression
+	"""default_argument : EQUALS expression
 	"""
 def p_destructor_declaration(p):
 	"""destructor_declaration : empty
@@ -248,7 +249,7 @@ def p_constructor_declaration(p):
 	"""
 
 def p_constructor_declarator(p):
-	"""constructor_declartor : identifier LPAREN fixed_parameters RPAREN
+	"""constructor_declarator : identifier LPAREN fixed_parameters RPAREN
 								| identifier LPAREN  RPAREN
 	"""
 
@@ -265,6 +266,10 @@ def p_destructor_body(p):
 	"""destructor_body : block
 						| TERMINATOR
 	"""
+def p_block(p):
+	"""block : LBRACE RBRACE
+	"""
+	
 def p_empty(p):
 	"""empty : 
 	"""
