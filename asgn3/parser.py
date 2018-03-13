@@ -34,6 +34,7 @@ def p_compilation_unit(p):
 	"""compilation_unit : class_declarations
 	"""
 
+# CLASS #############################################################################
 def p_class_declarations(p):
 	"""class_declarations : class_declarations class_declaration 
 							| class_declaration
@@ -131,16 +132,6 @@ def p_type_parameter(p):
 						| CHAR
 	"""
 
-
-# def p_(p):
-# 	"""
-# 	"""
-
-# def p_(p):
-# 	"""
-# 	"""
-
-
 def p_variable_declarators(p):
 	"""variable_declarators : variable_declarator
 							| variable_declarators COMMA variable_declarator
@@ -155,22 +146,10 @@ def p_variable_initializer(p):
 							| array_initializer
 	"""
 
-def p_expression(p):
-	"""expression : empty
-	"""
-
-# def p_(p):
-# 	"""
-# 	"""
-
-# def p_(p):
-# 	"""
-# 	"""
-
 
 def p_array_initializer(p):
 	"""array_initializer : LBRACE variable_initializer_list RBRACE
-							| LBRACE RBRACE 
+							| LBRACE RBRACE
 							| LBRACE variable_initializer_list COMMA RBRACE
 	"""
 
@@ -179,36 +158,27 @@ def p_variable_initializer_list(p):
 									| variable_initializer_list COMMA variable_initializer
 	"""
 
-# def p_(p):
-# 	"""
-# 	"""
-
-
-
 def p_method_declaration(p):
 	"""method_declaration : method_header
 							| method_body
 	"""
 
-# def p_method_header(p):
-# 	"""method_header : return_type member_name LPAREN fixed_parameters RPAREN
-# 						| method_modifiers  return_type member_name LPAREN fixed_parameters RPAREN
-# 						| return_type member_name LPAREN RPAREN
-# 						| method_modifiers return_type member_name LPAREN RPAREN
-# 	"""
 def p_method_header(p):
-	"""method_header : method_modifiers return_type member_name LPAREN RPAREN
-	"""
+	"""method_header : return_type member_name LPAREN fixed_parameters RPAREN
+ 						| method_modifiers  return_type member_name LPAREN fixed_parameters RPAREN
+ 						| return_type member_name LPAREN RPAREN
+ 						| method_modifiers return_type member_name LPAREN RPAREN
+ 	"""
 
 def p_method_modifiers(p):
 	"""method_modifiers : method_modifier
 						| method_modifiers method_modifier
 	"""
-	
+
 def p_method_modifier(p):
 	"""method_modifier : PUBLIC
 						| PRIVATE
-	"""			
+	"""
 
 def p_return_type(p):
 	"""return_type : type
@@ -260,23 +230,103 @@ def p_destructor_body(p):
 	"""destructor_body : block
 						| TERMINATOR
 	"""
+
+# STATEMENT #######################################################################
 def p_block(p):
 	"""block : LBRACE RBRACE
+                | LBRACE statement_list RBRACE
 	"""
-	
+
+def p_statement_list(p):
+        """statement_list : statement
+                            | statement_list statement
+        """
+
+def p_statement(p):
+        """statement : local_variable_declaration TERMINATOR
+        | embedded_statement
+        """
+
+def p_embedded_statement(p):
+        """embedded_statement : block
+        | TERMINATOR
+        | statement_expression TERMINATOR
+        | if_statement
+        | iteration_statement
+        | break_statement
+        | continue_statement
+        | return_statement
+        """
+
+def p_break_statement(p):
+        """break_statement : BREAK TERMINATOR
+        """
+
+def p_continue_statement(p):
+        """continue_statement : CONTINUE TERMINATOR
+        """
+
+def p_return_statement(p):
+        """return_statement : RETURN TERMINATOR
+        | RETURN expression TERMINATOR
+        """
+
+def p_literal(p):
+        """literal : INTCONST
+        | STRCONST
+        | CHARCONST
+        """
+
+def p_local_variable_declaration(p):
+        """local_variable_declaration : type local_variable_declarators
+        """
+
+def p_local_variable_declarators(p):
+        """local_variable_declarators : local_variable_declarator
+        | local_variable_declarators COMMA local_variable_declarator
+        """
+
+def p_local_variable_declarator(p):
+        """local_variable_declarator : identifier
+        | identifier EQUALS local_variable_initializer
+        """
+
+def p_local_variable_initializer(p): # TODO: Can be removed to reduce conflicts
+        """local_variable_initializer : expression
+        """
+
+def p_statement_expression(p):
+        """statement_expression : object_creation_expression
+        | assignment
+        | post_increment_expression
+        | post_decrement_expression
+        """
+
+def if_statement(p):
+        """if_statement : IF LPAREN expression RPAREN embedded_statement
+        | IF LPAREN expression RPAREN embedded_statement ELSE embedded_statement
+        """
+
+def iteration_statement(p):
+        """iteration_statement : WHILE LPAREN expression RPAREN embedded_statement
+        """
+
+
+# EXPRESSION #####################################################################################
+def p_expression(p):
+	"""expression : empty
+	"""
+
+# EMPTY ##########################################################################################
 def p_empty(p):
 	"""empty : 
 	"""
-
-# def p_(p):
-# 	"""
-# 	"""
 
 # Error rule for syntax errors
 def p_error(p):
     print("Syntax error in input!", p)
 
-###################################################################################################
+##################################################################################################
 # Build the parser now
 parser = yacc.yacc(start='compilation_unit', debug=True, optimize=False)
 
