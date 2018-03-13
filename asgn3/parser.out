@@ -6,10 +6,8 @@ Unused terminals:
     RSHIFT
     LPAREN
     VOID
-    OBJECT
     GOTO
     NE
-    LBRACKET
     CONAND
     WHILE
     COLON
@@ -28,29 +26,23 @@ Unused terminals:
     PLUS
     INCREMENT
     TILDE
-    COMMA
     STRING
-    INT
     GT
     XOR
     DIVIDE
     CONOR
     CHARCONST
     COMMENTSLINE
-    EQUALS
     TIMES
-    MEMBERACCESS
     PLUSEQUAL
     SHORT
     STRCONST
     INTCONST
     ELSE
     EQ
-    RBRACKET
     DOUBLEQUOTE
     IF
     AND
-    CHAR
     COMMENTDELIM
     MINUSEQUAL
     BREAK
@@ -68,10 +60,10 @@ Rule 1     start -> compilation_unit
 Rule 2     compilation_unit -> class_declarations
 Rule 3     class_declarations -> class_declarations class_declaration
 Rule 4     class_declarations -> class_declaration
-Rule 5     class_declaration -> class_modifiers CLASS identifier class_body TERMINATOR
-Rule 6     class_declaration -> CLASS identifier class_body TERMINATOR
-Rule 7     class_declaration -> CLASS identifier class_body
-Rule 8     class_declaration -> class_modifiers CLASS identifier class_body
+Rule 5     class_declaration -> class_modifiers CLASS IDENTIFIER class_body TERMINATOR
+Rule 6     class_declaration -> CLASS IDENTIFIER class_body TERMINATOR
+Rule 7     class_declaration -> CLASS IDENTIFIER class_body
+Rule 8     class_declaration -> class_modifiers CLASS IDENTIFIER class_body
 Rule 9     class_modifiers -> class_modifier
 Rule 10    class_modifiers -> class_modifiers class_modifier
 Rule 11    class_modifier -> PUBLIC
@@ -80,19 +72,61 @@ Rule 13    class_body -> LBRACE class_member_declarations RBRACE
 Rule 14    class_body -> LBRACE RBRACE
 Rule 15    identifier -> available_identifier
 Rule 16    available_identifier -> IDENTIFIER
-Rule 17    class_member_declarations -> empty
-Rule 18    empty -> <empty>
+Rule 17    class_member_declarations -> class_member_declaration
+Rule 18    class_member_declarations -> class_member_declarations class_member_declaration
+Rule 19    class_member_declaration -> field_declaration
+Rule 20    class_member_declaration -> method_declaration
+Rule 21    class_member_declaration -> constructor_declaration
+Rule 22    class_member_declaration -> destructor_declaration
+Rule 23    field_declaration -> field_modifiers type variable_declarators TERMINATOR
+Rule 24    field_declaration -> type variable_declarators TERMINATOR
+Rule 25    field_modifiers -> field_modifier
+Rule 26    field_modifiers -> field_modifiers field_modifier
+Rule 27    field_modifier -> PUBLIC
+Rule 28    field_modifier -> PRIVATE
+Rule 29    type -> reference_type
+Rule 30    type -> type_parameter
+Rule 31    reference_type -> class_type
+Rule 32    reference_type -> array_type
+Rule 33    class_type -> type_name
+Rule 34    class_type -> OBJECT
+Rule 35    type_name -> proper_identifier
+Rule 36    proper_identifier -> IDENTIFIER
+Rule 37    proper_identifier -> prefix IDENTIFIER
+Rule 38    prefix -> IDENTIFIER MEMBERACCESS
+Rule 39    prefix -> prefix IDENTIFIER MEMBERACCESS
+Rule 40    array_type -> non_array_type LBRACKET RBRACKET
+Rule 41    non_array_type -> type
+Rule 42    type_parameter -> IDENTIFIER
+Rule 43    type_parameter -> INT
+Rule 44    type_parameter -> CHAR
+Rule 45    variable_declarators -> variable_declarator
+Rule 46    variable_declarators -> variable_declarators COMMA variable_declarator
+Rule 47    variable_declarator -> IDENTIFIER
+Rule 48    variable_declarator -> IDENTIFIER EQUALS variable_initializer
+Rule 49    variable_initializer -> expression
+Rule 50    variable_initializer -> array_initializer
+Rule 51    expression -> empty
+Rule 52    array_initializer -> LBRACE variable_initializer_list RBRACE
+Rule 53    array_initializer -> LBRACE RBRACE
+Rule 54    array_initializer -> LBRACE variable_initializer_list COMMA RBRACE
+Rule 55    variable_initializer_list -> variable_initializer
+Rule 56    variable_initializer_list -> variable_initializer_list COMMA variable_initializer
+Rule 57    method_declaration -> empty
+Rule 58    destructor_declaration -> empty
+Rule 59    constructor_declaration -> empty
+Rule 60    empty -> <empty>
 
 Terminals, with rules where they appear
 
 AND                  : 
 BACKSLASH            : 
 BREAK                : 
-CHAR                 : 
+CHAR                 : 44
 CHARCONST            : 
 CLASS                : 5 6 7 8
 COLON                : 
-COMMA                : 
+COMMA                : 46 54 56
 COMMENTDELIM         : 
 COMMENTSLINE         : 
 CONAND               : 
@@ -103,23 +137,23 @@ DIVIDE               :
 DOUBLEQUOTE          : 
 ELSE                 : 
 EQ                   : 
-EQUALS               : 
+EQUALS               : 48
 GEQ                  : 
 GOTO                 : 
 GT                   : 
-IDENTIFIER           : 16
+IDENTIFIER           : 5 6 7 8 16 36 37 38 39 42 47 48
 IF                   : 
 INCREMENT            : 
-INT                  : 
+INT                  : 43
 INTCONST             : 
-LBRACE               : 13 14
-LBRACKET             : 
+LBRACE               : 13 14 52 53 54
+LBRACKET             : 40
 LEQ                  : 
 LNOT                 : 
 LPAREN               : 
 LSHIFT               : 
 LT                   : 
-MEMBERACCESS         : 
+MEMBERACCESS         : 38 39
 MINUS                : 
 MINUSEQUAL           : 
 MOD                  : 
@@ -127,14 +161,14 @@ NE                   :
 NEW                  : 
 NEWLINE              : 
 NULL                 : 
-OBJECT               : 
+OBJECT               : 34
 OR                   : 
 PLUS                 : 
 PLUSEQUAL            : 
-PRIVATE              : 12
-PUBLIC               : 11
-RBRACE               : 13 14
-RBRACKET             : 
+PRIVATE              : 12 28
+PUBLIC               : 11 27
+RBRACE               : 13 14 52 53 54
+RBRACKET             : 40
 RETURN               : 
 RPAREN               : 
 RSHIFT               : 
@@ -143,7 +177,7 @@ SINGLEQUOTE          :
 SIZEOF               : 
 STRCONST             : 
 STRING               : 
-TERMINATOR           : 5 6
+TERMINATOR           : 5 6 23 24
 TILDE                : 
 TIMES                : 
 USING                : 
@@ -154,17 +188,39 @@ error                :
 
 Nonterminals, with rules where they appear
 
+array_initializer    : 50
+array_type           : 32
 available_identifier : 15
 class_body           : 5 6 7 8
 class_declaration    : 3 4
 class_declarations   : 2 3
-class_member_declarations : 13
+class_member_declaration : 17 18
+class_member_declarations : 13 18
 class_modifier       : 9 10
 class_modifiers      : 5 8 10
+class_type           : 31
 compilation_unit     : 1 0
-empty                : 17
-identifier           : 5 6 7 8
+constructor_declaration : 21
+destructor_declaration : 22
+empty                : 51 57 58 59
+expression           : 49
+field_declaration    : 19
+field_modifier       : 25 26
+field_modifiers      : 23 26
+identifier           : 
+method_declaration   : 20
+non_array_type       : 40
+prefix               : 37 39
+proper_identifier    : 35
+reference_type       : 29
 start                : 
+type                 : 23 24 41
+type_name            : 33
+type_parameter       : 30
+variable_declarator  : 45 46
+variable_declarators : 23 24 46
+variable_initializer : 48 55 56
+variable_initializer_list : 52 54 56
 
 Parsing method: LALR
 
@@ -174,10 +230,10 @@ state 0
     (2) compilation_unit -> . class_declarations
     (3) class_declarations -> . class_declarations class_declaration
     (4) class_declarations -> . class_declaration
-    (5) class_declaration -> . class_modifiers CLASS identifier class_body TERMINATOR
-    (6) class_declaration -> . CLASS identifier class_body TERMINATOR
-    (7) class_declaration -> . CLASS identifier class_body
-    (8) class_declaration -> . class_modifiers CLASS identifier class_body
+    (5) class_declaration -> . class_modifiers CLASS IDENTIFIER class_body TERMINATOR
+    (6) class_declaration -> . CLASS IDENTIFIER class_body TERMINATOR
+    (7) class_declaration -> . CLASS IDENTIFIER class_body
+    (8) class_declaration -> . class_modifiers CLASS IDENTIFIER class_body
     (9) class_modifiers -> . class_modifier
     (10) class_modifiers -> . class_modifiers class_modifier
     (11) class_modifier -> . PUBLIC
@@ -197,10 +253,10 @@ state 1
 
     (2) compilation_unit -> class_declarations .
     (3) class_declarations -> class_declarations . class_declaration
-    (5) class_declaration -> . class_modifiers CLASS identifier class_body TERMINATOR
-    (6) class_declaration -> . CLASS identifier class_body TERMINATOR
-    (7) class_declaration -> . CLASS identifier class_body
-    (8) class_declaration -> . class_modifiers CLASS identifier class_body
+    (5) class_declaration -> . class_modifiers CLASS IDENTIFIER class_body TERMINATOR
+    (6) class_declaration -> . CLASS IDENTIFIER class_body TERMINATOR
+    (7) class_declaration -> . CLASS IDENTIFIER class_body
+    (8) class_declaration -> . class_modifiers CLASS IDENTIFIER class_body
     (9) class_modifiers -> . class_modifier
     (10) class_modifiers -> . class_modifiers class_modifier
     (11) class_modifier -> . PUBLIC
@@ -211,9 +267,9 @@ state 1
     PUBLIC          shift and go to state 4
     PRIVATE         shift and go to state 2
 
-    class_modifier                 shift and go to state 6
     class_declaration              shift and go to state 9
     class_modifiers                shift and go to state 7
+    class_modifier                 shift and go to state 6
 
 state 2
 
@@ -260,8 +316,8 @@ state 6
 
 state 7
 
-    (5) class_declaration -> class_modifiers . CLASS identifier class_body TERMINATOR
-    (8) class_declaration -> class_modifiers . CLASS identifier class_body
+    (5) class_declaration -> class_modifiers . CLASS IDENTIFIER class_body TERMINATOR
+    (8) class_declaration -> class_modifiers . CLASS IDENTIFIER class_body
     (10) class_modifiers -> class_modifiers . class_modifier
     (11) class_modifier -> . PUBLIC
     (12) class_modifier -> . PRIVATE
@@ -274,15 +330,11 @@ state 7
 
 state 8
 
-    (6) class_declaration -> CLASS . identifier class_body TERMINATOR
-    (7) class_declaration -> CLASS . identifier class_body
-    (15) identifier -> . available_identifier
-    (16) available_identifier -> . IDENTIFIER
+    (6) class_declaration -> CLASS . IDENTIFIER class_body TERMINATOR
+    (7) class_declaration -> CLASS . IDENTIFIER class_body
 
-    IDENTIFIER      shift and go to state 13
+    IDENTIFIER      shift and go to state 12
 
-    available_identifier           shift and go to state 12
-    identifier                     shift and go to state 14
 
 state 9
 
@@ -305,99 +357,432 @@ state 10
 
 state 11
 
-    (5) class_declaration -> class_modifiers CLASS . identifier class_body TERMINATOR
-    (8) class_declaration -> class_modifiers CLASS . identifier class_body
-    (15) identifier -> . available_identifier
-    (16) available_identifier -> . IDENTIFIER
+    (5) class_declaration -> class_modifiers CLASS . IDENTIFIER class_body TERMINATOR
+    (8) class_declaration -> class_modifiers CLASS . IDENTIFIER class_body
 
     IDENTIFIER      shift and go to state 13
 
-    available_identifier           shift and go to state 12
-    identifier                     shift and go to state 15
 
 state 12
 
-    (15) identifier -> available_identifier .
+    (6) class_declaration -> CLASS IDENTIFIER . class_body TERMINATOR
+    (7) class_declaration -> CLASS IDENTIFIER . class_body
+    (13) class_body -> . LBRACE class_member_declarations RBRACE
+    (14) class_body -> . LBRACE RBRACE
 
-    LBRACE          reduce using rule 15 (identifier -> available_identifier .)
+    LBRACE          shift and go to state 14
 
+    class_body                     shift and go to state 15
 
 state 13
 
-    (16) available_identifier -> IDENTIFIER .
+    (5) class_declaration -> class_modifiers CLASS IDENTIFIER . class_body TERMINATOR
+    (8) class_declaration -> class_modifiers CLASS IDENTIFIER . class_body
+    (13) class_body -> . LBRACE class_member_declarations RBRACE
+    (14) class_body -> . LBRACE RBRACE
 
-    LBRACE          reduce using rule 16 (available_identifier -> IDENTIFIER .)
+    LBRACE          shift and go to state 14
 
+    class_body                     shift and go to state 16
 
 state 14
 
-    (6) class_declaration -> CLASS identifier . class_body TERMINATOR
-    (7) class_declaration -> CLASS identifier . class_body
-    (13) class_body -> . LBRACE class_member_declarations RBRACE
-    (14) class_body -> . LBRACE RBRACE
+    (13) class_body -> LBRACE . class_member_declarations RBRACE
+    (14) class_body -> LBRACE . RBRACE
+    (17) class_member_declarations -> . class_member_declaration
+    (18) class_member_declarations -> . class_member_declarations class_member_declaration
+    (19) class_member_declaration -> . field_declaration
+    (20) class_member_declaration -> . method_declaration
+    (21) class_member_declaration -> . constructor_declaration
+    (22) class_member_declaration -> . destructor_declaration
+    (23) field_declaration -> . field_modifiers type variable_declarators TERMINATOR
+    (24) field_declaration -> . type variable_declarators TERMINATOR
+    (57) method_declaration -> . empty
+    (59) constructor_declaration -> . empty
+    (58) destructor_declaration -> . empty
+    (25) field_modifiers -> . field_modifier
+    (26) field_modifiers -> . field_modifiers field_modifier
+    (29) type -> . reference_type
+    (30) type -> . type_parameter
+    (60) empty -> .
+    (27) field_modifier -> . PUBLIC
+    (28) field_modifier -> . PRIVATE
+    (31) reference_type -> . class_type
+    (32) reference_type -> . array_type
+    (42) type_parameter -> . IDENTIFIER
+    (43) type_parameter -> . INT
+    (44) type_parameter -> . CHAR
+    (33) class_type -> . type_name
+    (34) class_type -> . OBJECT
+    (40) array_type -> . non_array_type LBRACKET RBRACKET
+    (35) type_name -> . proper_identifier
+    (41) non_array_type -> . type
+    (36) proper_identifier -> . IDENTIFIER
+    (37) proper_identifier -> . prefix IDENTIFIER
+    (38) prefix -> . IDENTIFIER MEMBERACCESS
+    (39) prefix -> . prefix IDENTIFIER MEMBERACCESS
 
-    LBRACE          shift and go to state 16
+  ! shift/reduce conflict for RBRACE resolved as shift
+  ! shift/reduce conflict for PUBLIC resolved as shift
+  ! shift/reduce conflict for PRIVATE resolved as shift
+  ! shift/reduce conflict for IDENTIFIER resolved as shift
+  ! shift/reduce conflict for INT resolved as shift
+  ! shift/reduce conflict for CHAR resolved as shift
+  ! shift/reduce conflict for OBJECT resolved as shift
+    RBRACE          shift and go to state 33
+    PUBLIC          shift and go to state 41
+    PRIVATE         shift and go to state 28
+    IDENTIFIER      shift and go to state 30
+    INT             shift and go to state 38
+    CHAR            shift and go to state 21
+    OBJECT          shift and go to state 19
 
-    class_body                     shift and go to state 17
+  ! RBRACE          [ reduce using rule 60 (empty -> .) ]
+  ! PUBLIC          [ reduce using rule 60 (empty -> .) ]
+  ! PRIVATE         [ reduce using rule 60 (empty -> .) ]
+  ! IDENTIFIER      [ reduce using rule 60 (empty -> .) ]
+  ! INT             [ reduce using rule 60 (empty -> .) ]
+  ! CHAR            [ reduce using rule 60 (empty -> .) ]
+  ! OBJECT          [ reduce using rule 60 (empty -> .) ]
+
+    field_modifiers                shift and go to state 17
+    class_type                     shift and go to state 24
+    class_member_declaration       shift and go to state 37
+    reference_type                 shift and go to state 27
+    constructor_declaration        shift and go to state 25
+    type_name                      shift and go to state 26
+    method_declaration             shift and go to state 18
+    proper_identifier              shift and go to state 20
+    field_modifier                 shift and go to state 36
+    non_array_type                 shift and go to state 34
+    prefix                         shift and go to state 22
+    field_declaration              shift and go to state 39
+    type_parameter                 shift and go to state 23
+    array_type                     shift and go to state 35
+    class_member_declarations      shift and go to state 29
+    type                           shift and go to state 31
+    destructor_declaration         shift and go to state 40
+    empty                          shift and go to state 32
 
 state 15
 
-    (5) class_declaration -> class_modifiers CLASS identifier . class_body TERMINATOR
-    (8) class_declaration -> class_modifiers CLASS identifier . class_body
-    (13) class_body -> . LBRACE class_member_declarations RBRACE
-    (14) class_body -> . LBRACE RBRACE
+    (6) class_declaration -> CLASS IDENTIFIER class_body . TERMINATOR
+    (7) class_declaration -> CLASS IDENTIFIER class_body .
 
-    LBRACE          shift and go to state 16
+    TERMINATOR      shift and go to state 42
+    CLASS           reduce using rule 7 (class_declaration -> CLASS IDENTIFIER class_body .)
+    PUBLIC          reduce using rule 7 (class_declaration -> CLASS IDENTIFIER class_body .)
+    PRIVATE         reduce using rule 7 (class_declaration -> CLASS IDENTIFIER class_body .)
+    $end            reduce using rule 7 (class_declaration -> CLASS IDENTIFIER class_body .)
 
-    class_body                     shift and go to state 18
 
 state 16
 
-    (13) class_body -> LBRACE . class_member_declarations RBRACE
-    (14) class_body -> LBRACE . RBRACE
-    (17) class_member_declarations -> . empty
-    (18) empty -> .
+    (5) class_declaration -> class_modifiers CLASS IDENTIFIER class_body . TERMINATOR
+    (8) class_declaration -> class_modifiers CLASS IDENTIFIER class_body .
 
-  ! shift/reduce conflict for RBRACE resolved as shift
-    RBRACE          shift and go to state 20
+    TERMINATOR      shift and go to state 43
+    CLASS           reduce using rule 8 (class_declaration -> class_modifiers CLASS IDENTIFIER class_body .)
+    PUBLIC          reduce using rule 8 (class_declaration -> class_modifiers CLASS IDENTIFIER class_body .)
+    PRIVATE         reduce using rule 8 (class_declaration -> class_modifiers CLASS IDENTIFIER class_body .)
+    $end            reduce using rule 8 (class_declaration -> class_modifiers CLASS IDENTIFIER class_body .)
 
-  ! RBRACE          [ reduce using rule 18 (empty -> .) ]
-
-    class_member_declarations      shift and go to state 19
-    empty                          shift and go to state 21
 
 state 17
 
-    (6) class_declaration -> CLASS identifier class_body . TERMINATOR
-    (7) class_declaration -> CLASS identifier class_body .
+    (23) field_declaration -> field_modifiers . type variable_declarators TERMINATOR
+    (26) field_modifiers -> field_modifiers . field_modifier
+    (29) type -> . reference_type
+    (30) type -> . type_parameter
+    (27) field_modifier -> . PUBLIC
+    (28) field_modifier -> . PRIVATE
+    (31) reference_type -> . class_type
+    (32) reference_type -> . array_type
+    (42) type_parameter -> . IDENTIFIER
+    (43) type_parameter -> . INT
+    (44) type_parameter -> . CHAR
+    (33) class_type -> . type_name
+    (34) class_type -> . OBJECT
+    (40) array_type -> . non_array_type LBRACKET RBRACKET
+    (35) type_name -> . proper_identifier
+    (41) non_array_type -> . type
+    (36) proper_identifier -> . IDENTIFIER
+    (37) proper_identifier -> . prefix IDENTIFIER
+    (38) prefix -> . IDENTIFIER MEMBERACCESS
+    (39) prefix -> . prefix IDENTIFIER MEMBERACCESS
 
-    TERMINATOR      shift and go to state 22
-    CLASS           reduce using rule 7 (class_declaration -> CLASS identifier class_body .)
-    PUBLIC          reduce using rule 7 (class_declaration -> CLASS identifier class_body .)
-    PRIVATE         reduce using rule 7 (class_declaration -> CLASS identifier class_body .)
-    $end            reduce using rule 7 (class_declaration -> CLASS identifier class_body .)
+    PUBLIC          shift and go to state 41
+    PRIVATE         shift and go to state 28
+    IDENTIFIER      shift and go to state 30
+    INT             shift and go to state 38
+    CHAR            shift and go to state 21
+    OBJECT          shift and go to state 19
 
+    class_type                     shift and go to state 24
+    non_array_type                 shift and go to state 34
+    type_name                      shift and go to state 26
+    reference_type                 shift and go to state 27
+    proper_identifier              shift and go to state 20
+    prefix                         shift and go to state 22
+    array_type                     shift and go to state 35
+    field_modifier                 shift and go to state 45
+    type                           shift and go to state 44
+    type_parameter                 shift and go to state 23
 
 state 18
 
-    (5) class_declaration -> class_modifiers CLASS identifier class_body . TERMINATOR
-    (8) class_declaration -> class_modifiers CLASS identifier class_body .
+    (20) class_member_declaration -> method_declaration .
 
-    TERMINATOR      shift and go to state 23
-    CLASS           reduce using rule 8 (class_declaration -> class_modifiers CLASS identifier class_body .)
-    PUBLIC          reduce using rule 8 (class_declaration -> class_modifiers CLASS identifier class_body .)
-    PRIVATE         reduce using rule 8 (class_declaration -> class_modifiers CLASS identifier class_body .)
-    $end            reduce using rule 8 (class_declaration -> class_modifiers CLASS identifier class_body .)
+    RBRACE          reduce using rule 20 (class_member_declaration -> method_declaration .)
+    PUBLIC          reduce using rule 20 (class_member_declaration -> method_declaration .)
+    PRIVATE         reduce using rule 20 (class_member_declaration -> method_declaration .)
+    IDENTIFIER      reduce using rule 20 (class_member_declaration -> method_declaration .)
+    INT             reduce using rule 20 (class_member_declaration -> method_declaration .)
+    CHAR            reduce using rule 20 (class_member_declaration -> method_declaration .)
+    OBJECT          reduce using rule 20 (class_member_declaration -> method_declaration .)
 
 
 state 19
 
-    (13) class_body -> LBRACE class_member_declarations . RBRACE
+    (34) class_type -> OBJECT .
 
-    RBRACE          shift and go to state 24
+    IDENTIFIER      reduce using rule 34 (class_type -> OBJECT .)
+    LBRACKET        reduce using rule 34 (class_type -> OBJECT .)
 
 
 state 20
+
+    (35) type_name -> proper_identifier .
+
+    IDENTIFIER      reduce using rule 35 (type_name -> proper_identifier .)
+    LBRACKET        reduce using rule 35 (type_name -> proper_identifier .)
+
+
+state 21
+
+    (44) type_parameter -> CHAR .
+
+    IDENTIFIER      reduce using rule 44 (type_parameter -> CHAR .)
+    LBRACKET        reduce using rule 44 (type_parameter -> CHAR .)
+
+
+state 22
+
+    (37) proper_identifier -> prefix . IDENTIFIER
+    (39) prefix -> prefix . IDENTIFIER MEMBERACCESS
+
+    IDENTIFIER      shift and go to state 46
+
+
+state 23
+
+    (30) type -> type_parameter .
+
+    IDENTIFIER      reduce using rule 30 (type -> type_parameter .)
+    LBRACKET        reduce using rule 30 (type -> type_parameter .)
+
+
+state 24
+
+    (31) reference_type -> class_type .
+
+    IDENTIFIER      reduce using rule 31 (reference_type -> class_type .)
+    LBRACKET        reduce using rule 31 (reference_type -> class_type .)
+
+
+state 25
+
+    (21) class_member_declaration -> constructor_declaration .
+
+    RBRACE          reduce using rule 21 (class_member_declaration -> constructor_declaration .)
+    PUBLIC          reduce using rule 21 (class_member_declaration -> constructor_declaration .)
+    PRIVATE         reduce using rule 21 (class_member_declaration -> constructor_declaration .)
+    IDENTIFIER      reduce using rule 21 (class_member_declaration -> constructor_declaration .)
+    INT             reduce using rule 21 (class_member_declaration -> constructor_declaration .)
+    CHAR            reduce using rule 21 (class_member_declaration -> constructor_declaration .)
+    OBJECT          reduce using rule 21 (class_member_declaration -> constructor_declaration .)
+
+
+state 26
+
+    (33) class_type -> type_name .
+
+    IDENTIFIER      reduce using rule 33 (class_type -> type_name .)
+    LBRACKET        reduce using rule 33 (class_type -> type_name .)
+
+
+state 27
+
+    (29) type -> reference_type .
+
+    IDENTIFIER      reduce using rule 29 (type -> reference_type .)
+    LBRACKET        reduce using rule 29 (type -> reference_type .)
+
+
+state 28
+
+    (28) field_modifier -> PRIVATE .
+
+    PUBLIC          reduce using rule 28 (field_modifier -> PRIVATE .)
+    PRIVATE         reduce using rule 28 (field_modifier -> PRIVATE .)
+    IDENTIFIER      reduce using rule 28 (field_modifier -> PRIVATE .)
+    INT             reduce using rule 28 (field_modifier -> PRIVATE .)
+    CHAR            reduce using rule 28 (field_modifier -> PRIVATE .)
+    OBJECT          reduce using rule 28 (field_modifier -> PRIVATE .)
+
+
+state 29
+
+    (13) class_body -> LBRACE class_member_declarations . RBRACE
+    (18) class_member_declarations -> class_member_declarations . class_member_declaration
+    (19) class_member_declaration -> . field_declaration
+    (20) class_member_declaration -> . method_declaration
+    (21) class_member_declaration -> . constructor_declaration
+    (22) class_member_declaration -> . destructor_declaration
+    (23) field_declaration -> . field_modifiers type variable_declarators TERMINATOR
+    (24) field_declaration -> . type variable_declarators TERMINATOR
+    (57) method_declaration -> . empty
+    (59) constructor_declaration -> . empty
+    (58) destructor_declaration -> . empty
+    (25) field_modifiers -> . field_modifier
+    (26) field_modifiers -> . field_modifiers field_modifier
+    (29) type -> . reference_type
+    (30) type -> . type_parameter
+    (60) empty -> .
+    (27) field_modifier -> . PUBLIC
+    (28) field_modifier -> . PRIVATE
+    (31) reference_type -> . class_type
+    (32) reference_type -> . array_type
+    (42) type_parameter -> . IDENTIFIER
+    (43) type_parameter -> . INT
+    (44) type_parameter -> . CHAR
+    (33) class_type -> . type_name
+    (34) class_type -> . OBJECT
+    (40) array_type -> . non_array_type LBRACKET RBRACKET
+    (35) type_name -> . proper_identifier
+    (41) non_array_type -> . type
+    (36) proper_identifier -> . IDENTIFIER
+    (37) proper_identifier -> . prefix IDENTIFIER
+    (38) prefix -> . IDENTIFIER MEMBERACCESS
+    (39) prefix -> . prefix IDENTIFIER MEMBERACCESS
+
+  ! shift/reduce conflict for RBRACE resolved as shift
+  ! shift/reduce conflict for PUBLIC resolved as shift
+  ! shift/reduce conflict for PRIVATE resolved as shift
+  ! shift/reduce conflict for IDENTIFIER resolved as shift
+  ! shift/reduce conflict for INT resolved as shift
+  ! shift/reduce conflict for CHAR resolved as shift
+  ! shift/reduce conflict for OBJECT resolved as shift
+    RBRACE          shift and go to state 47
+    PUBLIC          shift and go to state 41
+    PRIVATE         shift and go to state 28
+    IDENTIFIER      shift and go to state 30
+    INT             shift and go to state 38
+    CHAR            shift and go to state 21
+    OBJECT          shift and go to state 19
+
+  ! RBRACE          [ reduce using rule 60 (empty -> .) ]
+  ! PUBLIC          [ reduce using rule 60 (empty -> .) ]
+  ! PRIVATE         [ reduce using rule 60 (empty -> .) ]
+  ! IDENTIFIER      [ reduce using rule 60 (empty -> .) ]
+  ! INT             [ reduce using rule 60 (empty -> .) ]
+  ! CHAR            [ reduce using rule 60 (empty -> .) ]
+  ! OBJECT          [ reduce using rule 60 (empty -> .) ]
+
+    field_modifiers                shift and go to state 17
+    class_type                     shift and go to state 24
+    class_member_declaration       shift and go to state 48
+    reference_type                 shift and go to state 27
+    constructor_declaration        shift and go to state 25
+    type_name                      shift and go to state 26
+    method_declaration             shift and go to state 18
+    proper_identifier              shift and go to state 20
+    field_modifier                 shift and go to state 36
+    non_array_type                 shift and go to state 34
+    prefix                         shift and go to state 22
+    field_declaration              shift and go to state 39
+    type_parameter                 shift and go to state 23
+    array_type                     shift and go to state 35
+    type                           shift and go to state 31
+    destructor_declaration         shift and go to state 40
+    empty                          shift and go to state 32
+
+state 30
+
+    (42) type_parameter -> IDENTIFIER .
+    (36) proper_identifier -> IDENTIFIER .
+    (38) prefix -> IDENTIFIER . MEMBERACCESS
+
+  ! reduce/reduce conflict for IDENTIFIER resolved using rule 36 (proper_identifier -> IDENTIFIER .)
+  ! reduce/reduce conflict for LBRACKET resolved using rule 36 (proper_identifier -> IDENTIFIER .)
+    IDENTIFIER      reduce using rule 36 (proper_identifier -> IDENTIFIER .)
+    LBRACKET        reduce using rule 36 (proper_identifier -> IDENTIFIER .)
+    MEMBERACCESS    shift and go to state 49
+
+  ! IDENTIFIER      [ reduce using rule 42 (type_parameter -> IDENTIFIER .) ]
+  ! LBRACKET        [ reduce using rule 42 (type_parameter -> IDENTIFIER .) ]
+
+
+state 31
+
+    (24) field_declaration -> type . variable_declarators TERMINATOR
+    (41) non_array_type -> type .
+    (45) variable_declarators -> . variable_declarator
+    (46) variable_declarators -> . variable_declarators COMMA variable_declarator
+    (47) variable_declarator -> . IDENTIFIER
+    (48) variable_declarator -> . IDENTIFIER EQUALS variable_initializer
+
+    LBRACKET        reduce using rule 41 (non_array_type -> type .)
+    IDENTIFIER      shift and go to state 52
+
+    variable_declarators           shift and go to state 50
+    variable_declarator            shift and go to state 51
+
+state 32
+
+    (57) method_declaration -> empty .
+    (59) constructor_declaration -> empty .
+    (58) destructor_declaration -> empty .
+
+  ! reduce/reduce conflict for RBRACE resolved using rule 57 (method_declaration -> empty .)
+  ! reduce/reduce conflict for PUBLIC resolved using rule 57 (method_declaration -> empty .)
+  ! reduce/reduce conflict for PRIVATE resolved using rule 57 (method_declaration -> empty .)
+  ! reduce/reduce conflict for IDENTIFIER resolved using rule 57 (method_declaration -> empty .)
+  ! reduce/reduce conflict for INT resolved using rule 57 (method_declaration -> empty .)
+  ! reduce/reduce conflict for CHAR resolved using rule 57 (method_declaration -> empty .)
+  ! reduce/reduce conflict for OBJECT resolved using rule 57 (method_declaration -> empty .)
+  ! reduce/reduce conflict for RBRACE resolved using rule 57 (method_declaration -> empty .)
+  ! reduce/reduce conflict for PUBLIC resolved using rule 57 (method_declaration -> empty .)
+  ! reduce/reduce conflict for PRIVATE resolved using rule 57 (method_declaration -> empty .)
+  ! reduce/reduce conflict for IDENTIFIER resolved using rule 57 (method_declaration -> empty .)
+  ! reduce/reduce conflict for INT resolved using rule 57 (method_declaration -> empty .)
+  ! reduce/reduce conflict for CHAR resolved using rule 57 (method_declaration -> empty .)
+  ! reduce/reduce conflict for OBJECT resolved using rule 57 (method_declaration -> empty .)
+    RBRACE          reduce using rule 57 (method_declaration -> empty .)
+    PUBLIC          reduce using rule 57 (method_declaration -> empty .)
+    PRIVATE         reduce using rule 57 (method_declaration -> empty .)
+    IDENTIFIER      reduce using rule 57 (method_declaration -> empty .)
+    INT             reduce using rule 57 (method_declaration -> empty .)
+    CHAR            reduce using rule 57 (method_declaration -> empty .)
+    OBJECT          reduce using rule 57 (method_declaration -> empty .)
+
+  ! RBRACE          [ reduce using rule 59 (constructor_declaration -> empty .) ]
+  ! PUBLIC          [ reduce using rule 59 (constructor_declaration -> empty .) ]
+  ! PRIVATE         [ reduce using rule 59 (constructor_declaration -> empty .) ]
+  ! IDENTIFIER      [ reduce using rule 59 (constructor_declaration -> empty .) ]
+  ! INT             [ reduce using rule 59 (constructor_declaration -> empty .) ]
+  ! CHAR            [ reduce using rule 59 (constructor_declaration -> empty .) ]
+  ! OBJECT          [ reduce using rule 59 (constructor_declaration -> empty .) ]
+  ! RBRACE          [ reduce using rule 58 (destructor_declaration -> empty .) ]
+  ! PUBLIC          [ reduce using rule 58 (destructor_declaration -> empty .) ]
+  ! PRIVATE         [ reduce using rule 58 (destructor_declaration -> empty .) ]
+  ! IDENTIFIER      [ reduce using rule 58 (destructor_declaration -> empty .) ]
+  ! INT             [ reduce using rule 58 (destructor_declaration -> empty .) ]
+  ! CHAR            [ reduce using rule 58 (destructor_declaration -> empty .) ]
+  ! OBJECT          [ reduce using rule 58 (destructor_declaration -> empty .) ]
+
+
+state 33
 
     (14) class_body -> LBRACE RBRACE .
 
@@ -408,34 +793,150 @@ state 20
     $end            reduce using rule 14 (class_body -> LBRACE RBRACE .)
 
 
-state 21
+state 34
 
-    (17) class_member_declarations -> empty .
+    (40) array_type -> non_array_type . LBRACKET RBRACKET
 
-    RBRACE          reduce using rule 17 (class_member_declarations -> empty .)
-
-
-state 22
-
-    (6) class_declaration -> CLASS identifier class_body TERMINATOR .
-
-    CLASS           reduce using rule 6 (class_declaration -> CLASS identifier class_body TERMINATOR .)
-    PUBLIC          reduce using rule 6 (class_declaration -> CLASS identifier class_body TERMINATOR .)
-    PRIVATE         reduce using rule 6 (class_declaration -> CLASS identifier class_body TERMINATOR .)
-    $end            reduce using rule 6 (class_declaration -> CLASS identifier class_body TERMINATOR .)
+    LBRACKET        shift and go to state 53
 
 
-state 23
+state 35
 
-    (5) class_declaration -> class_modifiers CLASS identifier class_body TERMINATOR .
+    (32) reference_type -> array_type .
 
-    CLASS           reduce using rule 5 (class_declaration -> class_modifiers CLASS identifier class_body TERMINATOR .)
-    PUBLIC          reduce using rule 5 (class_declaration -> class_modifiers CLASS identifier class_body TERMINATOR .)
-    PRIVATE         reduce using rule 5 (class_declaration -> class_modifiers CLASS identifier class_body TERMINATOR .)
-    $end            reduce using rule 5 (class_declaration -> class_modifiers CLASS identifier class_body TERMINATOR .)
+    IDENTIFIER      reduce using rule 32 (reference_type -> array_type .)
+    LBRACKET        reduce using rule 32 (reference_type -> array_type .)
 
 
-state 24
+state 36
+
+    (25) field_modifiers -> field_modifier .
+
+    PUBLIC          reduce using rule 25 (field_modifiers -> field_modifier .)
+    PRIVATE         reduce using rule 25 (field_modifiers -> field_modifier .)
+    IDENTIFIER      reduce using rule 25 (field_modifiers -> field_modifier .)
+    INT             reduce using rule 25 (field_modifiers -> field_modifier .)
+    CHAR            reduce using rule 25 (field_modifiers -> field_modifier .)
+    OBJECT          reduce using rule 25 (field_modifiers -> field_modifier .)
+
+
+state 37
+
+    (17) class_member_declarations -> class_member_declaration .
+
+    RBRACE          reduce using rule 17 (class_member_declarations -> class_member_declaration .)
+    PUBLIC          reduce using rule 17 (class_member_declarations -> class_member_declaration .)
+    PRIVATE         reduce using rule 17 (class_member_declarations -> class_member_declaration .)
+    IDENTIFIER      reduce using rule 17 (class_member_declarations -> class_member_declaration .)
+    INT             reduce using rule 17 (class_member_declarations -> class_member_declaration .)
+    CHAR            reduce using rule 17 (class_member_declarations -> class_member_declaration .)
+    OBJECT          reduce using rule 17 (class_member_declarations -> class_member_declaration .)
+
+
+state 38
+
+    (43) type_parameter -> INT .
+
+    IDENTIFIER      reduce using rule 43 (type_parameter -> INT .)
+    LBRACKET        reduce using rule 43 (type_parameter -> INT .)
+
+
+state 39
+
+    (19) class_member_declaration -> field_declaration .
+
+    RBRACE          reduce using rule 19 (class_member_declaration -> field_declaration .)
+    PUBLIC          reduce using rule 19 (class_member_declaration -> field_declaration .)
+    PRIVATE         reduce using rule 19 (class_member_declaration -> field_declaration .)
+    IDENTIFIER      reduce using rule 19 (class_member_declaration -> field_declaration .)
+    INT             reduce using rule 19 (class_member_declaration -> field_declaration .)
+    CHAR            reduce using rule 19 (class_member_declaration -> field_declaration .)
+    OBJECT          reduce using rule 19 (class_member_declaration -> field_declaration .)
+
+
+state 40
+
+    (22) class_member_declaration -> destructor_declaration .
+
+    RBRACE          reduce using rule 22 (class_member_declaration -> destructor_declaration .)
+    PUBLIC          reduce using rule 22 (class_member_declaration -> destructor_declaration .)
+    PRIVATE         reduce using rule 22 (class_member_declaration -> destructor_declaration .)
+    IDENTIFIER      reduce using rule 22 (class_member_declaration -> destructor_declaration .)
+    INT             reduce using rule 22 (class_member_declaration -> destructor_declaration .)
+    CHAR            reduce using rule 22 (class_member_declaration -> destructor_declaration .)
+    OBJECT          reduce using rule 22 (class_member_declaration -> destructor_declaration .)
+
+
+state 41
+
+    (27) field_modifier -> PUBLIC .
+
+    PUBLIC          reduce using rule 27 (field_modifier -> PUBLIC .)
+    PRIVATE         reduce using rule 27 (field_modifier -> PUBLIC .)
+    IDENTIFIER      reduce using rule 27 (field_modifier -> PUBLIC .)
+    INT             reduce using rule 27 (field_modifier -> PUBLIC .)
+    CHAR            reduce using rule 27 (field_modifier -> PUBLIC .)
+    OBJECT          reduce using rule 27 (field_modifier -> PUBLIC .)
+
+
+state 42
+
+    (6) class_declaration -> CLASS IDENTIFIER class_body TERMINATOR .
+
+    CLASS           reduce using rule 6 (class_declaration -> CLASS IDENTIFIER class_body TERMINATOR .)
+    PUBLIC          reduce using rule 6 (class_declaration -> CLASS IDENTIFIER class_body TERMINATOR .)
+    PRIVATE         reduce using rule 6 (class_declaration -> CLASS IDENTIFIER class_body TERMINATOR .)
+    $end            reduce using rule 6 (class_declaration -> CLASS IDENTIFIER class_body TERMINATOR .)
+
+
+state 43
+
+    (5) class_declaration -> class_modifiers CLASS IDENTIFIER class_body TERMINATOR .
+
+    CLASS           reduce using rule 5 (class_declaration -> class_modifiers CLASS IDENTIFIER class_body TERMINATOR .)
+    PUBLIC          reduce using rule 5 (class_declaration -> class_modifiers CLASS IDENTIFIER class_body TERMINATOR .)
+    PRIVATE         reduce using rule 5 (class_declaration -> class_modifiers CLASS IDENTIFIER class_body TERMINATOR .)
+    $end            reduce using rule 5 (class_declaration -> class_modifiers CLASS IDENTIFIER class_body TERMINATOR .)
+
+
+state 44
+
+    (23) field_declaration -> field_modifiers type . variable_declarators TERMINATOR
+    (41) non_array_type -> type .
+    (45) variable_declarators -> . variable_declarator
+    (46) variable_declarators -> . variable_declarators COMMA variable_declarator
+    (47) variable_declarator -> . IDENTIFIER
+    (48) variable_declarator -> . IDENTIFIER EQUALS variable_initializer
+
+    LBRACKET        reduce using rule 41 (non_array_type -> type .)
+    IDENTIFIER      shift and go to state 52
+
+    variable_declarators           shift and go to state 54
+    variable_declarator            shift and go to state 51
+
+state 45
+
+    (26) field_modifiers -> field_modifiers field_modifier .
+
+    PUBLIC          reduce using rule 26 (field_modifiers -> field_modifiers field_modifier .)
+    PRIVATE         reduce using rule 26 (field_modifiers -> field_modifiers field_modifier .)
+    IDENTIFIER      reduce using rule 26 (field_modifiers -> field_modifiers field_modifier .)
+    INT             reduce using rule 26 (field_modifiers -> field_modifiers field_modifier .)
+    CHAR            reduce using rule 26 (field_modifiers -> field_modifiers field_modifier .)
+    OBJECT          reduce using rule 26 (field_modifiers -> field_modifiers field_modifier .)
+
+
+state 46
+
+    (37) proper_identifier -> prefix IDENTIFIER .
+    (39) prefix -> prefix IDENTIFIER . MEMBERACCESS
+
+    IDENTIFIER      reduce using rule 37 (proper_identifier -> prefix IDENTIFIER .)
+    LBRACKET        reduce using rule 37 (proper_identifier -> prefix IDENTIFIER .)
+    MEMBERACCESS    shift and go to state 55
+
+
+state 47
 
     (13) class_body -> LBRACE class_member_declarations RBRACE .
 
@@ -445,7 +946,313 @@ state 24
     PRIVATE         reduce using rule 13 (class_body -> LBRACE class_member_declarations RBRACE .)
     $end            reduce using rule 13 (class_body -> LBRACE class_member_declarations RBRACE .)
 
+
+state 48
+
+    (18) class_member_declarations -> class_member_declarations class_member_declaration .
+
+    RBRACE          reduce using rule 18 (class_member_declarations -> class_member_declarations class_member_declaration .)
+    PUBLIC          reduce using rule 18 (class_member_declarations -> class_member_declarations class_member_declaration .)
+    PRIVATE         reduce using rule 18 (class_member_declarations -> class_member_declarations class_member_declaration .)
+    IDENTIFIER      reduce using rule 18 (class_member_declarations -> class_member_declarations class_member_declaration .)
+    INT             reduce using rule 18 (class_member_declarations -> class_member_declarations class_member_declaration .)
+    CHAR            reduce using rule 18 (class_member_declarations -> class_member_declarations class_member_declaration .)
+    OBJECT          reduce using rule 18 (class_member_declarations -> class_member_declarations class_member_declaration .)
+
+
+state 49
+
+    (38) prefix -> IDENTIFIER MEMBERACCESS .
+
+    IDENTIFIER      reduce using rule 38 (prefix -> IDENTIFIER MEMBERACCESS .)
+
+
+state 50
+
+    (24) field_declaration -> type variable_declarators . TERMINATOR
+    (46) variable_declarators -> variable_declarators . COMMA variable_declarator
+
+    TERMINATOR      shift and go to state 57
+    COMMA           shift and go to state 56
+
+
+state 51
+
+    (45) variable_declarators -> variable_declarator .
+
+    TERMINATOR      reduce using rule 45 (variable_declarators -> variable_declarator .)
+    COMMA           reduce using rule 45 (variable_declarators -> variable_declarator .)
+
+
+state 52
+
+    (47) variable_declarator -> IDENTIFIER .
+    (48) variable_declarator -> IDENTIFIER . EQUALS variable_initializer
+
+    TERMINATOR      reduce using rule 47 (variable_declarator -> IDENTIFIER .)
+    COMMA           reduce using rule 47 (variable_declarator -> IDENTIFIER .)
+    EQUALS          shift and go to state 58
+
+
+state 53
+
+    (40) array_type -> non_array_type LBRACKET . RBRACKET
+
+    RBRACKET        shift and go to state 59
+
+
+state 54
+
+    (23) field_declaration -> field_modifiers type variable_declarators . TERMINATOR
+    (46) variable_declarators -> variable_declarators . COMMA variable_declarator
+
+    TERMINATOR      shift and go to state 60
+    COMMA           shift and go to state 56
+
+
+state 55
+
+    (39) prefix -> prefix IDENTIFIER MEMBERACCESS .
+
+    IDENTIFIER      reduce using rule 39 (prefix -> prefix IDENTIFIER MEMBERACCESS .)
+
+
+state 56
+
+    (46) variable_declarators -> variable_declarators COMMA . variable_declarator
+    (47) variable_declarator -> . IDENTIFIER
+    (48) variable_declarator -> . IDENTIFIER EQUALS variable_initializer
+
+    IDENTIFIER      shift and go to state 52
+
+    variable_declarator            shift and go to state 61
+
+state 57
+
+    (24) field_declaration -> type variable_declarators TERMINATOR .
+
+    RBRACE          reduce using rule 24 (field_declaration -> type variable_declarators TERMINATOR .)
+    PUBLIC          reduce using rule 24 (field_declaration -> type variable_declarators TERMINATOR .)
+    PRIVATE         reduce using rule 24 (field_declaration -> type variable_declarators TERMINATOR .)
+    IDENTIFIER      reduce using rule 24 (field_declaration -> type variable_declarators TERMINATOR .)
+    INT             reduce using rule 24 (field_declaration -> type variable_declarators TERMINATOR .)
+    CHAR            reduce using rule 24 (field_declaration -> type variable_declarators TERMINATOR .)
+    OBJECT          reduce using rule 24 (field_declaration -> type variable_declarators TERMINATOR .)
+
+
+state 58
+
+    (48) variable_declarator -> IDENTIFIER EQUALS . variable_initializer
+    (49) variable_initializer -> . expression
+    (50) variable_initializer -> . array_initializer
+    (51) expression -> . empty
+    (52) array_initializer -> . LBRACE variable_initializer_list RBRACE
+    (53) array_initializer -> . LBRACE RBRACE
+    (54) array_initializer -> . LBRACE variable_initializer_list COMMA RBRACE
+    (60) empty -> .
+
+    LBRACE          shift and go to state 62
+    TERMINATOR      reduce using rule 60 (empty -> .)
+    COMMA           reduce using rule 60 (empty -> .)
+
+    expression                     shift and go to state 64
+    variable_initializer           shift and go to state 63
+    empty                          shift and go to state 65
+    array_initializer              shift and go to state 66
+
+state 59
+
+    (40) array_type -> non_array_type LBRACKET RBRACKET .
+
+    IDENTIFIER      reduce using rule 40 (array_type -> non_array_type LBRACKET RBRACKET .)
+    LBRACKET        reduce using rule 40 (array_type -> non_array_type LBRACKET RBRACKET .)
+
+
+state 60
+
+    (23) field_declaration -> field_modifiers type variable_declarators TERMINATOR .
+
+    RBRACE          reduce using rule 23 (field_declaration -> field_modifiers type variable_declarators TERMINATOR .)
+    PUBLIC          reduce using rule 23 (field_declaration -> field_modifiers type variable_declarators TERMINATOR .)
+    PRIVATE         reduce using rule 23 (field_declaration -> field_modifiers type variable_declarators TERMINATOR .)
+    IDENTIFIER      reduce using rule 23 (field_declaration -> field_modifiers type variable_declarators TERMINATOR .)
+    INT             reduce using rule 23 (field_declaration -> field_modifiers type variable_declarators TERMINATOR .)
+    CHAR            reduce using rule 23 (field_declaration -> field_modifiers type variable_declarators TERMINATOR .)
+    OBJECT          reduce using rule 23 (field_declaration -> field_modifiers type variable_declarators TERMINATOR .)
+
+
+state 61
+
+    (46) variable_declarators -> variable_declarators COMMA variable_declarator .
+
+    TERMINATOR      reduce using rule 46 (variable_declarators -> variable_declarators COMMA variable_declarator .)
+    COMMA           reduce using rule 46 (variable_declarators -> variable_declarators COMMA variable_declarator .)
+
+
+state 62
+
+    (52) array_initializer -> LBRACE . variable_initializer_list RBRACE
+    (53) array_initializer -> LBRACE . RBRACE
+    (54) array_initializer -> LBRACE . variable_initializer_list COMMA RBRACE
+    (55) variable_initializer_list -> . variable_initializer
+    (56) variable_initializer_list -> . variable_initializer_list COMMA variable_initializer
+    (49) variable_initializer -> . expression
+    (50) variable_initializer -> . array_initializer
+    (51) expression -> . empty
+    (52) array_initializer -> . LBRACE variable_initializer_list RBRACE
+    (53) array_initializer -> . LBRACE RBRACE
+    (54) array_initializer -> . LBRACE variable_initializer_list COMMA RBRACE
+    (60) empty -> .
+
+  ! shift/reduce conflict for RBRACE resolved as shift
+    RBRACE          shift and go to state 67
+    LBRACE          shift and go to state 62
+    COMMA           reduce using rule 60 (empty -> .)
+
+  ! RBRACE          [ reduce using rule 60 (empty -> .) ]
+
+    array_initializer              shift and go to state 66
+    expression                     shift and go to state 64
+    variable_initializer_list      shift and go to state 69
+    empty                          shift and go to state 65
+    variable_initializer           shift and go to state 68
+
+state 63
+
+    (48) variable_declarator -> IDENTIFIER EQUALS variable_initializer .
+
+    TERMINATOR      reduce using rule 48 (variable_declarator -> IDENTIFIER EQUALS variable_initializer .)
+    COMMA           reduce using rule 48 (variable_declarator -> IDENTIFIER EQUALS variable_initializer .)
+
+
+state 64
+
+    (49) variable_initializer -> expression .
+
+    TERMINATOR      reduce using rule 49 (variable_initializer -> expression .)
+    COMMA           reduce using rule 49 (variable_initializer -> expression .)
+    RBRACE          reduce using rule 49 (variable_initializer -> expression .)
+
+
+state 65
+
+    (51) expression -> empty .
+
+    RBRACE          reduce using rule 51 (expression -> empty .)
+    COMMA           reduce using rule 51 (expression -> empty .)
+    TERMINATOR      reduce using rule 51 (expression -> empty .)
+
+
+state 66
+
+    (50) variable_initializer -> array_initializer .
+
+    TERMINATOR      reduce using rule 50 (variable_initializer -> array_initializer .)
+    COMMA           reduce using rule 50 (variable_initializer -> array_initializer .)
+    RBRACE          reduce using rule 50 (variable_initializer -> array_initializer .)
+
+
+state 67
+
+    (53) array_initializer -> LBRACE RBRACE .
+
+    TERMINATOR      reduce using rule 53 (array_initializer -> LBRACE RBRACE .)
+    COMMA           reduce using rule 53 (array_initializer -> LBRACE RBRACE .)
+    RBRACE          reduce using rule 53 (array_initializer -> LBRACE RBRACE .)
+
+
+state 68
+
+    (55) variable_initializer_list -> variable_initializer .
+
+    RBRACE          reduce using rule 55 (variable_initializer_list -> variable_initializer .)
+    COMMA           reduce using rule 55 (variable_initializer_list -> variable_initializer .)
+
+
+state 69
+
+    (52) array_initializer -> LBRACE variable_initializer_list . RBRACE
+    (54) array_initializer -> LBRACE variable_initializer_list . COMMA RBRACE
+    (56) variable_initializer_list -> variable_initializer_list . COMMA variable_initializer
+
+    RBRACE          shift and go to state 71
+    COMMA           shift and go to state 70
+
+
+state 70
+
+    (54) array_initializer -> LBRACE variable_initializer_list COMMA . RBRACE
+    (56) variable_initializer_list -> variable_initializer_list COMMA . variable_initializer
+    (49) variable_initializer -> . expression
+    (50) variable_initializer -> . array_initializer
+    (51) expression -> . empty
+    (52) array_initializer -> . LBRACE variable_initializer_list RBRACE
+    (53) array_initializer -> . LBRACE RBRACE
+    (54) array_initializer -> . LBRACE variable_initializer_list COMMA RBRACE
+    (60) empty -> .
+
+  ! shift/reduce conflict for RBRACE resolved as shift
+    RBRACE          shift and go to state 72
+    LBRACE          shift and go to state 62
+    COMMA           reduce using rule 60 (empty -> .)
+
+  ! RBRACE          [ reduce using rule 60 (empty -> .) ]
+
+    array_initializer              shift and go to state 66
+    expression                     shift and go to state 64
+    empty                          shift and go to state 65
+    variable_initializer           shift and go to state 73
+
+state 71
+
+    (52) array_initializer -> LBRACE variable_initializer_list RBRACE .
+
+    TERMINATOR      reduce using rule 52 (array_initializer -> LBRACE variable_initializer_list RBRACE .)
+    COMMA           reduce using rule 52 (array_initializer -> LBRACE variable_initializer_list RBRACE .)
+    RBRACE          reduce using rule 52 (array_initializer -> LBRACE variable_initializer_list RBRACE .)
+
+
+state 72
+
+    (54) array_initializer -> LBRACE variable_initializer_list COMMA RBRACE .
+
+    TERMINATOR      reduce using rule 54 (array_initializer -> LBRACE variable_initializer_list COMMA RBRACE .)
+    COMMA           reduce using rule 54 (array_initializer -> LBRACE variable_initializer_list COMMA RBRACE .)
+    RBRACE          reduce using rule 54 (array_initializer -> LBRACE variable_initializer_list COMMA RBRACE .)
+
+
+state 73
+
+    (56) variable_initializer_list -> variable_initializer_list COMMA variable_initializer .
+
+    RBRACE          reduce using rule 56 (variable_initializer_list -> variable_initializer_list COMMA variable_initializer .)
+    COMMA           reduce using rule 56 (variable_initializer_list -> variable_initializer_list COMMA variable_initializer .)
+
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
-WARNING: shift/reduce conflict for RBRACE in state 16 resolved as shift
+WARNING: shift/reduce conflict for RBRACE in state 14 resolved as shift
+WARNING: shift/reduce conflict for PUBLIC in state 14 resolved as shift
+WARNING: shift/reduce conflict for PRIVATE in state 14 resolved as shift
+WARNING: shift/reduce conflict for IDENTIFIER in state 14 resolved as shift
+WARNING: shift/reduce conflict for INT in state 14 resolved as shift
+WARNING: shift/reduce conflict for CHAR in state 14 resolved as shift
+WARNING: shift/reduce conflict for OBJECT in state 14 resolved as shift
+WARNING: shift/reduce conflict for RBRACE in state 29 resolved as shift
+WARNING: shift/reduce conflict for PUBLIC in state 29 resolved as shift
+WARNING: shift/reduce conflict for PRIVATE in state 29 resolved as shift
+WARNING: shift/reduce conflict for IDENTIFIER in state 29 resolved as shift
+WARNING: shift/reduce conflict for INT in state 29 resolved as shift
+WARNING: shift/reduce conflict for CHAR in state 29 resolved as shift
+WARNING: shift/reduce conflict for OBJECT in state 29 resolved as shift
+WARNING: shift/reduce conflict for RBRACE in state 62 resolved as shift
+WARNING: shift/reduce conflict for RBRACE in state 70 resolved as shift
+WARNING: reduce/reduce conflict in state 30 resolved using rule (proper_identifier -> IDENTIFIER)
+WARNING: rejected rule (type_parameter -> IDENTIFIER) in state 30
+WARNING: reduce/reduce conflict in state 32 resolved using rule (method_declaration -> empty)
+WARNING: rejected rule (constructor_declaration -> empty) in state 32
+WARNING: reduce/reduce conflict in state 32 resolved using rule (method_declaration -> empty)
+WARNING: rejected rule (destructor_declaration -> empty) in state 32
+WARNING: Rule (type_parameter -> IDENTIFIER) is never reduced
+WARNING: Rule (constructor_declaration -> empty) is never reduced
+WARNING: Rule (destructor_declaration -> empty) is never reduced

@@ -5,9 +5,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'compilation_unitleftCONORleftCONANDleftORleftXORleftANDleftEQNEleftGTGEQLTLEQleftRSHIFTLSHIFTleftPLUSMINUSleftTIMESDIVIDEMODrightTILDELNOTleftMEMBERACCESSINCREMENTDECREMENTIDENTIFIER INTCONST CHARCONST STRCONST MEMBERACCESS INCREMENT DECREMENT LNOT TILDE TIMES DIVIDE MOD PLUS MINUS LSHIFT RSHIFT EQUALS PLUSEQUAL MINUSEQUAL NEWLINE COMMENTDELIM COMMENTSLINE SINGLEQUOTE DOUBLEQUOTE BACKSLASH LT GT LEQ GEQ EQ NE LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET COMMA TERMINATOR COLON AND XOR OR CONAND CONOR BREAK SHORT RETURN STRING INT VOID OBJECT NULL GOTO PRIVATE PUBLIC CHAR WHILE CONTINUE USING NEW SIZEOF ELSE CLASS IFstart : compilation_unit\n\tcompilation_unit : class_declarations\n\tclass_declarations : class_declarations class_declaration \n\t\t\t\t\t\t\t| class_declaration\n\n\tclass_declaration : class_modifiers CLASS identifier class_body TERMINATOR\n\t\t\t\t\t\t\t| CLASS identifier class_body TERMINATOR\n\t\t\t\t\t\t\t| CLASS identifier class_body\n\t\t\t\t\t\t\t| class_modifiers CLASS identifier class_body\n\tclass_modifiers : class_modifier\n\t\t\t\t\t\t| class_modifiers class_modifier\n\tclass_modifier : PUBLIC\n\t\t\t\t\t\t| PRIVATE\n\tclass_body : LBRACE class_member_declarations RBRACE \n\t\t\t\t\t| LBRACE RBRACE\n\tidentifier : available_identifier\n\tavailable_identifier : IDENTIFIER\n\tclass_member_declarations : empty\n\tempty : \n\t'
+_lr_signature = 'compilation_unitleftCONORleftCONANDleftORleftXORleftANDleftEQNEleftGTGEQLTLEQleftRSHIFTLSHIFTleftPLUSMINUSleftTIMESDIVIDEMODrightTILDELNOTleftMEMBERACCESSINCREMENTDECREMENTIDENTIFIER INTCONST CHARCONST STRCONST MEMBERACCESS INCREMENT DECREMENT LNOT TILDE TIMES DIVIDE MOD PLUS MINUS LSHIFT RSHIFT EQUALS PLUSEQUAL MINUSEQUAL NEWLINE COMMENTDELIM COMMENTSLINE SINGLEQUOTE DOUBLEQUOTE BACKSLASH LT GT LEQ GEQ EQ NE LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET COMMA TERMINATOR COLON AND XOR OR CONAND CONOR BREAK SHORT RETURN STRING INT VOID OBJECT NULL GOTO PRIVATE PUBLIC CHAR WHILE CONTINUE USING NEW SIZEOF ELSE CLASS IFstart : compilation_unit\n\tcompilation_unit : class_declarations\n\tclass_declarations : class_declarations class_declaration \n\t\t\t\t\t\t\t| class_declaration\n\n\tclass_declaration : class_modifiers CLASS IDENTIFIER class_body TERMINATOR\n\t\t\t\t\t\t\t| CLASS IDENTIFIER class_body TERMINATOR\n\t\t\t\t\t\t\t| CLASS IDENTIFIER class_body\n\t\t\t\t\t\t\t| class_modifiers CLASS IDENTIFIER class_body\n\tclass_modifiers : class_modifier\n\t\t\t\t\t\t| class_modifiers class_modifier\n\tclass_modifier : PUBLIC\n\t\t\t\t\t\t| PRIVATE\n\tclass_body : LBRACE class_member_declarations RBRACE \n\t\t\t\t\t| LBRACE RBRACE\n\tidentifier : available_identifier\n\tavailable_identifier : IDENTIFIER\n\tclass_member_declarations : class_member_declaration\n\t\t\t\t\t\t\t\t\t| class_member_declarations class_member_declaration\n\tclass_member_declaration : field_declaration\n\t\t\t\t\t\t\t\t\t| method_declaration\n\t\t\t\t\t\t\t\t\t| constructor_declaration\n\t\t\t\t\t\t\t\t\t| destructor_declaration\n\tfield_declaration : field_modifiers type variable_declarators TERMINATOR\n\t\t\t\t\t\t\t| type variable_declarators TERMINATOR\n\tfield_modifiers : field_modifier\n\t\t\t\t\t\t| field_modifiers field_modifier\n\tfield_modifier : PUBLIC \n\t\t\t\t\t\t| PRIVATE\n\ttype : reference_type\n\t\t\t| type_parameter\n\treference_type : class_type\n\t\t\t\t\t\t| array_type\n\tclass_type : type_name\n\t\t\t\t\t| OBJECT\n\ttype_name : proper_identifier\n\tproper_identifier : IDENTIFIER\n\t\t\t\t\t\t\t| prefix IDENTIFIER\n\tprefix : IDENTIFIER MEMBERACCESS \n\t\t| prefix IDENTIFIER MEMBERACCESS \n\tarray_type : non_array_type LBRACKET RBRACKET\n\tnon_array_type : type\n\ttype_parameter : IDENTIFIER\n\t\t\t\t\t\t| INT\n\t\t\t\t\t\t| CHAR\n\tvariable_declarators : variable_declarator\n\t\t\t\t\t\t\t| variable_declarators COMMA variable_declarator\n\tvariable_declarator : IDENTIFIER\n\t\t\t\t\t\t\t| IDENTIFIER EQUALS variable_initializer\n\tvariable_initializer : expression\n\t\t\t\t\t\t\t| array_initializer\n\texpression : empty\n\tarray_initializer : LBRACE variable_initializer_list RBRACE\n\t\t\t\t\t\t\t| LBRACE RBRACE \n\t\t\t\t\t\t\t| LBRACE variable_initializer_list COMMA RBRACE\n\tvariable_initializer_list : variable_initializer\n\t\t\t\t\t\t\t\t\t| variable_initializer_list COMMA variable_initializer\n\tmethod_declaration : empty\n\tdestructor_declaration : empty\n\tconstructor_declaration : empty\n\tempty : \n\t'
     
-_lr_action_items = {'LBRACE':([12,13,14,15,],[-15,-16,16,16,]),'RBRACE':([16,19,21,],[20,24,-17,]),'PRIVATE':([0,1,2,4,5,6,7,9,10,17,18,20,22,23,24,],[2,2,-12,-11,-4,-9,2,-3,-10,-7,-8,-14,-6,-5,-13,]),'PUBLIC':([0,1,2,4,5,6,7,9,10,17,18,20,22,23,24,],[4,4,-12,-11,-4,-9,4,-3,-10,-7,-8,-14,-6,-5,-13,]),'TERMINATOR':([17,18,20,24,],[22,23,-14,-13,]),'IDENTIFIER':([8,11,],[13,13,]),'CLASS':([0,1,2,4,5,6,7,9,10,17,18,20,22,23,24,],[8,8,-12,-11,-4,-9,11,-3,-10,-7,-8,-14,-6,-5,-13,]),'$end':([1,3,5,9,17,18,20,22,23,24,],[-2,0,-4,-3,-7,-8,-14,-6,-5,-13,]),}
+_lr_action_items = {'LBRACKET':([19,20,21,23,24,26,27,30,31,34,35,38,44,46,59,],[-34,-35,-44,-30,-31,-33,-29,-36,-41,53,-32,-43,-41,-37,-40,]),'LBRACE':([12,13,58,62,70,],[14,14,62,62,62,]),'RBRACE':([14,18,25,29,32,37,39,40,48,57,60,62,64,65,66,67,68,69,70,71,72,73,],[33,-20,-21,47,-57,-17,-19,-22,-18,-24,-23,67,-49,-51,-50,-53,-55,71,72,-52,-54,-56,]),'INT':([14,17,18,25,28,29,32,36,37,39,40,41,45,48,57,60,],[38,38,-20,-21,-28,38,-57,-25,-17,-19,-22,-27,-26,-18,-24,-23,]),'OBJECT':([14,17,18,25,28,29,32,36,37,39,40,41,45,48,57,60,],[19,19,-20,-21,-28,19,-57,-25,-17,-19,-22,-27,-26,-18,-24,-23,]),'EQUALS':([52,],[58,]),'PRIVATE':([0,1,2,4,5,6,7,9,10,14,15,16,17,18,25,28,29,32,33,36,37,39,40,41,42,43,45,47,48,57,60,],[2,2,-12,-11,-4,-9,2,-3,-10,28,-7,-8,28,-20,-21,-28,28,-57,-14,-25,-17,-19,-22,-27,-6,-5,-26,-13,-18,-24,-23,]),'PUBLIC':([0,1,2,4,5,6,7,9,10,14,15,16,17,18,25,28,29,32,33,36,37,39,40,41,42,43,45,47,48,57,60,],[4,4,-12,-11,-4,-9,4,-3,-10,41,-7,-8,41,-20,-21,-28,41,-57,-14,-25,-17,-19,-22,-27,-6,-5,-26,-13,-18,-24,-23,]),'CHAR':([14,17,18,25,28,29,32,36,37,39,40,41,45,48,57,60,],[21,21,-20,-21,-28,21,-57,-25,-17,-19,-22,-27,-26,-18,-24,-23,]),'COMMA':([50,51,52,54,58,61,62,63,64,65,66,67,68,69,70,71,72,73,],[56,-45,-47,56,-60,-46,-60,-48,-49,-51,-50,-53,-55,70,-60,-52,-54,-56,]),'TERMINATOR':([15,16,33,47,50,51,52,54,58,61,63,64,65,66,67,71,72,],[42,43,-14,-13,57,-45,-47,60,-60,-46,-48,-49,-51,-50,-53,-52,-54,]),'RBRACKET':([53,],[59,]),'IDENTIFIER':([8,11,14,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,35,36,37,38,39,40,41,44,45,46,48,49,55,56,57,59,60,],[12,13,30,30,-20,-34,-35,-44,46,-30,-31,-21,-33,-29,-28,30,-36,52,-57,-32,-25,-17,-43,-19,-22,-27,52,-26,-37,-18,-38,-39,52,-24,-40,-23,]),'MEMBERACCESS':([30,46,],[49,55,]),'CLASS':([0,1,2,4,5,6,7,9,10,15,16,33,42,43,47,],[8,8,-12,-11,-4,-9,11,-3,-10,-7,-8,-14,-6,-5,-13,]),'$end':([1,3,5,9,15,16,33,42,43,47,],[-2,0,-4,-3,-7,-8,-14,-6,-5,-13,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -16,7 +16,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'available_identifier':([8,11,],[12,12,]),'class_declarations':([0,],[1,]),'class_body':([14,15,],[17,18,]),'compilation_unit':([0,],[3,]),'class_declaration':([0,1,],[5,9,]),'class_modifier':([0,1,7,],[6,6,10,]),'class_member_declarations':([16,],[19,]),'identifier':([8,11,],[14,15,]),'class_modifiers':([0,1,],[7,7,]),'empty':([16,],[21,]),}
+_lr_goto_items = {'field_modifiers':([14,29,],[17,17,]),'variable_declarators':([31,44,],[50,54,]),'class_declarations':([0,],[1,]),'method_declaration':([14,29,],[18,18,]),'proper_identifier':([14,17,29,],[20,20,20,]),'class_modifier':([0,1,7,],[6,6,10,]),'prefix':([14,17,29,],[22,22,22,]),'variable_initializer_list':([62,],[69,]),'type_parameter':([14,17,29,],[23,23,23,]),'constructor_declaration':([14,29,],[25,25,]),'type_name':([14,17,29,],[26,26,26,]),'reference_type':([14,17,29,],[27,27,27,]),'variable_declarator':([31,44,56,],[51,51,61,]),'variable_initializer':([58,62,70,],[63,68,73,]),'class_member_declarations':([14,],[29,]),'type':([14,17,29,],[31,44,31,]),'empty':([14,29,58,62,70,],[32,32,65,65,65,]),'class_type':([14,17,29,],[24,24,24,]),'non_array_type':([14,17,29,],[34,34,34,]),'class_body':([12,13,],[15,16,]),'compilation_unit':([0,],[3,]),'array_type':([14,17,29,],[35,35,35,]),'field_modifier':([14,17,29,],[36,45,36,]),'array_initializer':([58,62,70,],[66,66,66,]),'class_member_declaration':([14,29,],[37,48,]),'expression':([58,62,70,],[64,64,64,]),'class_declaration':([0,1,],[5,9,]),'field_declaration':([14,29,],[39,39,]),'destructor_declaration':([14,29,],[40,40,]),'class_modifiers':([0,1,],[7,7,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -30,10 +30,10 @@ _lr_productions = [
   ('compilation_unit -> class_declarations','compilation_unit',1,'p_compilation_unit','parser.py',34),
   ('class_declarations -> class_declarations class_declaration','class_declarations',2,'p_class_declarations','parser.py',38),
   ('class_declarations -> class_declaration','class_declarations',1,'p_class_declarations','parser.py',39),
-  ('class_declaration -> class_modifiers CLASS identifier class_body TERMINATOR','class_declaration',5,'p_class_declaration','parser.py',43),
-  ('class_declaration -> CLASS identifier class_body TERMINATOR','class_declaration',4,'p_class_declaration','parser.py',44),
-  ('class_declaration -> CLASS identifier class_body','class_declaration',3,'p_class_declaration','parser.py',45),
-  ('class_declaration -> class_modifiers CLASS identifier class_body','class_declaration',4,'p_class_declaration','parser.py',46),
+  ('class_declaration -> class_modifiers CLASS IDENTIFIER class_body TERMINATOR','class_declaration',5,'p_class_declaration','parser.py',43),
+  ('class_declaration -> CLASS IDENTIFIER class_body TERMINATOR','class_declaration',4,'p_class_declaration','parser.py',44),
+  ('class_declaration -> CLASS IDENTIFIER class_body','class_declaration',3,'p_class_declaration','parser.py',45),
+  ('class_declaration -> class_modifiers CLASS IDENTIFIER class_body','class_declaration',4,'p_class_declaration','parser.py',46),
   ('class_modifiers -> class_modifier','class_modifiers',1,'p_class_modifiers','parser.py',49),
   ('class_modifiers -> class_modifiers class_modifier','class_modifiers',2,'p_class_modifiers','parser.py',50),
   ('class_modifier -> PUBLIC','class_modifier',1,'p_class_modifier','parser.py',53),
@@ -42,6 +42,48 @@ _lr_productions = [
   ('class_body -> LBRACE RBRACE','class_body',2,'p_class_body','parser.py',59),
   ('identifier -> available_identifier','identifier',1,'p_identifier','parser.py',63),
   ('available_identifier -> IDENTIFIER','available_identifier',1,'p_available_identifier','parser.py',67),
-  ('class_member_declarations -> empty','class_member_declarations',1,'p_class_member_declarations','parser.py',75),
-  ('empty -> <empty>','empty',0,'p_empty','parser.py',85),
+  ('class_member_declarations -> class_member_declaration','class_member_declarations',1,'p_class_member_declarations','parser.py',71),
+  ('class_member_declarations -> class_member_declarations class_member_declaration','class_member_declarations',2,'p_class_member_declarations','parser.py',72),
+  ('class_member_declaration -> field_declaration','class_member_declaration',1,'p_class_member_declaration','parser.py',76),
+  ('class_member_declaration -> method_declaration','class_member_declaration',1,'p_class_member_declaration','parser.py',77),
+  ('class_member_declaration -> constructor_declaration','class_member_declaration',1,'p_class_member_declaration','parser.py',78),
+  ('class_member_declaration -> destructor_declaration','class_member_declaration',1,'p_class_member_declaration','parser.py',79),
+  ('field_declaration -> field_modifiers type variable_declarators TERMINATOR','field_declaration',4,'p_field_declaration','parser.py',83),
+  ('field_declaration -> type variable_declarators TERMINATOR','field_declaration',3,'p_field_declaration','parser.py',84),
+  ('field_modifiers -> field_modifier','field_modifiers',1,'p_field_modifiers','parser.py',88),
+  ('field_modifiers -> field_modifiers field_modifier','field_modifiers',2,'p_field_modifiers','parser.py',89),
+  ('field_modifier -> PUBLIC','field_modifier',1,'p_field_modifier','parser.py',93),
+  ('field_modifier -> PRIVATE','field_modifier',1,'p_field_modifier','parser.py',94),
+  ('type -> reference_type','type',1,'p_type','parser.py',98),
+  ('type -> type_parameter','type',1,'p_type','parser.py',99),
+  ('reference_type -> class_type','reference_type',1,'p_reference_type','parser.py',102),
+  ('reference_type -> array_type','reference_type',1,'p_reference_type','parser.py',103),
+  ('class_type -> type_name','class_type',1,'p_class_type','parser.py',106),
+  ('class_type -> OBJECT','class_type',1,'p_class_type','parser.py',107),
+  ('type_name -> proper_identifier','type_name',1,'p_type_name','parser.py',111),
+  ('proper_identifier -> IDENTIFIER','proper_identifier',1,'p_proper_identifier','parser.py',115),
+  ('proper_identifier -> prefix IDENTIFIER','proper_identifier',2,'p_proper_identifier','parser.py',116),
+  ('prefix -> IDENTIFIER MEMBERACCESS','prefix',2,'p_prefix','parser.py',120),
+  ('prefix -> prefix IDENTIFIER MEMBERACCESS','prefix',3,'p_prefix','parser.py',121),
+  ('array_type -> non_array_type LBRACKET RBRACKET','array_type',3,'p_array_type','parser.py',125),
+  ('non_array_type -> type','non_array_type',1,'p_non_array_type','parser.py',129),
+  ('type_parameter -> IDENTIFIER','type_parameter',1,'p_type_parameter','parser.py',133),
+  ('type_parameter -> INT','type_parameter',1,'p_type_parameter','parser.py',134),
+  ('type_parameter -> CHAR','type_parameter',1,'p_type_parameter','parser.py',135),
+  ('variable_declarators -> variable_declarator','variable_declarators',1,'p_variable_declarators','parser.py',149),
+  ('variable_declarators -> variable_declarators COMMA variable_declarator','variable_declarators',3,'p_variable_declarators','parser.py',150),
+  ('variable_declarator -> IDENTIFIER','variable_declarator',1,'p_variable_declarator','parser.py',153),
+  ('variable_declarator -> IDENTIFIER EQUALS variable_initializer','variable_declarator',3,'p_variable_declarator','parser.py',154),
+  ('variable_initializer -> expression','variable_initializer',1,'p_variable_initializer','parser.py',158),
+  ('variable_initializer -> array_initializer','variable_initializer',1,'p_variable_initializer','parser.py',159),
+  ('expression -> empty','expression',1,'p_expression','parser.py',163),
+  ('array_initializer -> LBRACE variable_initializer_list RBRACE','array_initializer',3,'p_array_initializer','parser.py',176),
+  ('array_initializer -> LBRACE RBRACE','array_initializer',2,'p_array_initializer','parser.py',177),
+  ('array_initializer -> LBRACE variable_initializer_list COMMA RBRACE','array_initializer',4,'p_array_initializer','parser.py',178),
+  ('variable_initializer_list -> variable_initializer','variable_initializer_list',1,'p_variable_initializer_list','parser.py',182),
+  ('variable_initializer_list -> variable_initializer_list COMMA variable_initializer','variable_initializer_list',3,'p_variable_initializer_list','parser.py',183),
+  ('method_declaration -> empty','method_declaration',1,'p_method_declaration','parser.py',193),
+  ('destructor_declaration -> empty','destructor_declaration',1,'p_destructor_declaration','parser.py',196),
+  ('constructor_declaration -> empty','constructor_declaration',1,'p_constructor_declaration','parser.py',199),
+  ('empty -> <empty>','empty',0,'p_empty','parser.py',202),
 ]

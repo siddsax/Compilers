@@ -23,33 +23,111 @@ Stack  : class_modifiers CLASS . LexToken(IDENTIFIER,'goal',4,13)
 Action : Shift and goto state 13
 
 State  : 13
-Defaulted state 13: Reduce using 16
-Stack  : class_modifiers CLASS IDENTIFIER . None
-Action : Reduce rule [available_identifier -> IDENTIFIER] with ['goal'] and goto state 12
+Stack  : class_modifiers CLASS IDENTIFIER . LexToken(LBRACE,'{',5,18)
+Action : Shift and goto state 14
+
+State  : 14
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE . LexToken(PUBLIC,'public',6,24)
+Action : Shift and goto state 41
+
+State  : 41
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE PUBLIC . LexToken(IDENTIFIER,'dog',6,31)
+Action : Reduce rule [field_modifier -> PUBLIC] with ['public'] and goto state 36
 Result : <NoneType @ 0x8ff8d0> (None)
 
-State  : 12
-Defaulted state 12: Reduce using 15
-Stack  : class_modifiers CLASS available_identifier . None
-Action : Reduce rule [identifier -> available_identifier] with [None] and goto state 15
+State  : 36
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE field_modifier . LexToken(IDENTIFIER,'dog',6,31)
+Action : Reduce rule [field_modifiers -> field_modifier] with [None] and goto state 17
 Result : <NoneType @ 0x8ff8d0> (None)
 
-State  : 15
-Stack  : class_modifiers CLASS identifier . LexToken(LBRACE,'{',5,18)
-Action : Shift and goto state 16
+State  : 17
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE field_modifiers . LexToken(IDENTIFIER,'dog',6,31)
+Action : Shift and goto state 30
 
-State  : 16
-Stack  : class_modifiers CLASS identifier LBRACE . LexToken(RBRACE,'}',7,21)
-Action : Shift and goto state 20
+State  : 30
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE field_modifiers IDENTIFIER . LexToken(MEMBERACCESS,'.',6,34)
+Action : Shift and goto state 49
+
+State  : 49
+Defaulted state 49: Reduce using 38
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE field_modifiers IDENTIFIER MEMBERACCESS . None
+Action : Reduce rule [prefix -> IDENTIFIER MEMBERACCESS] with ['dog','.'] and goto state 22
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 22
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE field_modifiers prefix . LexToken(IDENTIFIER,'fint',6,35)
+Action : Shift and goto state 46
+
+State  : 46
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE field_modifiers prefix IDENTIFIER . LexToken(IDENTIFIER,'rupee',6,40)
+Action : Reduce rule [proper_identifier -> prefix IDENTIFIER] with [None,'fint'] and goto state 20
+Result : <NoneType @ 0x8ff8d0> (None)
 
 State  : 20
-Stack  : class_modifiers CLASS identifier LBRACE RBRACE . $end
-Action : Reduce rule [class_body -> LBRACE RBRACE] with ['{','}'] and goto state 18
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE field_modifiers proper_identifier . LexToken(IDENTIFIER,'rupee',6,40)
+Action : Reduce rule [type_name -> proper_identifier] with [None] and goto state 26
 Result : <NoneType @ 0x8ff8d0> (None)
 
-State  : 18
-Stack  : class_modifiers CLASS identifier class_body . $end
-Action : Reduce rule [class_declaration -> class_modifiers CLASS identifier class_body] with [None,'class',None,None] and goto state 5
+State  : 26
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE field_modifiers type_name . LexToken(IDENTIFIER,'rupee',6,40)
+Action : Reduce rule [class_type -> type_name] with [None] and goto state 24
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 24
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE field_modifiers class_type . LexToken(IDENTIFIER,'rupee',6,40)
+Action : Reduce rule [reference_type -> class_type] with [None] and goto state 27
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 27
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE field_modifiers reference_type . LexToken(IDENTIFIER,'rupee',6,40)
+Action : Reduce rule [type -> reference_type] with [None] and goto state 44
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 44
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE field_modifiers type . LexToken(IDENTIFIER,'rupee',6,40)
+Action : Shift and goto state 52
+
+State  : 52
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE field_modifiers type IDENTIFIER . LexToken(TERMINATOR,';',6,46)
+Action : Reduce rule [variable_declarator -> IDENTIFIER] with ['rupee'] and goto state 51
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 51
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE field_modifiers type variable_declarator . LexToken(TERMINATOR,';',6,46)
+Action : Reduce rule [variable_declarators -> variable_declarator] with [None] and goto state 54
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 54
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE field_modifiers type variable_declarators . LexToken(TERMINATOR,';',6,46)
+Action : Shift and goto state 60
+
+State  : 60
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE field_modifiers type variable_declarators TERMINATOR . LexToken(RBRACE,'}',7,48)
+Action : Reduce rule [field_declaration -> field_modifiers type variable_declarators TERMINATOR] with [None,None,None,';'] and goto state 39
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 39
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE field_declaration . LexToken(RBRACE,'}',7,48)
+Action : Reduce rule [class_member_declaration -> field_declaration] with [None] and goto state 37
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 37
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declaration . LexToken(RBRACE,'}',7,48)
+Action : Reduce rule [class_member_declarations -> class_member_declaration] with [None] and goto state 29
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 29
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations . LexToken(RBRACE,'}',7,48)
+Action : Shift and goto state 47
+
+State  : 47
+Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations RBRACE . $end
+Action : Reduce rule [class_body -> LBRACE class_member_declarations RBRACE] with ['{',None,'}'] and goto state 16
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 16
+Stack  : class_modifiers CLASS IDENTIFIER class_body . $end
+Action : Reduce rule [class_declaration -> class_modifiers CLASS IDENTIFIER class_body] with [None,'class','goal',None] and goto state 5
 Result : <NoneType @ 0x8ff8d0> (None)
 
 State  : 5

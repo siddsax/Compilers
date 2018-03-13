@@ -88,12 +88,14 @@ right_shift =     '>>';
 
 (*B.2.2 Types*)
 type =     reference_type| type_parameter;
-simple_type =     numeric_type;
-numeric_type =     integral_type| 'decimal';
-integral_type =     'int' | 'char';
+(* simple_type =     numeric_type; *)
+(* numeric_type =     integral_type| 'decimal';
+integral_type =     'int' | 'char'; *)
 reference_type =     class_type| array_type;
 class_type =     type_name| 'object';
-
+type_name = proper_identifier;
+proper_identifier = identifier | prefix, identifier;
+prefix = identifier, '.' | prefix, identifier, '.';
 (*B.2.3 Variables*)
 variable_reference =  expression;
 
@@ -170,12 +172,12 @@ class_modifier =     'public'| 'private';
 class_body =     '{', [class_member_declarations], '}';
 class_member_declarations =     class_member_declaration| class_member_declarations, class_member_declaration;
 class_member_declaration =  field_declaration| method_declaration| constructor_declaration| destructor_declaration;
-field_declaration =     [attributes], [field_modifiers], type, variable_declarators, ';';
+field_declaration =     [field_modifiers], type, variable_declarators, ';';
 field_modifiers =     field_modifier| field_modifiers, field_modifier;
 field_modifier =     'public'| 'private';
-variable_declarators =     variable_declarator| variable_declarators, ',', variable_declarator;
-variable_declarator =     identifier| identifier, '=', variable_initializer;
-variable_initializer =     expression| array_initializer;
+(* variable_declarators =     variable_declarator| variable_declarators, ',', variable_declarator; *)
+(* variable_declarator =     identifier| identifier, '=', variable_initializer; *)
+(* variable_initializer =     expression| array_initializer; *)
 method_declaration =     method_header, method_body;
 method_header =     [method_modifiers],  return_type, member_name, '(', [formal_parameter_list], ')';
 method_modifiers =     method_modifier| method_modifiers, method_modifier;
@@ -197,4 +199,4 @@ destructor_body =     block | ';';
 array_type =     non_array_type, ‘[‘, ‘]’;
 non_array_type =  type;
 array_initializer =  '{', [variable_initializer_list], '}' | '{', variable_initializer_list, ',', '}';
-variable_initializer_list = variable_initializer| variable_initializer_list, ',', variable_initializer;
+(* variable_initializer_list = variable_initializer| variable_initializer_list, ',', variable_initializer; *)
