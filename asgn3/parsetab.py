@@ -5,9 +5,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'compilation_unitleftCONORleftCONANDleftORleftXORleftANDleftEQNEleftGTGEQLTLEQleftRSHIFTLSHIFTleftPLUSMINUSleftTIMESDIVIDEMODrightTILDELNOTleftMEMBERACCESSINCREMENTDECREMENTIDENTIFIER INTCONST CHARCONST STRCONST MEMBERACCESS INCREMENT DECREMENT LNOT TILDE TIMES DIVIDE MOD PLUS MINUS LSHIFT RSHIFT EQUALS PLUSEQUAL MINUSEQUAL NEWLINE COMMENTDELIM COMMENTSLINE SINGLEQUOTE DOUBLEQUOTE BACKSLASH LT GT LEQ GEQ EQ NE LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET COMMA TERMINATOR COLON AND XOR OR CONAND CONOR BREAK SHORT RETURN STRING INT VOID OBJECT NULL GOTO PRIVATE PUBLIC CHAR WHILE CONTINUE USING NEW SIZEOF ELSE CLASS IFstart : compilation_unit\n\tcompilation_unit : class_declarations\n\tclass_declarations : class_declarations class_declaration \n\t\t\t\t\t\t\t| class_declaration\n\n\tclass_declaration : class_modifiers CLASS identifier class_body TERMINATOR\n\t\t\t\t\t\t\t| CLASS identifier class_body TERMINATOR\n\t\t\t\t\t\t\t| CLASS identifier class_body\n\t\t\t\t\t\t\t| class_modifiers CLASS identifier class_body\n\tclass_modifiers : empty\n\tidentifier : empty\n\tclass_body : empty\n\tempty : \n\t'
+_lr_signature = 'compilation_unitleftCONORleftCONANDleftORleftXORleftANDleftEQNEleftGTGEQLTLEQleftRSHIFTLSHIFTleftPLUSMINUSleftTIMESDIVIDEMODrightTILDELNOTleftMEMBERACCESSINCREMENTDECREMENTIDENTIFIER INTCONST CHARCONST STRCONST MEMBERACCESS INCREMENT DECREMENT LNOT TILDE TIMES DIVIDE MOD PLUS MINUS LSHIFT RSHIFT EQUALS PLUSEQUAL MINUSEQUAL NEWLINE COMMENTDELIM COMMENTSLINE SINGLEQUOTE DOUBLEQUOTE BACKSLASH LT GT LEQ GEQ EQ NE LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET COMMA TERMINATOR COLON AND XOR OR CONAND CONOR BREAK SHORT RETURN STRING INT VOID OBJECT NULL GOTO PRIVATE PUBLIC CHAR WHILE CONTINUE USING NEW SIZEOF ELSE CLASS IFstart : compilation_unit\n\tcompilation_unit : class_declarations\n\tclass_declarations : class_declarations class_declaration \n\t\t\t\t\t\t\t| class_declaration\n\n\tclass_declaration : class_modifiers CLASS identifier class_body TERMINATOR\n\t\t\t\t\t\t\t| CLASS identifier class_body TERMINATOR\n\t\t\t\t\t\t\t| CLASS identifier class_body\n\t\t\t\t\t\t\t| class_modifiers CLASS identifier class_body\n\tclass_modifiers : class_modifier\n\t\t\t\t\t\t| class_modifiers class_modifier\n\tclass_modifier : PUBLIC\n\t\t\t\t\t\t| PRIVATE\n\tclass_body : LBRACE class_member_declarations RBRACE \n\t\t\t\t\t| LBRACE RBRACE\n\tidentifier : available_identifier\n\tavailable_identifier : IDENTIFIER\n\tclass_member_declarations : empty\n\tempty : \n\t'
     
-_lr_action_items = {'TERMINATOR':([5,8,9,10,11,12,13,14,],[-12,-12,-12,-10,-12,-11,15,16,]),'CLASS':([0,1,3,4,5,6,7,8,9,10,11,12,13,14,15,16,],[5,5,-4,8,-12,-9,-3,-12,-12,-10,-12,-11,-7,-8,-6,-5,]),'$end':([1,2,3,5,7,8,9,10,11,12,13,14,15,16,],[-2,0,-4,-12,-3,-12,-12,-10,-12,-11,-7,-8,-6,-5,]),}
+_lr_action_items = {'LBRACE':([12,13,14,15,],[-15,-16,16,16,]),'RBRACE':([16,19,21,],[20,24,-17,]),'PRIVATE':([0,1,2,4,5,6,7,9,10,17,18,20,22,23,24,],[2,2,-12,-11,-4,-9,2,-3,-10,-7,-8,-14,-6,-5,-13,]),'PUBLIC':([0,1,2,4,5,6,7,9,10,17,18,20,22,23,24,],[4,4,-12,-11,-4,-9,4,-3,-10,-7,-8,-14,-6,-5,-13,]),'TERMINATOR':([17,18,20,24,],[22,23,-14,-13,]),'IDENTIFIER':([8,11,],[13,13,]),'CLASS':([0,1,2,4,5,6,7,9,10,17,18,20,22,23,24,],[8,8,-12,-11,-4,-9,11,-3,-10,-7,-8,-14,-6,-5,-13,]),'$end':([1,3,5,9,17,18,20,22,23,24,],[-2,0,-4,-3,-7,-8,-14,-6,-5,-13,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -16,7 +16,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'class_declarations':([0,],[1,]),'class_body':([9,11,],[13,14,]),'compilation_unit':([0,],[2,]),'class_declaration':([0,1,],[3,7,]),'identifier':([5,8,],[9,11,]),'class_modifiers':([0,1,],[4,4,]),'empty':([0,1,5,8,9,11,],[6,6,10,10,12,12,]),}
+_lr_goto_items = {'available_identifier':([8,11,],[12,12,]),'class_declarations':([0,],[1,]),'class_body':([14,15,],[17,18,]),'compilation_unit':([0,],[3,]),'class_declaration':([0,1,],[5,9,]),'class_modifier':([0,1,7,],[6,6,10,]),'class_member_declarations':([16,],[19,]),'identifier':([8,11,],[14,15,]),'class_modifiers':([0,1,],[7,7,]),'empty':([16,],[21,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -34,8 +34,14 @@ _lr_productions = [
   ('class_declaration -> CLASS identifier class_body TERMINATOR','class_declaration',4,'p_class_declaration','parser.py',44),
   ('class_declaration -> CLASS identifier class_body','class_declaration',3,'p_class_declaration','parser.py',45),
   ('class_declaration -> class_modifiers CLASS identifier class_body','class_declaration',4,'p_class_declaration','parser.py',46),
-  ('class_modifiers -> empty','class_modifiers',1,'p_class_modifiers','parser.py',49),
-  ('identifier -> empty','identifier',1,'p_identifier','parser.py',52),
-  ('class_body -> empty','class_body',1,'p_class_body','parser.py',55),
-  ('empty -> <empty>','empty',0,'p_empty','parser.py',58),
+  ('class_modifiers -> class_modifier','class_modifiers',1,'p_class_modifiers','parser.py',49),
+  ('class_modifiers -> class_modifiers class_modifier','class_modifiers',2,'p_class_modifiers','parser.py',50),
+  ('class_modifier -> PUBLIC','class_modifier',1,'p_class_modifier','parser.py',53),
+  ('class_modifier -> PRIVATE','class_modifier',1,'p_class_modifier','parser.py',54),
+  ('class_body -> LBRACE class_member_declarations RBRACE','class_body',3,'p_class_body','parser.py',58),
+  ('class_body -> LBRACE RBRACE','class_body',2,'p_class_body','parser.py',59),
+  ('identifier -> available_identifier','identifier',1,'p_identifier','parser.py',63),
+  ('available_identifier -> IDENTIFIER','available_identifier',1,'p_available_identifier','parser.py',67),
+  ('class_member_declarations -> empty','class_member_declarations',1,'p_class_member_declarations','parser.py',75),
+  ('empty -> <empty>','empty',0,'p_empty','parser.py',85),
 ]

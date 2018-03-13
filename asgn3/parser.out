@@ -19,12 +19,10 @@ Unused terminals:
     SIZEOF
     NULL
     MINUS
-    RBRACE
     GEQ
     RPAREN
     NEWLINE
     BACKSLASH
-    PRIVATE
     LT
     SINGLEQUOTE
     PLUS
@@ -32,7 +30,6 @@ Unused terminals:
     TILDE
     COMMA
     STRING
-    IDENTIFIER
     INT
     GT
     XOR
@@ -54,10 +51,8 @@ Unused terminals:
     IF
     AND
     CHAR
-    LBRACE
     COMMENTDELIM
     MINUSEQUAL
-    PUBLIC
     BREAK
     LEQ
     CONTINUE
@@ -77,10 +72,16 @@ Rule 5     class_declaration -> class_modifiers CLASS identifier class_body TERM
 Rule 6     class_declaration -> CLASS identifier class_body TERMINATOR
 Rule 7     class_declaration -> CLASS identifier class_body
 Rule 8     class_declaration -> class_modifiers CLASS identifier class_body
-Rule 9     class_modifiers -> empty
-Rule 10    identifier -> empty
-Rule 11    class_body -> empty
-Rule 12    empty -> <empty>
+Rule 9     class_modifiers -> class_modifier
+Rule 10    class_modifiers -> class_modifiers class_modifier
+Rule 11    class_modifier -> PUBLIC
+Rule 12    class_modifier -> PRIVATE
+Rule 13    class_body -> LBRACE class_member_declarations RBRACE
+Rule 14    class_body -> LBRACE RBRACE
+Rule 15    identifier -> available_identifier
+Rule 16    available_identifier -> IDENTIFIER
+Rule 17    class_member_declarations -> empty
+Rule 18    empty -> <empty>
 
 Terminals, with rules where they appear
 
@@ -106,12 +107,12 @@ EQUALS               :
 GEQ                  : 
 GOTO                 : 
 GT                   : 
-IDENTIFIER           : 
+IDENTIFIER           : 16
 IF                   : 
 INCREMENT            : 
 INT                  : 
 INTCONST             : 
-LBRACE               : 
+LBRACE               : 13 14
 LBRACKET             : 
 LEQ                  : 
 LNOT                 : 
@@ -130,9 +131,9 @@ OBJECT               :
 OR                   : 
 PLUS                 : 
 PLUSEQUAL            : 
-PRIVATE              : 
-PUBLIC               : 
-RBRACE               : 
+PRIVATE              : 12
+PUBLIC               : 11
+RBRACE               : 13 14
 RBRACKET             : 
 RETURN               : 
 RPAREN               : 
@@ -153,12 +154,15 @@ error                :
 
 Nonterminals, with rules where they appear
 
+available_identifier : 15
 class_body           : 5 6 7 8
 class_declaration    : 3 4
 class_declarations   : 2 3
-class_modifiers      : 5 8
+class_member_declarations : 13
+class_modifier       : 9 10
+class_modifiers      : 5 8 10
 compilation_unit     : 1 0
-empty                : 9 10 11
+empty                : 17
 identifier           : 5 6 7 8
 start                : 
 
@@ -174,19 +178,20 @@ state 0
     (6) class_declaration -> . CLASS identifier class_body TERMINATOR
     (7) class_declaration -> . CLASS identifier class_body
     (8) class_declaration -> . class_modifiers CLASS identifier class_body
-    (9) class_modifiers -> . empty
-    (12) empty -> .
+    (9) class_modifiers -> . class_modifier
+    (10) class_modifiers -> . class_modifiers class_modifier
+    (11) class_modifier -> . PUBLIC
+    (12) class_modifier -> . PRIVATE
 
-  ! shift/reduce conflict for CLASS resolved as shift
-    CLASS           shift and go to state 5
-
-  ! CLASS           [ reduce using rule 12 (empty -> .) ]
+    CLASS           shift and go to state 8
+    PUBLIC          shift and go to state 4
+    PRIVATE         shift and go to state 2
 
     class_declarations             shift and go to state 1
-    compilation_unit               shift and go to state 2
-    class_declaration              shift and go to state 3
-    class_modifiers                shift and go to state 4
-    empty                          shift and go to state 6
+    compilation_unit               shift and go to state 3
+    class_declaration              shift and go to state 5
+    class_modifier                 shift and go to state 6
+    class_modifiers                shift and go to state 7
 
 state 1
 
@@ -196,167 +201,251 @@ state 1
     (6) class_declaration -> . CLASS identifier class_body TERMINATOR
     (7) class_declaration -> . CLASS identifier class_body
     (8) class_declaration -> . class_modifiers CLASS identifier class_body
-    (9) class_modifiers -> . empty
-    (12) empty -> .
+    (9) class_modifiers -> . class_modifier
+    (10) class_modifiers -> . class_modifiers class_modifier
+    (11) class_modifier -> . PUBLIC
+    (12) class_modifier -> . PRIVATE
 
-  ! shift/reduce conflict for CLASS resolved as shift
     $end            reduce using rule 2 (compilation_unit -> class_declarations .)
-    CLASS           shift and go to state 5
+    CLASS           shift and go to state 8
+    PUBLIC          shift and go to state 4
+    PRIVATE         shift and go to state 2
 
-  ! CLASS           [ reduce using rule 12 (empty -> .) ]
-
-    class_declaration              shift and go to state 7
-    class_modifiers                shift and go to state 4
-    empty                          shift and go to state 6
+    class_modifier                 shift and go to state 6
+    class_declaration              shift and go to state 9
+    class_modifiers                shift and go to state 7
 
 state 2
+
+    (12) class_modifier -> PRIVATE .
+
+    CLASS           reduce using rule 12 (class_modifier -> PRIVATE .)
+    PUBLIC          reduce using rule 12 (class_modifier -> PRIVATE .)
+    PRIVATE         reduce using rule 12 (class_modifier -> PRIVATE .)
+
+
+state 3
 
     (0) S' -> compilation_unit .
 
 
 
-state 3
-
-    (4) class_declarations -> class_declaration .
-
-    CLASS           reduce using rule 4 (class_declarations -> class_declaration .)
-    $end            reduce using rule 4 (class_declarations -> class_declaration .)
-
-
 state 4
 
-    (5) class_declaration -> class_modifiers . CLASS identifier class_body TERMINATOR
-    (8) class_declaration -> class_modifiers . CLASS identifier class_body
+    (11) class_modifier -> PUBLIC .
 
-    CLASS           shift and go to state 8
+    CLASS           reduce using rule 11 (class_modifier -> PUBLIC .)
+    PUBLIC          reduce using rule 11 (class_modifier -> PUBLIC .)
+    PRIVATE         reduce using rule 11 (class_modifier -> PUBLIC .)
 
 
 state 5
 
-    (6) class_declaration -> CLASS . identifier class_body TERMINATOR
-    (7) class_declaration -> CLASS . identifier class_body
-    (10) identifier -> . empty
-    (12) empty -> .
+    (4) class_declarations -> class_declaration .
 
-    TERMINATOR      reduce using rule 12 (empty -> .)
-    CLASS           reduce using rule 12 (empty -> .)
-    $end            reduce using rule 12 (empty -> .)
+    CLASS           reduce using rule 4 (class_declarations -> class_declaration .)
+    PUBLIC          reduce using rule 4 (class_declarations -> class_declaration .)
+    PRIVATE         reduce using rule 4 (class_declarations -> class_declaration .)
+    $end            reduce using rule 4 (class_declarations -> class_declaration .)
 
-    identifier                     shift and go to state 9
-    empty                          shift and go to state 10
 
 state 6
 
-    (9) class_modifiers -> empty .
+    (9) class_modifiers -> class_modifier .
 
-    CLASS           reduce using rule 9 (class_modifiers -> empty .)
+    CLASS           reduce using rule 9 (class_modifiers -> class_modifier .)
+    PUBLIC          reduce using rule 9 (class_modifiers -> class_modifier .)
+    PRIVATE         reduce using rule 9 (class_modifiers -> class_modifier .)
 
 
 state 7
 
-    (3) class_declarations -> class_declarations class_declaration .
+    (5) class_declaration -> class_modifiers . CLASS identifier class_body TERMINATOR
+    (8) class_declaration -> class_modifiers . CLASS identifier class_body
+    (10) class_modifiers -> class_modifiers . class_modifier
+    (11) class_modifier -> . PUBLIC
+    (12) class_modifier -> . PRIVATE
 
-    CLASS           reduce using rule 3 (class_declarations -> class_declarations class_declaration .)
-    $end            reduce using rule 3 (class_declarations -> class_declarations class_declaration .)
+    CLASS           shift and go to state 11
+    PUBLIC          shift and go to state 4
+    PRIVATE         shift and go to state 2
 
+    class_modifier                 shift and go to state 10
 
 state 8
 
-    (5) class_declaration -> class_modifiers CLASS . identifier class_body TERMINATOR
-    (8) class_declaration -> class_modifiers CLASS . identifier class_body
-    (10) identifier -> . empty
-    (12) empty -> .
+    (6) class_declaration -> CLASS . identifier class_body TERMINATOR
+    (7) class_declaration -> CLASS . identifier class_body
+    (15) identifier -> . available_identifier
+    (16) available_identifier -> . IDENTIFIER
 
-    TERMINATOR      reduce using rule 12 (empty -> .)
-    CLASS           reduce using rule 12 (empty -> .)
-    $end            reduce using rule 12 (empty -> .)
+    IDENTIFIER      shift and go to state 13
 
-    identifier                     shift and go to state 11
-    empty                          shift and go to state 10
+    available_identifier           shift and go to state 12
+    identifier                     shift and go to state 14
 
 state 9
 
-    (6) class_declaration -> CLASS identifier . class_body TERMINATOR
-    (7) class_declaration -> CLASS identifier . class_body
-    (11) class_body -> . empty
-    (12) empty -> .
+    (3) class_declarations -> class_declarations class_declaration .
 
-    TERMINATOR      reduce using rule 12 (empty -> .)
-    CLASS           reduce using rule 12 (empty -> .)
-    $end            reduce using rule 12 (empty -> .)
+    CLASS           reduce using rule 3 (class_declarations -> class_declarations class_declaration .)
+    PUBLIC          reduce using rule 3 (class_declarations -> class_declarations class_declaration .)
+    PRIVATE         reduce using rule 3 (class_declarations -> class_declarations class_declaration .)
+    $end            reduce using rule 3 (class_declarations -> class_declarations class_declaration .)
 
-    class_body                     shift and go to state 13
-    empty                          shift and go to state 12
 
 state 10
 
-    (10) identifier -> empty .
+    (10) class_modifiers -> class_modifiers class_modifier .
 
-    TERMINATOR      reduce using rule 10 (identifier -> empty .)
-    CLASS           reduce using rule 10 (identifier -> empty .)
-    $end            reduce using rule 10 (identifier -> empty .)
+    CLASS           reduce using rule 10 (class_modifiers -> class_modifiers class_modifier .)
+    PUBLIC          reduce using rule 10 (class_modifiers -> class_modifiers class_modifier .)
+    PRIVATE         reduce using rule 10 (class_modifiers -> class_modifiers class_modifier .)
 
 
 state 11
 
-    (5) class_declaration -> class_modifiers CLASS identifier . class_body TERMINATOR
-    (8) class_declaration -> class_modifiers CLASS identifier . class_body
-    (11) class_body -> . empty
-    (12) empty -> .
+    (5) class_declaration -> class_modifiers CLASS . identifier class_body TERMINATOR
+    (8) class_declaration -> class_modifiers CLASS . identifier class_body
+    (15) identifier -> . available_identifier
+    (16) available_identifier -> . IDENTIFIER
 
-    TERMINATOR      reduce using rule 12 (empty -> .)
-    CLASS           reduce using rule 12 (empty -> .)
-    $end            reduce using rule 12 (empty -> .)
+    IDENTIFIER      shift and go to state 13
 
-    class_body                     shift and go to state 14
-    empty                          shift and go to state 12
+    available_identifier           shift and go to state 12
+    identifier                     shift and go to state 15
 
 state 12
 
-    (11) class_body -> empty .
+    (15) identifier -> available_identifier .
 
-    TERMINATOR      reduce using rule 11 (class_body -> empty .)
-    CLASS           reduce using rule 11 (class_body -> empty .)
-    $end            reduce using rule 11 (class_body -> empty .)
+    LBRACE          reduce using rule 15 (identifier -> available_identifier .)
 
 
 state 13
 
-    (6) class_declaration -> CLASS identifier class_body . TERMINATOR
-    (7) class_declaration -> CLASS identifier class_body .
+    (16) available_identifier -> IDENTIFIER .
 
-    TERMINATOR      shift and go to state 15
-    CLASS           reduce using rule 7 (class_declaration -> CLASS identifier class_body .)
-    $end            reduce using rule 7 (class_declaration -> CLASS identifier class_body .)
+    LBRACE          reduce using rule 16 (available_identifier -> IDENTIFIER .)
 
 
 state 14
 
+    (6) class_declaration -> CLASS identifier . class_body TERMINATOR
+    (7) class_declaration -> CLASS identifier . class_body
+    (13) class_body -> . LBRACE class_member_declarations RBRACE
+    (14) class_body -> . LBRACE RBRACE
+
+    LBRACE          shift and go to state 16
+
+    class_body                     shift and go to state 17
+
+state 15
+
+    (5) class_declaration -> class_modifiers CLASS identifier . class_body TERMINATOR
+    (8) class_declaration -> class_modifiers CLASS identifier . class_body
+    (13) class_body -> . LBRACE class_member_declarations RBRACE
+    (14) class_body -> . LBRACE RBRACE
+
+    LBRACE          shift and go to state 16
+
+    class_body                     shift and go to state 18
+
+state 16
+
+    (13) class_body -> LBRACE . class_member_declarations RBRACE
+    (14) class_body -> LBRACE . RBRACE
+    (17) class_member_declarations -> . empty
+    (18) empty -> .
+
+  ! shift/reduce conflict for RBRACE resolved as shift
+    RBRACE          shift and go to state 20
+
+  ! RBRACE          [ reduce using rule 18 (empty -> .) ]
+
+    class_member_declarations      shift and go to state 19
+    empty                          shift and go to state 21
+
+state 17
+
+    (6) class_declaration -> CLASS identifier class_body . TERMINATOR
+    (7) class_declaration -> CLASS identifier class_body .
+
+    TERMINATOR      shift and go to state 22
+    CLASS           reduce using rule 7 (class_declaration -> CLASS identifier class_body .)
+    PUBLIC          reduce using rule 7 (class_declaration -> CLASS identifier class_body .)
+    PRIVATE         reduce using rule 7 (class_declaration -> CLASS identifier class_body .)
+    $end            reduce using rule 7 (class_declaration -> CLASS identifier class_body .)
+
+
+state 18
+
     (5) class_declaration -> class_modifiers CLASS identifier class_body . TERMINATOR
     (8) class_declaration -> class_modifiers CLASS identifier class_body .
 
-    TERMINATOR      shift and go to state 16
+    TERMINATOR      shift and go to state 23
     CLASS           reduce using rule 8 (class_declaration -> class_modifiers CLASS identifier class_body .)
+    PUBLIC          reduce using rule 8 (class_declaration -> class_modifiers CLASS identifier class_body .)
+    PRIVATE         reduce using rule 8 (class_declaration -> class_modifiers CLASS identifier class_body .)
     $end            reduce using rule 8 (class_declaration -> class_modifiers CLASS identifier class_body .)
 
 
-state 15
+state 19
+
+    (13) class_body -> LBRACE class_member_declarations . RBRACE
+
+    RBRACE          shift and go to state 24
+
+
+state 20
+
+    (14) class_body -> LBRACE RBRACE .
+
+    TERMINATOR      reduce using rule 14 (class_body -> LBRACE RBRACE .)
+    CLASS           reduce using rule 14 (class_body -> LBRACE RBRACE .)
+    PUBLIC          reduce using rule 14 (class_body -> LBRACE RBRACE .)
+    PRIVATE         reduce using rule 14 (class_body -> LBRACE RBRACE .)
+    $end            reduce using rule 14 (class_body -> LBRACE RBRACE .)
+
+
+state 21
+
+    (17) class_member_declarations -> empty .
+
+    RBRACE          reduce using rule 17 (class_member_declarations -> empty .)
+
+
+state 22
 
     (6) class_declaration -> CLASS identifier class_body TERMINATOR .
 
     CLASS           reduce using rule 6 (class_declaration -> CLASS identifier class_body TERMINATOR .)
+    PUBLIC          reduce using rule 6 (class_declaration -> CLASS identifier class_body TERMINATOR .)
+    PRIVATE         reduce using rule 6 (class_declaration -> CLASS identifier class_body TERMINATOR .)
     $end            reduce using rule 6 (class_declaration -> CLASS identifier class_body TERMINATOR .)
 
 
-state 16
+state 23
 
     (5) class_declaration -> class_modifiers CLASS identifier class_body TERMINATOR .
 
     CLASS           reduce using rule 5 (class_declaration -> class_modifiers CLASS identifier class_body TERMINATOR .)
+    PUBLIC          reduce using rule 5 (class_declaration -> class_modifiers CLASS identifier class_body TERMINATOR .)
+    PRIVATE         reduce using rule 5 (class_declaration -> class_modifiers CLASS identifier class_body TERMINATOR .)
     $end            reduce using rule 5 (class_declaration -> class_modifiers CLASS identifier class_body TERMINATOR .)
+
+
+state 24
+
+    (13) class_body -> LBRACE class_member_declarations RBRACE .
+
+    TERMINATOR      reduce using rule 13 (class_body -> LBRACE class_member_declarations RBRACE .)
+    CLASS           reduce using rule 13 (class_body -> LBRACE class_member_declarations RBRACE .)
+    PUBLIC          reduce using rule 13 (class_body -> LBRACE class_member_declarations RBRACE .)
+    PRIVATE         reduce using rule 13 (class_body -> LBRACE class_member_declarations RBRACE .)
+    $end            reduce using rule 13 (class_body -> LBRACE class_member_declarations RBRACE .)
 
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
-WARNING: shift/reduce conflict for CLASS in state 0 resolved as shift
-WARNING: shift/reduce conflict for CLASS in state 1 resolved as shift
+WARNING: shift/reduce conflict for RBRACE in state 16 resolved as shift

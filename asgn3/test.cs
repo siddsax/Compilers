@@ -1,1 +1,4 @@
-class;
+public class goal
+{
+
+}

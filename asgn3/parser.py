@@ -46,14 +46,67 @@ def p_class_declaration(p):
 							| class_modifiers CLASS identifier class_body
 	"""
 def p_class_modifiers(p):
-	"""class_modifiers : empty
+	"""class_modifiers : class_modifier
+						| class_modifiers class_modifier
 	"""
-def p_identifier(p):
-	"""identifier : empty
+def p_class_modifier(p):
+	"""class_modifier : PUBLIC
+						| PRIVATE
 	"""
+
 def p_class_body(p):
-	"""class_body : empty
+	"""class_body : LBRACE class_member_declarations RBRACE 
+					| LBRACE RBRACE
 	"""
+
+def p_identifier(p):
+	"""identifier : available_identifier
+	"""
+
+def p_available_identifier(p):
+	"""available_identifier : IDENTIFIER
+	"""
+
+# def p_(p):
+# 	"""
+# 	"""
+
+def p_class_member_declarations(p):
+	"""class_member_declarations : class_member_declaration
+									| class_member_declarations class_member_declaration
+	"""
+
+def p_class_member_declaration(p):
+	"""class_member_declarations : field_declaration
+									| method_declaration
+									| constructor_declaration
+									| destructor_declaration
+	"""
+
+def p_field_declaration(p):
+	"""field_declaration : attributes field_modifiers type variable_declarators TERMINATOR
+							| field_modifiers type variable_declarators TERMINATOR
+							| attributes type variable_declarators TERMINATOR
+							| type variable_declarators TERMINATOR
+	"""
+
+def p_attributes(p):
+	"""attributes : 
+	"""
+
+def p_method_declaration(p):
+	"""method_declaration : empty
+	"""
+
+def p_constructor_declaration(p):
+	"""constructor_declaration : empty
+	"""
+
+def p_method_declaration(p):
+	"""method_declaration : empty
+	"""
+
+
 def p_empty(p):
 	"""empty : 
 	"""
