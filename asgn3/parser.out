@@ -1,0 +1,362 @@
+Created by PLY version 3.10 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    LNOT
+    RSHIFT
+    LPAREN
+    VOID
+    OBJECT
+    GOTO
+    NE
+    LBRACKET
+    CONAND
+    WHILE
+    COLON
+    LSHIFT
+    NEW
+    RETURN
+    SIZEOF
+    NULL
+    MINUS
+    RBRACE
+    GEQ
+    RPAREN
+    NEWLINE
+    BACKSLASH
+    PRIVATE
+    LT
+    SINGLEQUOTE
+    PLUS
+    INCREMENT
+    TILDE
+    COMMA
+    STRING
+    IDENTIFIER
+    INT
+    GT
+    XOR
+    DIVIDE
+    CONOR
+    CHARCONST
+    COMMENTSLINE
+    EQUALS
+    TIMES
+    MEMBERACCESS
+    PLUSEQUAL
+    SHORT
+    STRCONST
+    INTCONST
+    ELSE
+    EQ
+    RBRACKET
+    DOUBLEQUOTE
+    IF
+    AND
+    CHAR
+    LBRACE
+    COMMENTDELIM
+    MINUSEQUAL
+    PUBLIC
+    BREAK
+    LEQ
+    CONTINUE
+    USING
+    DECREMENT
+    OR
+    MOD
+
+Grammar
+
+Rule 0     S' -> compilation_unit
+Rule 1     start -> compilation_unit
+Rule 2     compilation_unit -> class_declarations
+Rule 3     class_declarations -> class_declarations class_declaration
+Rule 4     class_declarations -> class_declaration
+Rule 5     class_declaration -> class_modifiers CLASS identifier class_body TERMINATOR
+Rule 6     class_declaration -> CLASS identifier class_body TERMINATOR
+Rule 7     class_declaration -> CLASS identifier class_body
+Rule 8     class_declaration -> class_modifiers CLASS identifier class_body
+Rule 9     class_modifiers -> empty
+Rule 10    identifier -> empty
+Rule 11    class_body -> empty
+Rule 12    empty -> <empty>
+
+Terminals, with rules where they appear
+
+AND                  : 
+BACKSLASH            : 
+BREAK                : 
+CHAR                 : 
+CHARCONST            : 
+CLASS                : 5 6 7 8
+COLON                : 
+COMMA                : 
+COMMENTDELIM         : 
+COMMENTSLINE         : 
+CONAND               : 
+CONOR                : 
+CONTINUE             : 
+DECREMENT            : 
+DIVIDE               : 
+DOUBLEQUOTE          : 
+ELSE                 : 
+EQ                   : 
+EQUALS               : 
+GEQ                  : 
+GOTO                 : 
+GT                   : 
+IDENTIFIER           : 
+IF                   : 
+INCREMENT            : 
+INT                  : 
+INTCONST             : 
+LBRACE               : 
+LBRACKET             : 
+LEQ                  : 
+LNOT                 : 
+LPAREN               : 
+LSHIFT               : 
+LT                   : 
+MEMBERACCESS         : 
+MINUS                : 
+MINUSEQUAL           : 
+MOD                  : 
+NE                   : 
+NEW                  : 
+NEWLINE              : 
+NULL                 : 
+OBJECT               : 
+OR                   : 
+PLUS                 : 
+PLUSEQUAL            : 
+PRIVATE              : 
+PUBLIC               : 
+RBRACE               : 
+RBRACKET             : 
+RETURN               : 
+RPAREN               : 
+RSHIFT               : 
+SHORT                : 
+SINGLEQUOTE          : 
+SIZEOF               : 
+STRCONST             : 
+STRING               : 
+TERMINATOR           : 5 6
+TILDE                : 
+TIMES                : 
+USING                : 
+VOID                 : 
+WHILE                : 
+XOR                  : 
+error                : 
+
+Nonterminals, with rules where they appear
+
+class_body           : 5 6 7 8
+class_declaration    : 3 4
+class_declarations   : 2 3
+class_modifiers      : 5 8
+compilation_unit     : 1 0
+empty                : 9 10 11
+identifier           : 5 6 7 8
+start                : 
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . compilation_unit
+    (2) compilation_unit -> . class_declarations
+    (3) class_declarations -> . class_declarations class_declaration
+    (4) class_declarations -> . class_declaration
+    (5) class_declaration -> . class_modifiers CLASS identifier class_body TERMINATOR
+    (6) class_declaration -> . CLASS identifier class_body TERMINATOR
+    (7) class_declaration -> . CLASS identifier class_body
+    (8) class_declaration -> . class_modifiers CLASS identifier class_body
+    (9) class_modifiers -> . empty
+    (12) empty -> .
+
+  ! shift/reduce conflict for CLASS resolved as shift
+    CLASS           shift and go to state 5
+
+  ! CLASS           [ reduce using rule 12 (empty -> .) ]
+
+    class_declarations             shift and go to state 1
+    compilation_unit               shift and go to state 2
+    class_declaration              shift and go to state 3
+    class_modifiers                shift and go to state 4
+    empty                          shift and go to state 6
+
+state 1
+
+    (2) compilation_unit -> class_declarations .
+    (3) class_declarations -> class_declarations . class_declaration
+    (5) class_declaration -> . class_modifiers CLASS identifier class_body TERMINATOR
+    (6) class_declaration -> . CLASS identifier class_body TERMINATOR
+    (7) class_declaration -> . CLASS identifier class_body
+    (8) class_declaration -> . class_modifiers CLASS identifier class_body
+    (9) class_modifiers -> . empty
+    (12) empty -> .
+
+  ! shift/reduce conflict for CLASS resolved as shift
+    $end            reduce using rule 2 (compilation_unit -> class_declarations .)
+    CLASS           shift and go to state 5
+
+  ! CLASS           [ reduce using rule 12 (empty -> .) ]
+
+    class_declaration              shift and go to state 7
+    class_modifiers                shift and go to state 4
+    empty                          shift and go to state 6
+
+state 2
+
+    (0) S' -> compilation_unit .
+
+
+
+state 3
+
+    (4) class_declarations -> class_declaration .
+
+    CLASS           reduce using rule 4 (class_declarations -> class_declaration .)
+    $end            reduce using rule 4 (class_declarations -> class_declaration .)
+
+
+state 4
+
+    (5) class_declaration -> class_modifiers . CLASS identifier class_body TERMINATOR
+    (8) class_declaration -> class_modifiers . CLASS identifier class_body
+
+    CLASS           shift and go to state 8
+
+
+state 5
+
+    (6) class_declaration -> CLASS . identifier class_body TERMINATOR
+    (7) class_declaration -> CLASS . identifier class_body
+    (10) identifier -> . empty
+    (12) empty -> .
+
+    TERMINATOR      reduce using rule 12 (empty -> .)
+    CLASS           reduce using rule 12 (empty -> .)
+    $end            reduce using rule 12 (empty -> .)
+
+    identifier                     shift and go to state 9
+    empty                          shift and go to state 10
+
+state 6
+
+    (9) class_modifiers -> empty .
+
+    CLASS           reduce using rule 9 (class_modifiers -> empty .)
+
+
+state 7
+
+    (3) class_declarations -> class_declarations class_declaration .
+
+    CLASS           reduce using rule 3 (class_declarations -> class_declarations class_declaration .)
+    $end            reduce using rule 3 (class_declarations -> class_declarations class_declaration .)
+
+
+state 8
+
+    (5) class_declaration -> class_modifiers CLASS . identifier class_body TERMINATOR
+    (8) class_declaration -> class_modifiers CLASS . identifier class_body
+    (10) identifier -> . empty
+    (12) empty -> .
+
+    TERMINATOR      reduce using rule 12 (empty -> .)
+    CLASS           reduce using rule 12 (empty -> .)
+    $end            reduce using rule 12 (empty -> .)
+
+    identifier                     shift and go to state 11
+    empty                          shift and go to state 10
+
+state 9
+
+    (6) class_declaration -> CLASS identifier . class_body TERMINATOR
+    (7) class_declaration -> CLASS identifier . class_body
+    (11) class_body -> . empty
+    (12) empty -> .
+
+    TERMINATOR      reduce using rule 12 (empty -> .)
+    CLASS           reduce using rule 12 (empty -> .)
+    $end            reduce using rule 12 (empty -> .)
+
+    class_body                     shift and go to state 13
+    empty                          shift and go to state 12
+
+state 10
+
+    (10) identifier -> empty .
+
+    TERMINATOR      reduce using rule 10 (identifier -> empty .)
+    CLASS           reduce using rule 10 (identifier -> empty .)
+    $end            reduce using rule 10 (identifier -> empty .)
+
+
+state 11
+
+    (5) class_declaration -> class_modifiers CLASS identifier . class_body TERMINATOR
+    (8) class_declaration -> class_modifiers CLASS identifier . class_body
+    (11) class_body -> . empty
+    (12) empty -> .
+
+    TERMINATOR      reduce using rule 12 (empty -> .)
+    CLASS           reduce using rule 12 (empty -> .)
+    $end            reduce using rule 12 (empty -> .)
+
+    class_body                     shift and go to state 14
+    empty                          shift and go to state 12
+
+state 12
+
+    (11) class_body -> empty .
+
+    TERMINATOR      reduce using rule 11 (class_body -> empty .)
+    CLASS           reduce using rule 11 (class_body -> empty .)
+    $end            reduce using rule 11 (class_body -> empty .)
+
+
+state 13
+
+    (6) class_declaration -> CLASS identifier class_body . TERMINATOR
+    (7) class_declaration -> CLASS identifier class_body .
+
+    TERMINATOR      shift and go to state 15
+    CLASS           reduce using rule 7 (class_declaration -> CLASS identifier class_body .)
+    $end            reduce using rule 7 (class_declaration -> CLASS identifier class_body .)
+
+
+state 14
+
+    (5) class_declaration -> class_modifiers CLASS identifier class_body . TERMINATOR
+    (8) class_declaration -> class_modifiers CLASS identifier class_body .
+
+    TERMINATOR      shift and go to state 16
+    CLASS           reduce using rule 8 (class_declaration -> class_modifiers CLASS identifier class_body .)
+    $end            reduce using rule 8 (class_declaration -> class_modifiers CLASS identifier class_body .)
+
+
+state 15
+
+    (6) class_declaration -> CLASS identifier class_body TERMINATOR .
+
+    CLASS           reduce using rule 6 (class_declaration -> CLASS identifier class_body TERMINATOR .)
+    $end            reduce using rule 6 (class_declaration -> CLASS identifier class_body TERMINATOR .)
+
+
+state 16
+
+    (5) class_declaration -> class_modifiers CLASS identifier class_body TERMINATOR .
+
+    CLASS           reduce using rule 5 (class_declaration -> class_modifiers CLASS identifier class_body TERMINATOR .)
+    $end            reduce using rule 5 (class_declaration -> class_modifiers CLASS identifier class_body TERMINATOR .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for CLASS in state 0 resolved as shift
+WARNING: shift/reduce conflict for CLASS in state 1 resolved as shift

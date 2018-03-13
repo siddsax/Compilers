@@ -1,0 +1,118 @@
+WARNING: Token 'LNOT' defined, but not used
+WARNING: Token 'RSHIFT' defined, but not used
+WARNING: Token 'LPAREN' defined, but not used
+WARNING: Token 'VOID' defined, but not used
+WARNING: Token 'OBJECT' defined, but not used
+WARNING: Token 'GOTO' defined, but not used
+WARNING: Token 'NE' defined, but not used
+WARNING: Token 'LBRACKET' defined, but not used
+WARNING: Token 'CONAND' defined, but not used
+WARNING: Token 'WHILE' defined, but not used
+WARNING: Token 'COLON' defined, but not used
+WARNING: Token 'LSHIFT' defined, but not used
+WARNING: Token 'NEW' defined, but not used
+WARNING: Token 'RETURN' defined, but not used
+WARNING: Token 'SIZEOF' defined, but not used
+WARNING: Token 'NULL' defined, but not used
+WARNING: Token 'MINUS' defined, but not used
+WARNING: Token 'RBRACE' defined, but not used
+WARNING: Token 'GEQ' defined, but not used
+WARNING: Token 'RPAREN' defined, but not used
+WARNING: Token 'NEWLINE' defined, but not used
+WARNING: Token 'BACKSLASH' defined, but not used
+WARNING: Token 'PRIVATE' defined, but not used
+WARNING: Token 'LT' defined, but not used
+WARNING: Token 'SINGLEQUOTE' defined, but not used
+WARNING: Token 'PLUS' defined, but not used
+WARNING: Token 'INCREMENT' defined, but not used
+WARNING: Token 'TILDE' defined, but not used
+WARNING: Token 'COMMA' defined, but not used
+WARNING: Token 'STRING' defined, but not used
+WARNING: Token 'IDENTIFIER' defined, but not used
+WARNING: Token 'INT' defined, but not used
+WARNING: Token 'GT' defined, but not used
+WARNING: Token 'XOR' defined, but not used
+WARNING: Token 'DIVIDE' defined, but not used
+WARNING: Token 'CONOR' defined, but not used
+WARNING: Token 'CHARCONST' defined, but not used
+WARNING: Token 'COMMENTSLINE' defined, but not used
+WARNING: Token 'EQUALS' defined, but not used
+WARNING: Token 'TIMES' defined, but not used
+WARNING: Token 'MEMBERACCESS' defined, but not used
+WARNING: Token 'PLUSEQUAL' defined, but not used
+WARNING: Token 'SHORT' defined, but not used
+WARNING: Token 'STRCONST' defined, but not used
+WARNING: Token 'INTCONST' defined, but not used
+WARNING: Token 'ELSE' defined, but not used
+WARNING: Token 'EQ' defined, but not used
+WARNING: Token 'RBRACKET' defined, but not used
+WARNING: Token 'DOUBLEQUOTE' defined, but not used
+WARNING: Token 'IF' defined, but not used
+WARNING: Token 'AND' defined, but not used
+WARNING: Token 'CHAR' defined, but not used
+WARNING: Token 'LBRACE' defined, but not used
+WARNING: Token 'COMMENTDELIM' defined, but not used
+WARNING: Token 'MINUSEQUAL' defined, but not used
+WARNING: Token 'PUBLIC' defined, but not used
+WARNING: Token 'BREAK' defined, but not used
+WARNING: Token 'LEQ' defined, but not used
+WARNING: Token 'CONTINUE' defined, but not used
+WARNING: Token 'USING' defined, but not used
+WARNING: Token 'DECREMENT' defined, but not used
+WARNING: Token 'OR' defined, but not used
+WARNING: Token 'MOD' defined, but not used
+WARNING: parser.py:30: Rule 'start' defined, but not used
+WARNING: There are 63 unused tokens
+WARNING: There is 1 unused rule
+WARNING: Symbol 'start' is unreachable
+Generating LALR tables
+WARNING: 2 shift/reduce conflicts
+PLY: PARSE DEBUG START
+
+State  : 0
+Stack  : . LexToken(CLASS,'class',1,0)
+Action : Shift and goto state 5
+
+State  : 5
+Stack  : CLASS . LexToken(TERMINATOR,';',1,5)
+Action : Reduce rule [empty -> <empty>] with [] and goto state 10
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 10
+Stack  : CLASS empty . LexToken(TERMINATOR,';',1,5)
+Action : Reduce rule [identifier -> empty] with [None] and goto state 9
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 9
+Stack  : CLASS identifier . LexToken(TERMINATOR,';',1,5)
+Action : Reduce rule [empty -> <empty>] with [] and goto state 12
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 12
+Stack  : CLASS identifier empty . LexToken(TERMINATOR,';',1,5)
+Action : Reduce rule [class_body -> empty] with [None] and goto state 13
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 13
+Stack  : CLASS identifier class_body . LexToken(TERMINATOR,';',1,5)
+Action : Shift and goto state 15
+
+State  : 15
+Stack  : CLASS identifier class_body TERMINATOR . $end
+Action : Reduce rule [class_declaration -> CLASS identifier class_body TERMINATOR] with ['class',None,None,';'] and goto state 3
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 3
+Stack  : class_declaration . $end
+Action : Reduce rule [class_declarations -> class_declaration] with [None] and goto state 1
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 1
+Stack  : class_declarations . $end
+Action : Reduce rule [compilation_unit -> class_declarations] with [None] and goto state 2
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 2
+Stack  : compilation_unit . $end
+Done   : Returning <NoneType @ 0x8ff8d0> (None)
+PLY: PARSE DEBUG END

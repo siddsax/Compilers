@@ -1,0 +1,7 @@
+[empty -> <empty>] 
+[identifier -> empty] 
+[empty -> <empty>] 
+[class_body -> empty] 
+[class_declaration -> CLASS identifier class_body TERMINATOR] 
+[class_declarations -> class_declaration] 
+[compilation_unit -> class_declarations] 
