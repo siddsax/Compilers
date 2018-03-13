@@ -84,15 +84,33 @@ def p_class_member_declaration(p):
 	"""
 
 def p_field_declaration(p):
-	"""field_declaration : attributes field_modifiers type variable_declarators TERMINATOR
-							| field_modifiers type variable_declarators TERMINATOR
-							| attributes type variable_declarators TERMINATOR
+	"""field_declaration : field_modifiers type variable_declarators TERMINATOR
 							| type variable_declarators TERMINATOR
 	"""
 
-def p_attributes(p):
-	"""attributes : 
+def p_field_modifiers(p):
+	"""field_modifiers : field_modifier
+						| field_modifiers field_modifier
 	"""
+
+def p_field_modifier(p):
+	"""field_modifier : PUBLIC 
+						| PRIVATE
+	"""
+
+def p_type(p):
+	"""type : 
+	"""
+
+def p_(p):
+	"""
+	"""
+
+def p_(p):
+	"""
+	"""
+
+
 
 def p_method_declaration(p):
 	"""method_declaration : empty
