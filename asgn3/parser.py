@@ -105,8 +105,7 @@ def p_non_array_type(p):
 
 def p_type_parameter(p):
 	"""type_parameter : identifier
-						| INT
-						| CHAR
+						| predefined_type
 	"""
 
 def p_variable_declarators(p):
@@ -290,25 +289,228 @@ def p_iteration_statement(p):
         """
 # EXPRESSION #####################################################################################
 def p_expression(p):
-	"""expression : empty
-	"""
-
-def p_object_creation_expression(p):
-	"""object_creation_expression : empty
+	"""expression : non_assignment_expression 
+					| assignment
 	"""
 
 def p_assignment(p):
-	"""assignment : empty
+	"""assignment : unary_expression assignment_operator expression
+	"""
+
+def p_assignment_operator(p):
+	"""assignment_operator : EQUALS
+							| PLUSEQUAL
+							| MINUSEQUAL
+	"""
+def p_unary_expression(p):
+	"""unary_expression : primary_expression
+						| PLUS unary_expression
+						| MINUS unary_expression
+						| LNOT unary_expression
+						| TILDE unary_expression
+	"""
+
+def p_primary_expression(p):
+	"""primary_expression : primary_no_array_creation_expression
+							| array_creation_expression
+	"""
+
+def p_primary_no_array_creation_expression(p):
+	"""primary_no_array_creation_expression : literal
+											| identifier
+											| parenthesized_expression
+											| member_access
+											| element_access
+											| post_increment_expression
+											| post_decrement_expression
+											| object_creation_expression
+											| typeof_expression
+	"""
+
+def p_parenthesized_expression(p):
+	"""parenthesized_expression : LPAREN expression RPAREN
+	"""
+
+def p_member_access(p):
+	"""member_access : primary_expression MEMBERACCESS identifier
+						| predefined_type MEMBERACCESS identifier
+	"""
+
+def p_predefined_type(p):
+	"""predefined_type : INT 
+						| CHAR
+	"""
+
+def p_element_access(p):
+	"""element_access : primary_no_array_creation_expression LBRACKET expression_list RBRACKET 
+	"""
+
+def p_expression_list(p):
+	"""expression_list : expression
+						| expression_list COMMA expression
 	"""
 
 def p_post_increment_expression(p):
-	"""post_increment_expression : empty
+	"""post_increment_expression : primary_expression INCREMENT
 	"""
 
 def p_post_decrement_expression(p):
-	"""post_decrement_expression : empty
+	"""post_decrement_expression : primary_expression DECREMENT
 	"""
 
+def p_object_creation_expression(p):
+	"""object_creation_expression : NEW type LPAREN argument_list RPAREN object_or_collection_initializer
+									| NEW type LPAREN argument_list RPAREN
+									| NEW type LPAREN RPAREN
+									| NEW type object_or_collection_initializer
+	"""
+
+def p_argument_list(p):
+	""" argument_list : argument
+						| argument_list COMMA argument
+	"""
+
+def p_argument(p):
+	"""argument : argument_name argument_value
+				| argument_value
+	"""
+
+def p_argument_name(p):
+	"""argument_name : identifier TERMINATOR
+	"""
+
+def p_argument_value(p):
+	""" argument_value : expression
+	"""
+
+def p_object_or_collection_initializer(p):
+	"""object_or_collection_initializer : object_initializer
+										| collection_initializer
+	"""
+
+def p_object_initializer(p):
+ 	"""object_initializer : LBRACE member_initializer_list RBRACE
+							| LBRACE RBRACE
+ 							| LBRACE member_initializer_list COMMA RBRACE
+ 	"""
+
+def p_member_initializer_list(p):
+	"""member_initializer_list : member_initializer
+								| member_initializer_list COMMA member_initializer
+	"""
+
+def p_member_initializer(p):
+	"""member_initializer : identifier EQUALS initializer_value
+	"""
+
+def p_initializer_value(p):
+	"""initializer_value : expression
+						| object_or_collection_initializer
+	"""
+
+def p_collection_initializer(p):
+	"""collection_initializer : LBRACE element_initializer_list RBRACE
+								| LBRACE element_initializer_list COMMA RBRACE
+	"""
+
+def p_element_initializer_list(p):
+	"""element_initializer_list : element_initializer
+								| element_initializer_list COMMA element_initializer
+	"""
+
+def p_element_initializer(p):
+	"""element_initializer : non_assignment_expression 
+							| LBRACE expression_list RBRACE
+	"""
+
+def p_array_creation_expression(p):
+	"""array_creation_expression : NEW non_array_type LBRACKET expression RBRACKET
+									| NEW array_type array_initializer
+	"""
+
+def p_typeof_expression(p):
+	"""typeof_expression : TYPEOF LPAREN type RPAREN
+				 			| TYPEOF LPAREN unbound_type_name RPAREN
+	 						| TYPEOF LPAREN VOID RPAREN
+	"""
+
+def p_unbound_type_name(p):
+	"""unbound_type_name : identifier
+							| unbound_type_name MEMBERACCESS identifier
+	"""
+
+def p_non_assignment_expression(p):
+	"""non_assignment_expression : conditional_expression
+	"""
+def p_conditional_expression(p):
+	"""conditional_expression : conditional_or_expression
+	"""
+
+def p_conditional_or_expression(p):
+	"""conditional_or_expression : conditional_and_expression
+									| conditional_or_expression CONOR conditional_and_expression
+	"""
+
+def p_conditional_and_expression(p):
+	"""conditional_and_expression : inclusive_or_expression
+									| conditional_and_expression CONAND inclusive_or_expression
+	"""
+
+def p_inclusive_or_expression(p):
+	"""inclusive_or_expression : exclusive_or_expression
+								| inclusive_or_expression OR exclusive_or_expression
+	"""
+
+def p_exclusive_or_expression(p):
+	"""exclusive_or_expression : and_expression
+								| exclusive_or_expression XOR and_expression
+	"""
+
+def p_and_expression(p):
+	"""and_expression : equality_expression
+						| and_expression AND equality_expression
+	"""
+
+def p_equality_expression(p):
+	"""equality_expression : relational_expression
+							| equality_expression EQ relational_expression
+							| equality_expression NE relational_expression
+	"""
+
+def p_relational_expression(p):
+	""" relational_expression : shift_expression
+								| relational_expression LT shift_expression
+								| relational_expression GT shift_expression
+								| relational_expression LEQ shift_expression
+								| relational_expression GEQ shift_expression
+	"""
+
+def p_shift_expression(p):
+	"""shift_expression : additive_expression
+						| shift_expression LSHIFT additive_expression
+						| shift_expression RSHIFT additive_expression
+	"""
+
+def p_additive_expression(p):
+	"""additive_expression : multiplicative_expression
+							| additive_expression PLUS multiplicative_expression 
+							| additive_expression MINUS multiplicative_expression
+	"""
+
+def p_multiplicative_expression(p):
+	"""multiplicative_expression : unary_expression
+									| multiplicative_expression TIMES unary_expression
+									| multiplicative_expression DIVIDE unary_expression
+									| multiplicative_expression MOD unary_expression
+	"""
+
+# def p_(p):
+# 	"""
+# 	"""
+
+# def p_(p):
+# 	"""
+# 	"""
 # EMPTY ##########################################################################################
 def p_empty(p):
 	"""empty : 

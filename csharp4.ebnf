@@ -11,11 +11,9 @@ input_elements = input_element | input_elements, input_element;
 input_element =     whitespace | comment| ?any token?;
 
 (*B.1.1 Line terminators*)
-(* Hanled by lexer *)
-(* new_line =     ?Carriage return character (U+000D)? | ?Line feed character (U+000A)? | ?Carriage return character (U+000D) followed by line feed character (U+000A)? | ?Next line character (U+0085)? | ?Line separator character (U+2028)? | ?Paragraph separator character (U+2029)?; *)
+new_line =     ?Carriage return character (U+000D)? | ?Line feed character (U+000A)? | ?Carriage return character (U+000D) followed by line feed character (U+000A)? | ?Next line character (U+0085)? | ?Line separator character (U+2028)? | ?Paragraph separator character (U+2029)?;
 
 (*B.1.2 Comments*) 
-(* TO DO LATER *)
 comment =
 	single_line_comment
 	 | delimited_comment;
@@ -47,15 +45,12 @@ not_slash_or_asterisk =
 	?Any Unicode character except / or *?;
 
 (*B.1.3 White space*)
-(* Handled by Lexer *)
-(* whitespace =     ?Any character with Unicode class Zs? | ?Horizontal tab character (U+0009)?| ?Vertical tab character (U+000B)? | ?Form feed character (U+000C)?; *)
+whitespace =     ?Any character with Unicode class Zs? | ?Horizontal tab character (U+0009)?| ?Vertical tab character (U+000B)? | ?Form feed character (U+000C)?;
 
 (*B.1.4 Tokens*)
-(* Handled by Lexer *)
 token =     identifier| keyword| integer_literal| character_literal| operator_or_punctuator;
 
 (*B.1.6 Identifiers*)
-(* Handled by Lexer *)
 identifier =     available_identifier;
 available_identifier =     ?An identifier_or_keyword that is not a keyword?;
 identifier_or_keyword =     identifier_start_character, [identifier_part_characters];
@@ -69,8 +64,7 @@ connecting_character =     ?A Unicode character of the class Pc?| ?A unicode_esc
 formatting_character =     ?A Unicode character of the class Cf?| ?A unicode_escape_sequence representing a character of the class Cf?;
 
 (*B.1.7 Keywords*)
-(* Handled by Lexer *)
-(* keyword = break | char | class | continue | else | if | int | new | null | object | while | void | private | public | return | sizeof | string; *)
+keyword = break | char | class | continue | else | if | int | new | null | object | while | void | private | public | return | sizeof | string;
 
 (*B.1.8 Literals*)
 literal =     integer_literal| character_literal| null_literal;
@@ -106,73 +100,75 @@ prefix = identifier, '.' | prefix, identifier, '.';
 variable_reference =  expression;
 
 (*B.2.4 Expressions*)
-argument_list =     argument| argument_list, ',', argument;
-argument =     [argument_name], argument_value;
-argument_name =     identifier, ':';
-argument_value =     expression;
-primary_expression =     primary_no_array_creation_expression| array_creation_expression;
-primary_no_array_creation_expression =     literal| simple_name| parenthesized_expression| member_access| element_access| post_increment_expression| post_decrement_expression| object_creation_expression;
-simple_name =     identifier;
-parenthesized_expression =     '(', expression, ')';
-member_access =     primary_expression, '.', identifier| predefined_type, '.', identifier;
-predefined_type =     'char' | 'int' ;
-element_access =     primary_no_array_creation_expression, '[', expression_list, ']';
-expression_list =     expression| expression_list, ',', expression;
-post_increment_expression =     primary_expression, '++';
-post_decrement_expression =     primary_expression, '--';
-object_creation_expression =     'new', type, '(', [argument_list], ')', [object_or_collection_initializer]| 'new', type, object_or_collection_initializer;
-object_or_collection_initializer =     object_initializer| collection_initializer;
-object_initializer =     '{', [member_initializer_list], '}'| '{', member_initializer_list, ',', '}';
-member_initializer_list =     member_initializer| member_initializer_list, ',', member_initializer;
-member_initializer =     identifier, '=', initializer_value;
-initializer_value =     expression| object_or_collection_initializer;
-collection_initializer =     '{', element_initializer_list, '}'| '{', element_initializer_list, ',', '}';
-element_initializer_list =     element_initializer| element_initializer_list, ',', element_initializer;
-element_initializer =     non_assignment_expression| '{', expression_list, '}';
-array_creation_expression =     'new', non_array_type, '[', expression, ']'| 'new', array_type, array_initializer;
-member_declarator_list =     member_declarator| member_declarator_list, ',', member_declarator;
-member_declarator =     simple_name| member_access| identifier, '=', expression;
-unbound_type_name =     identifier| unbound_type_name, '.', identifier;
-unary_expression =     primary_expression| '+', unary_expression| '-', unary_expression| '!', unary_expression| '~', unary_expression;
-multiplicative_expression =     unary_expression| multiplicative_expression, '*', unary_expression| multiplicative_expression, '/', unary_expression| multiplicative_expression, '%', unary_expression;
-additive_expression =     multiplicative_expression| additive_expression, '+', multiplicative_expression| additive_expression, '-', multiplicative_expression;
-shift_expression =     additive_expression| shift_expression, '<<', additive_expression| shift_expression, right_shift, additive_expression;
-relational_expression =     shift_expression| relational_expression, '<', shift_expression| relational_expression, '>', shift_expression| relational_expression, '<=', shift_expression| relational_expression, '>=', shift_expression;
-equality_expression =     relational_expression| equality_expression, '==', relational_expression| equality_expression, '!=', relational_expression;
-and_expression =     equality_expression| and_expression, '&', equality_expression;
-exclusive_or_expression =     and_expression| exclusive_or_expression, '^', and_expression;
-inclusive_or_expression =     exclusive_or_expression| inclusive_or_expression, '|', exclusive_or_expression;
-conditional_and_expression =     inclusive_or_expression| conditional_and_expression, '&&', inclusive_or_expression;
-conditional_or_expression =     conditional_and_expression| conditional_or_expression, '||', conditional_and_expression;
-assignment =     unary_expression, assignment_operator, expression;
-assignment_operator =     '='| '+='| '-=';
-expression =     non_assignment_expression| assignment;
-non_assignment_expression =     conditional_expression;
+(* expression = assignment; *)
+
+(* argument_list =     argument| argument_list, ',', argument; *)
+(* argument =     [argument_name], argument_value; *)
+(* argument_name =     identifier, ':'; *)
+(* argument_value =     expression; *)
+(* primary_expression =     primary_no_array_creation_expression| array_creation_expression; *)
+(* primary_no_array_creation_expression =     literal| identifier| parenthesized_expression| member_access| element_access| post_increment_expression| post_decrement_expression| object_creation_expression | typeof_expression; *)
+(* parenthesized_expression =     '(', expression, ')'; *)
+(* member_access =     primary_expression, '.', identifier| predefined_type, '.', identifier; *)
+(* predefined_type =     'char' | 'int' ; *)
+(* element_access =     primary_no_array_creation_expression, '[', expression_list, ']'; *)
+(* expression_list =     expression| expression_list, ',', expression; *)
+(* post_increment_expression =     primary_expression, '++'; *)
+(* post_decrement_expression =     primary_expression, '--'; *)
+(* object_creation_expression =     'new', type, '(', [argument_list], ')', [object_or_collection_initializer]| 'new', type, object_or_collection_initializer; *)
+(* object_or_collection_initializer =     object_initializer| collection_initializer; *)
+(* object_initializer =     '{', [member_initializer_list], '}'| '{', member_initializer_list, ',', '}'; *)
+(* member_initializer_list =     member_initializer| member_initializer_list, ',', member_initializer; *)
+(* member_initializer =     identifier, '=', initializer_value; *)
+(* initializer_value =     expression| object_or_collection_initializer; *)
+(* collection_initializer =     '{', element_initializer_list, '}'| '{', element_initializer_list, ',', '}'; *)
+(* element_initializer_list =     element_initializer| element_initializer_list, ',', element_initializer; *)
+(* element_initializer =     non_assignment_expression | '{', expression_list, '}'; *)
+(* array_creation_expression =     'new', non_array_type, '[', expression, ']'| 'new', array_type, array_initializer; *)
+(* typeof_expression = 'typeof', '(', type, ')'
+	 | 'typeof', '(', unbound_type_name, ')'
+	 | 'typeof', '(', 'void', ')'; *)
+(* unbound_type_name =     identifier| unbound_type_name, '.', identifier; *)
+(* unary_expression =     primary_expression| '+', unary_expression| '-', unary_expression| '!', unary_expression| '~', unary_expression; *)
+(* multiplicative_expression =     unary_expression| multiplicative_expression, '*', unary_expression| multiplicative_expression, '/', unary_expression| multiplicative_expression, '%', unary_expression; *)
+(* additive_expression =     multiplicative_expression| additive_expression, '+', multiplicative_expression| additive_expression, '-', multiplicative_expression; *)
+(* shift_expression =     additive_expression| shift_expression, '<<', additive_expression| shift_expression, right_shift, additive_expression; *)
+(* relational_expression =     shift_expression| relational_expression, '<', shift_expression| relational_expression, '>', shift_expression| relational_expression, '<=', shift_expression| relational_expression, '>=', shift_expression; *)
+(* equality_expression =     relational_expression| equality_expression, '==', relational_expression| equality_expression, '!=', relational_expression; *)
+(* and_expression =     equality_expression| and_expression, '&', equality_expression; *)
+(* exclusive_or_expression =     and_expression| exclusive_or_expression, '^', and_expression; *)
+(* inclusive_or_expression =     exclusive_or_expression| inclusive_or_expression, '|', exclusive_or_expression; *)
+(* conditional_and_expression =     inclusive_or_expression| conditional_and_expression, '&&', inclusive_or_expression; *)
+(* conditional_or_expression =     conditional_and_expression| conditional_or_expression, '||', conditional_and_expression; *)
+(* assignment =     unary_expression, assignment_operator, expression; *)
+(* assignment_operator =     '='| '+='| '-='; *)
+(* non_assignment_expression =     conditional_expression; *)
+(* conditional_expression = conditional_or_expression; *)
 
 (*B.2.5 Statements*)
-(* statement =    declaration_statement| embedded_statement; *)
-(* embedded_statement =     block | empty_statement | expression_statement | if_statement| iteration_statement
-							| break_statement | continue_statement | return_statement | while_statement *)
-(* block =     '{', [statement_list], '}'; *)
-(* statement_list =     statement| statement_list, statement; *)
-(* empty_statement =     ';'; *)
-(* declaration_statement =     local_variable_declaration, ';’; *)
-(* local_variable_declaration =     local_variable_type, local_variable_declarators; *)
-(* local_variable_type =     type; *)
-(* local_variable_declarators =     local_variable_declarator| local_variable_declarators, ',', local_variable_declarator; *)
-(* local_variable_declarator =     identifier| identifier, '=', local_variable_initializer; *)
-(* local_variable_initializer =     expression| array_initializer; *)
-(* expression_statement =     statement_expression, ';'; *)
-(* statement_expression =     object_creation_expression| assignment| post_increment_expression| post_decrement_expression; *)
-(* if_statement =     'if', '(', boolean_expression, ')', embedded_statement| 'if', '(', boolean_expression, ')', embedded_statement, 'else', embedded_statement; *)
-(* while_statement =     'while', '(', boolean_expression, ')', embedded_statement; *)
-(* break_statement =     'break', ';'; *)
-(* continue_statement =     'continue', ';'; *)
-(* return_statement =     'return', [expression], ';'; *)
-(* boolean_expression = expression; *)
+statement =    declaration_statement| embedded_statement;
+embedded_statement =     block | empty_statement | expression_statement | if_statement| iteration_statement;
+block =     '{', [statement_list], '}';
+statement_list =     statement| statement_list, statement;
+empty_statement =     ';';
+declaration_statement =     local_variable_declaration, ';’;
+local_variable_declaration =     local_variable_type, local_variable_declarators;
+local_variable_type =     type;
+local_variable_declarators =     local_variable_declarator| local_variable_declarators, ',', local_variable_declarator;
+local_variable_declarator =     identifier| identifier, '=', local_variable_initializer;
+local_variable_initializer =     expression| array_initializer;
+expression_statement =     statement_expression, ';';
+statement_expression =     object_creation_expression| assignment| post_increment_expression| post_decrement_expression;
+if_statement =     'if', '(', boolean_expression, ')', embedded_statement| 'if', '(', boolean_expression, ')', embedded_statement, 'else', embedded_statement;
+iteration_statement =   while_statement ;
+while_statement =     'while', '(', boolean_expression, ')', embedded_statement;
+break_statement =     'break', ';';
+continue_statement =     'continue', ';';
+return_statement =     'return', [expression], ';';
+boolean_expression = expression;
 
 (*Classes*)
-(* class_declaration =    [class_modifiers], 'class', identifier, class_body, [';'];
+class_declaration =    [class_modifiers], 'class', identifier, class_body, [';'];
 class_modifiers =     class_modifier| class_modifiers, class_modifier;
 class_modifier =     'public'| 'private';
 class_body =     '{', [class_member_declarations], '}';
@@ -181,27 +177,28 @@ class_member_declaration =  field_declaration| method_declaration| constructor_d
 field_declaration =     [field_modifiers], type, variable_declarators, ';';
 field_modifiers =     field_modifier| field_modifiers, field_modifier;
 field_modifier =     'public'| 'private';
-variable_declarators =     variable_declarator| variable_declarators, ',', variable_declarator;
-variable_declarator =     identifier| identifier, '=', variable_initializer;
-variable_initializer =     expression| array_initializer;
+(* variable_declarators =     variable_declarator| variable_declarators, ',', variable_declarator; *)
+(* variable_declarator =     identifier| identifier, '=', variable_initializer; *)
+(* variable_initializer =     expression| array_initializer; *)
 method_declaration =     method_header, method_body;
-method_header =     [method_modifiers],  return_type, member_name, '(', [fixed_parameters], ')';
+method_header =     [method_modifiers],  return_type, member_name, '(', [formal_parameter_list], ')';
 method_modifiers =     method_modifier| method_modifiers, method_modifier;
 method_modifier =     'public' | 'private';
 return_type =     type| 'void';
 member_name =     identifier;
 method_body =     block | ';';
+formal_parameter_list =     fixed_parameters;
 fixed_parameters =     fixed_parameter | fixed_parameters, ',', fixed_parameter;
 fixed_parameter =     type, identifier, [default_argument];
 default_argument =     '=', expression;
 constructor_declaration =  constructor_declarator, constructor_body;
-constructor_declarator =     identifier, '(', [fixed_parameters], ')';
+constructor_declarator =     identifier, '(', [formal_parameter_list], ')';
 constructor_body =     block| ';';
 destructor_declaration =     '~', identifier, '(', ')', destructor_body;
-destructor_body =     block | ';'; *)
+destructor_body =     block | ';';
 
 (*B.2.9 Arrays*)
 array_type =     non_array_type, ‘[‘, ‘]’;
 non_array_type =  type;
-array_initializer =  '{', [variable_initializer_list], '}' | '{', variable_initializer_list, ',', '}';
+(* array_initializer =  '{', [variable_initializer_list], '}' | '{', variable_initializer_list, ',', '}'; *)
 (* variable_initializer_list = variable_initializer| variable_initializer_list, ',', variable_initializer; *)

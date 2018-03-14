@@ -22,7 +22,8 @@ reserved = {
     'while' : 'WHILE',
     'using'  :  'USING',
     'break' : 'BREAK',
-    'goto'  : 'GOTO'
+    'goto'  : 'GOTO',
+    'typeof' : 'TYPEOF'
 }
 
 tokens = [
