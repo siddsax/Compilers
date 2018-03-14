@@ -7,22 +7,22 @@ reserved = {
     'continue' : 'CONTINUE',
     'void' : 'VOID',
     'new' : 'NEW',
-    'short' : 'SHORT',
-    'string' : 'STRING',
+    # 'short' : 'SHORT',
+    # 'string' : 'STRING',
     'class' : 'CLASS',
     'private' : 'PRIVATE',
     'public' : 'PUBLIC',
     'if' : 'IF',
     'else' : 'ELSE',
-    'null' : 'NULL',
+    # 'null' : 'NULL',
     'return' : 'RETURN',
     'object' : 'OBJECT',
-    'sizeof' : 'SIZEOF',
+    # 'sizeof' : 'SIZEOF',
     'int' : 'INT',
     'while' : 'WHILE',
     'using'  :  'USING',
     'break' : 'BREAK',
-    'goto'  : 'GOTO',
+    # 'goto'  : 'GOTO',
     'typeof' : 'TYPEOF'
 }
 
@@ -42,7 +42,7 @@ tokens = [
     # Assignment and Lambda Operators: = += -= 
     'EQUALS', 'PLUSEQUAL', 'MINUSEQUAL',
     # Others: \n // ... \'" | '\"' | '\\' | '\0' '\t' 
-    'NEWLINE', 'COMMENTDELIM','COMMENTSLINE', 'SINGLEQUOTE', 'DOUBLEQUOTE', 'BACKSLASH',
+    'NEWLINE', 'COMMENTDELIM','COMMENTSLINE',#, 'SINGLEQUOTE', 'DOUBLEQUOTE', 'BACKSLASH',
     # Relational Operators: < > <= >=
     'LT', 'GT', 'LEQ', 'GEQ',
     # Equality Operators == !=
@@ -104,9 +104,7 @@ t_RBRACE           = r'\}'
 t_COMMA            = r','
 t_TERMINATOR  = r';'
 t_COLON            = r':'
-t_SINGLEQUOTE     = r'\''
-t_DOUBLEQUOTE       = r'\"'
-t_BACKSLASH       = r'\\'
+
 
 def t_IDENTIFIER(t):
     r'[a-zA-Z_]([a-zA-Z_0-9])*'

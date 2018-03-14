@@ -295,6 +295,7 @@ def p_expression(p):
 
 def p_assignment(p):
 	"""assignment : unary_expression assignment_operator expression
+					| identifier assignment_operator expression
 	"""
 
 def p_assignment_operator(p):
@@ -305,9 +306,13 @@ def p_assignment_operator(p):
 def p_unary_expression(p):
 	"""unary_expression : primary_expression
 						| PLUS unary_expression
+						| PLUS identifier
 						| MINUS unary_expression
+						| MINUS identifier
 						| LNOT unary_expression
+						| LNOT identifier
 						| TILDE unary_expression
+						| TILDE identifier
 	"""
 
 def p_primary_expression(p):
@@ -317,7 +322,6 @@ def p_primary_expression(p):
 
 def p_primary_no_array_creation_expression(p):
 	"""primary_no_array_creation_expression : literal
-											| identifier
 											| parenthesized_expression
 											| member_access
 											| element_access
@@ -333,6 +337,7 @@ def p_parenthesized_expression(p):
 
 def p_member_access(p):
 	"""member_access : primary_expression MEMBERACCESS identifier
+						| iMEMAi
 						| predefined_type MEMBERACCESS identifier
 	"""
 
@@ -343,6 +348,7 @@ def p_predefined_type(p):
 
 def p_element_access(p):
 	"""element_access : primary_no_array_creation_expression LBRACKET expression_list RBRACKET 
+						| identifier LBRACKET expression_list RBRACKET
 	"""
 
 def p_expression_list(p):
@@ -352,10 +358,12 @@ def p_expression_list(p):
 
 def p_post_increment_expression(p):
 	"""post_increment_expression : primary_expression INCREMENT
+									| identifier INCREMENT
 	"""
 
 def p_post_decrement_expression(p):
 	"""post_decrement_expression : primary_expression DECREMENT
+									| identifier DECREMENT
 	"""
 
 def p_object_creation_expression(p):
@@ -435,10 +443,13 @@ def p_typeof_expression(p):
 	"""
 
 def p_unbound_type_name(p):
-	"""unbound_type_name : identifier
+	"""unbound_type_name : iMEMAi
 							| unbound_type_name MEMBERACCESS identifier
 	"""
 
+def p_iMEMAi(p):
+	"""iMEMAi : identifier MEMBERACCESS identifier
+	"""
 def p_non_assignment_expression(p):
 	"""non_assignment_expression : conditional_expression
 	"""
@@ -499,9 +510,13 @@ def p_additive_expression(p):
 
 def p_multiplicative_expression(p):
 	"""multiplicative_expression : unary_expression
+									| identifier
 									| multiplicative_expression TIMES unary_expression
 									| multiplicative_expression DIVIDE unary_expression
 									| multiplicative_expression MOD unary_expression
+									| multiplicative_expression TIMES identifier
+									| multiplicative_expression DIVIDE identifier
+									| multiplicative_expression MOD identifier
 	"""
 
 # def p_(p):
@@ -512,9 +527,9 @@ def p_multiplicative_expression(p):
 # 	"""
 # 	"""
 # EMPTY ##########################################################################################
-def p_empty(p):
-	"""empty : 
-	"""
+# def p_empty(p):
+# 	"""empty : 
+# 	"""
 
 # Error rule for syntax errors
 def p_error(p):

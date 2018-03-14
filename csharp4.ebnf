@@ -88,9 +88,6 @@ right_shift =     '>>';
 
 (*B.2.2 Types*)
 type =     reference_type| type_parameter;
-(* simple_type =     numeric_type; *)
-(* numeric_type =     integral_type| 'decimal';
-integral_type =     'int' | 'char'; *)
 reference_type =     class_type| array_type;
 class_type =     type_name| 'object';
 type_name = proper_identifier;
