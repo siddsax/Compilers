@@ -26,12 +26,12 @@ precedence = (
 	('left', 'MEMBERACCESS', 'INCREMENT', 'DECREMENT')
 )
 
-# def p_start(p):
-# 	"""start : compilation_unit
-# 	"""
-
 def p_start(p):
-	"""start : class_declarations
+	"""start : compilation_unit
+	"""
+
+def p_compilation_unit(p):
+	"""compilation_unit : class_declarations
 	"""
 
 # CLASS #############################################################################
@@ -41,20 +41,11 @@ def p_class_declarations(p):
 
 	"""
 def p_class_declaration(p):
-	"""class_declaration : class_modifiers CLASS identifier class_body TERMINATOR
+	"""class_declaration : modifiers CLASS identifier class_body TERMINATOR
 							| CLASS identifier class_body TERMINATOR
 							| CLASS identifier class_body
-							| class_modifiers CLASS identifier class_body
+							| modifiers CLASS identifier class_body
 	"""
-def p_class_modifiers(p):
-	"""class_modifiers : class_modifier
-						| class_modifiers class_modifier
-	"""
-def p_class_modifier(p):
-	"""class_modifier : PUBLIC
-						| PRIVATE
-	"""
-
 def p_class_body(p):
 	"""class_body : LBRACE class_member_declarations RBRACE 
 					| LBRACE RBRACE
@@ -77,18 +68,8 @@ def p_class_member_declaration(p):
 	"""
 
 def p_field_declaration(p):
-	"""field_declaration : field_modifiers type variable_declarators TERMINATOR
+	"""field_declaration : modifiers type variable_declarators TERMINATOR
 							| type variable_declarators TERMINATOR
-	"""
-
-def p_field_modifiers(p):
-	"""field_modifiers : field_modifier
-						| field_modifiers field_modifier
-	"""
-
-def p_field_modifier(p):
-	"""field_modifier : PUBLIC 
-						| PRIVATE
 	"""
 
 def p_type(p):
@@ -100,17 +81,13 @@ def p_reference_type(p):
 						| array_type
 	"""
 def p_class_type(p):
-	"""class_type : type_name
+	"""class_type : proper_identifier
 					| OBJECT
 	"""
 
-def p_type_name(p):
-	"""type_name : proper_identifier
-	"""
 
 def p_proper_identifier(p):
-	"""proper_identifier : identifier
-							| prefix identifier
+	"""proper_identifier : prefix identifier
 	"""
 
 def p_prefix(p):
@@ -165,19 +142,19 @@ def p_method_declaration(p):
 
 def p_method_header(p):
 	"""method_header : return_type member_name LPAREN fixed_parameters RPAREN
- 						| method_modifiers  return_type member_name LPAREN fixed_parameters RPAREN
+ 						| modifiers  return_type member_name LPAREN fixed_parameters RPAREN
  						| return_type member_name LPAREN RPAREN
- 						| method_modifiers return_type member_name LPAREN RPAREN
+ 						| modifiers return_type member_name LPAREN RPAREN
  	"""
 
-def p_method_modifiers(p):
-	"""method_modifiers : method_modifier
-						| method_modifiers method_modifier
+def p_modifiers(p):
+	"""modifiers : modifier
+						| modifiers modifier
 	"""
 
-def p_method_modifier(p):
-	"""method_modifier : PUBLIC
-						| PRIVATE
+def p_modifier(p):
+	"""modifier : PUBLIC
+					| PRIVATE
 	"""
 
 def p_return_type(p):
