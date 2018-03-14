@@ -1,65 +1,3 @@
-WARNING: Token 'LNOT' defined, but not used
-WARNING: Token 'RSHIFT' defined, but not used
-WARNING: Token 'GOTO' defined, but not used
-WARNING: Token 'NE' defined, but not used
-WARNING: Token 'CONAND' defined, but not used
-WARNING: Token 'WHILE' defined, but not used
-WARNING: Token 'COLON' defined, but not used
-WARNING: Token 'LSHIFT' defined, but not used
-WARNING: Token 'NEW' defined, but not used
-WARNING: Token 'RETURN' defined, but not used
-WARNING: Token 'SIZEOF' defined, but not used
-WARNING: Token 'NULL' defined, but not used
-WARNING: Token 'MINUS' defined, but not used
-WARNING: Token 'GEQ' defined, but not used
-WARNING: Token 'NEWLINE' defined, but not used
-WARNING: Token 'BACKSLASH' defined, but not used
-WARNING: Token 'LT' defined, but not used
-WARNING: Token 'SINGLEQUOTE' defined, but not used
-WARNING: Token 'PLUS' defined, but not used
-WARNING: Token 'INCREMENT' defined, but not used
-WARNING: Token 'STRING' defined, but not used
-WARNING: Token 'GT' defined, but not used
-WARNING: Token 'XOR' defined, but not used
-WARNING: Token 'DIVIDE' defined, but not used
-WARNING: Token 'CONOR' defined, but not used
-WARNING: Token 'CHARCONST' defined, but not used
-WARNING: Token 'COMMENTSLINE' defined, but not used
-WARNING: Token 'TIMES' defined, but not used
-WARNING: Token 'PLUSEQUAL' defined, but not used
-WARNING: Token 'SHORT' defined, but not used
-WARNING: Token 'STRCONST' defined, but not used
-WARNING: Token 'INTCONST' defined, but not used
-WARNING: Token 'ELSE' defined, but not used
-WARNING: Token 'EQ' defined, but not used
-WARNING: Token 'DOUBLEQUOTE' defined, but not used
-WARNING: Token 'IF' defined, but not used
-WARNING: Token 'AND' defined, but not used
-WARNING: Token 'COMMENTDELIM' defined, but not used
-WARNING: Token 'MINUSEQUAL' defined, but not used
-WARNING: Token 'BREAK' defined, but not used
-WARNING: Token 'LEQ' defined, but not used
-WARNING: Token 'CONTINUE' defined, but not used
-WARNING: Token 'USING' defined, but not used
-WARNING: Token 'DECREMENT' defined, but not used
-WARNING: Token 'OR' defined, but not used
-WARNING: Token 'MOD' defined, but not used
-WARNING: parser.py:30: Rule 'start' defined, but not used
-WARNING: There are 46 unused tokens
-WARNING: There is 1 unused rule
-WARNING: Symbol 'start' is unreachable
-Generating LALR tables
-WARNING: 2 shift/reduce conflicts
-WARNING: 16 reduce/reduce conflicts
-WARNING: reduce/reduce conflict in state 30 resolved using rule (field_modifier -> PRIVATE)
-WARNING: rejected rule (method_modifier -> PRIVATE) in state 30
-WARNING: reduce/reduce conflict in state 34 resolved using rule (proper_identifier -> IDENTIFIER)
-WARNING: rejected rule (type_parameter -> IDENTIFIER) in state 34
-WARNING: reduce/reduce conflict in state 50 resolved using rule (field_modifier -> PUBLIC)
-WARNING: rejected rule (method_modifier -> PUBLIC) in state 50
-WARNING: reduce/reduce conflict in state 55 resolved using rule (proper_identifier -> IDENTIFIER)
-WARNING: rejected rule (type_parameter -> IDENTIFIER) in state 55
-WARNING: Rule (type_parameter -> IDENTIFIER) is never reduced
 PLY: PARSE DEBUG START
 
 State  : 0
@@ -68,13 +6,13 @@ Action : Shift and goto state 4
 
 State  : 4
 Stack  : PUBLIC . LexToken(CLASS,'class',16,7)
-Action : Reduce rule [class_modifier -> PUBLIC] with ['public'] and goto state 6
-Result : <NoneType @ 0x8f5320> (None)
+Action : Reduce rule [class_modifier -> PUBLIC] with ['public'] and goto state 3
+Result : <NoneType @ 0x8ff8d0> (None)
 
-State  : 6
+State  : 3
 Stack  : class_modifier . LexToken(CLASS,'class',16,7)
 Action : Reduce rule [class_modifiers -> class_modifier] with [None] and goto state 7
-Result : <NoneType @ 0x8f5320> (None)
+Result : <NoneType @ 0x8ff8d0> (None)
 
 State  : 7
 Stack  : class_modifiers . LexToken(CLASS,'class',16,7)
@@ -82,261 +20,251 @@ Action : Shift and goto state 11
 
 State  : 11
 Stack  : class_modifiers CLASS . LexToken(IDENTIFIER,'goal',16,13)
-Action : Shift and goto state 13
+Action : Shift and goto state 12
 
-State  : 13
+State  : 12
 Stack  : class_modifiers CLASS IDENTIFIER . LexToken(LBRACE,'{',17,18)
-Action : Shift and goto state 14
+Action : Reduce rule [identifier -> IDENTIFIER] with ['goal'] and goto state 14
+Result : <NoneType @ 0x8ff8d0> (None)
 
 State  : 14
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE . LexToken(PUBLIC,'public',18,23)
-Action : Shift and goto state 50
+Stack  : class_modifiers CLASS identifier . LexToken(LBRACE,'{',17,18)
+Action : Shift and goto state 15
 
-State  : 50
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE PUBLIC . LexToken(VOID,'void',18,30)
-Action : Reduce rule [method_modifier -> PUBLIC] with ['public'] and goto state 22
-Result : <NoneType @ 0x8f5320> (None)
-
-State  : 22
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE method_modifier . LexToken(VOID,'void',18,30)
-Action : Reduce rule [method_modifiers -> method_modifier] with [None] and goto state 32
-Result : <NoneType @ 0x8f5320> (None)
-
-State  : 32
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE method_modifiers . LexToken(VOID,'void',18,30)
-Action : Shift and goto state 62
-
-State  : 62
-Defaulted state 62: Reduce using 65
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE method_modifiers VOID . None
-Action : Reduce rule [return_type -> VOID] with ['void'] and goto state 66
-Result : <NoneType @ 0x8f5320> (None)
-
-State  : 66
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE method_modifiers return_type . LexToken(IDENTIFIER,'foo',18,35)
-Action : Shift and goto state 61
-
-State  : 61
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE method_modifiers return_type IDENTIFIER . LexToken(LPAREN,'(',18,38)
-Action : Reduce rule [available_identifier -> IDENTIFIER] with ['foo'] and goto state 25
-Result : <NoneType @ 0x8f5320> (None)
-
-State  : 25
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE method_modifiers return_type available_identifier . LexToken(LPAREN,'(',18,38)
-Action : Reduce rule [identifier -> available_identifier] with [None] and goto state 84
-Result : <NoneType @ 0x8f5320> (None)
-
-State  : 84
-Defaulted state 84: Reduce using 66
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE method_modifiers return_type identifier . LexToken(LPAREN,'(',18,38)
-Action : Reduce rule [member_name -> identifier] with [None] and goto state 83
-Result : <NoneType @ 0x8f5320> (None)
-
-State  : 83
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE method_modifiers return_type member_name . LexToken(LPAREN,'(',18,38)
-Action : Shift and goto state 95
-
-State  : 95
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE method_modifiers return_type member_name LPAREN . LexToken(RPAREN,')',18,40)
-Action : Shift and goto state 108
-
-State  : 108
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE method_modifiers return_type member_name LPAREN RPAREN . LexToken(LBRACE,'{',19,45)
-Action : Reduce rule [method_header -> method_modifiers return_type member_name LPAREN RPAREN] with [None,None,None,'(',')'] and goto state 45
-Result : <NoneType @ 0x8f5320> (None)
-
-State  : 45
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE method_header . LexToken(LBRACE,'{',19,45)
-Action : Reduce rule [method_declaration -> method_header] with [None] and goto state 29
-Result : <NoneType @ 0x8f5320> (None)
-
-State  : 29
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE method_declaration . LexToken(LBRACE,'{',19,45)
-Action : Reduce rule [class_member_declaration -> method_declaration] with [None] and goto state 43
-Result : <NoneType @ 0x8f5320> (None)
-
-State  : 43
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declaration . LexToken(LBRACE,'{',19,45)
-Action : Reduce rule [class_member_declarations -> class_member_declaration] with [None] and goto state 33
-Result : <NoneType @ 0x8f5320> (None)
-
-State  : 33
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations . LexToken(LBRACE,'{',19,45)
-Action : Shift and goto state 42
-
-State  : 42
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations LBRACE . LexToken(RBRACE,'}',21,51)
-Action : Shift and goto state 75
-
-State  : 75
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations LBRACE RBRACE . LexToken(IDENTIFIER,'goal',23,57)
-Action : Reduce rule [block -> LBRACE RBRACE] with ['{','}'] and goto state 51
-Result : <NoneType @ 0x8f5320> (None)
+State  : 15
+Stack  : class_modifiers CLASS identifier LBRACE . LexToken(PUBLIC,'public',18,23)
+Action : Shift and goto state 51
 
 State  : 51
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations block . LexToken(IDENTIFIER,'goal',23,57)
-Action : Reduce rule [method_body -> block] with [None] and goto state 38
-Result : <NoneType @ 0x8f5320> (None)
+Stack  : class_modifiers CLASS identifier LBRACE PUBLIC . LexToken(VOID,'void',18,30)
+Action : Reduce rule [method_modifier -> PUBLIC] with ['public'] and goto state 24
+Result : <NoneType @ 0x8ff8d0> (None)
 
-State  : 38
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations method_body . LexToken(IDENTIFIER,'goal',23,57)
-Action : Reduce rule [method_declaration -> method_body] with [None] and goto state 29
-Result : <NoneType @ 0x8f5320> (None)
-
-State  : 29
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations method_declaration . LexToken(IDENTIFIER,'goal',23,57)
-Action : Reduce rule [class_member_declaration -> method_declaration] with [None] and goto state 69
-Result : <NoneType @ 0x8f5320> (None)
-
-State  : 69
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations class_member_declaration . LexToken(IDENTIFIER,'goal',23,57)
-Action : Reduce rule [class_member_declarations -> class_member_declarations class_member_declaration] with [None,None] and goto state 33
-Result : <NoneType @ 0x8f5320> (None)
-
-State  : 33
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations . LexToken(IDENTIFIER,'goal',23,57)
-Action : Shift and goto state 34
+State  : 24
+Stack  : class_modifiers CLASS identifier LBRACE method_modifier . LexToken(VOID,'void',18,30)
+Action : Reduce rule [method_modifiers -> method_modifier] with [None] and goto state 34
+Result : <NoneType @ 0x8ff8d0> (None)
 
 State  : 34
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations IDENTIFIER . LexToken(LPAREN,'(',23,61)
-Action : Reduce rule [available_identifier -> IDENTIFIER] with ['goal'] and goto state 25
-Result : <NoneType @ 0x8f5320> (None)
+Stack  : class_modifiers CLASS identifier LBRACE method_modifiers . LexToken(VOID,'void',18,30)
+Action : Shift and goto state 20
 
-State  : 25
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations available_identifier . LexToken(LPAREN,'(',23,61)
-Action : Reduce rule [identifier -> available_identifier] with [None] and goto state 49
-Result : <NoneType @ 0x8f5320> (None)
+State  : 20
+Defaulted state 20: Reduce using 65
+Stack  : class_modifiers CLASS identifier LBRACE method_modifiers VOID . None
+Action : Reduce rule [return_type -> VOID] with ['void'] and goto state 67
+Result : <NoneType @ 0x8ff8d0> (None)
 
-State  : 49
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations identifier . LexToken(LPAREN,'(',23,61)
-Action : Shift and goto state 79
+State  : 67
+Stack  : class_modifiers CLASS identifier LBRACE method_modifiers return_type . LexToken(IDENTIFIER,'foo',18,35)
+Action : Shift and goto state 12
 
-State  : 79
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations identifier LPAREN . LexToken(RPAREN,')',23,62)
+State  : 12
+Stack  : class_modifiers CLASS identifier LBRACE method_modifiers return_type IDENTIFIER . LexToken(LPAREN,'(',18,38)
+Action : Reduce rule [identifier -> IDENTIFIER] with ['foo'] and goto state 61
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 61
+Defaulted state 61: Reduce using 66
+Stack  : class_modifiers CLASS identifier LBRACE method_modifiers return_type identifier . LexToken(LPAREN,'(',18,38)
+Action : Reduce rule [member_name -> identifier] with [None] and goto state 108
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 108
+Stack  : class_modifiers CLASS identifier LBRACE method_modifiers return_type member_name . LexToken(LPAREN,'(',18,38)
+Action : Shift and goto state 135
+
+State  : 135
+Stack  : class_modifiers CLASS identifier LBRACE method_modifiers return_type member_name LPAREN . LexToken(RPAREN,')',18,40)
+Action : Shift and goto state 153
+
+State  : 153
+Stack  : class_modifiers CLASS identifier LBRACE method_modifiers return_type member_name LPAREN RPAREN . LexToken(LBRACE,'{',19,45)
+Action : Reduce rule [method_header -> method_modifiers return_type member_name LPAREN RPAREN] with [None,None,None,'(',')'] and goto state 46
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 46
+Stack  : class_modifiers CLASS identifier LBRACE method_header . LexToken(LBRACE,'{',19,45)
+Action : Reduce rule [method_declaration -> method_header] with [None] and goto state 31
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 31
+Stack  : class_modifiers CLASS identifier LBRACE method_declaration . LexToken(LBRACE,'{',19,45)
+Action : Reduce rule [class_member_declaration -> method_declaration] with [None] and goto state 44
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 44
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declaration . LexToken(LBRACE,'{',19,45)
+Action : Reduce rule [class_member_declarations -> class_member_declaration] with [None] and goto state 35
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 35
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations . LexToken(LBRACE,'{',19,45)
+Action : Shift and goto state 43
+
+State  : 43
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations LBRACE . LexToken(RBRACE,'}',21,51)
 Action : Shift and goto state 89
 
 State  : 89
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations identifier LPAREN RPAREN . LexToken(LBRACE,'{',23,63)
-Action : Reduce rule [constructor_declarator -> identifier LPAREN RPAREN] with [None,'(',')'] and goto state 44
-Result : <NoneType @ 0x8f5320> (None)
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations LBRACE RBRACE . LexToken(IDENTIFIER,'goal',23,57)
+Action : Reduce rule [block -> LBRACE RBRACE] with ['{','}'] and goto state 52
+Result : <NoneType @ 0x8ff8d0> (None)
 
-State  : 44
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations constructor_declarator . LexToken(LBRACE,'{',23,63)
-Action : Shift and goto state 42
+State  : 52
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations block . LexToken(IDENTIFIER,'goal',23,57)
+Action : Reduce rule [method_body -> block] with [None] and goto state 39
+Result : <NoneType @ 0x8ff8d0> (None)
 
-State  : 42
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations constructor_declarator LBRACE . LexToken(RBRACE,'}',24,68)
-Action : Shift and goto state 75
-
-State  : 75
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations constructor_declarator LBRACE RBRACE . LexToken(TILDE,'~',26,74)
-Action : Reduce rule [block -> LBRACE RBRACE] with ['{','}'] and goto state 78
-Result : <NoneType @ 0x8f5320> (None)
-
-State  : 78
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations constructor_declarator block . LexToken(TILDE,'~',26,74)
-Action : Reduce rule [constructor_body -> block] with [None] and goto state 76
-Result : <NoneType @ 0x8f5320> (None)
-
-State  : 76
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations constructor_declarator constructor_body . LexToken(TILDE,'~',26,74)
-Action : Reduce rule [constructor_declaration -> constructor_declarator constructor_body] with [None,None] and goto state 27
-Result : <NoneType @ 0x8f5320> (None)
-
-State  : 27
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations constructor_declaration . LexToken(TILDE,'~',26,74)
-Action : Reduce rule [class_member_declaration -> constructor_declaration] with [None] and goto state 69
-Result : <NoneType @ 0x8f5320> (None)
-
-State  : 69
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations class_member_declaration . LexToken(TILDE,'~',26,74)
-Action : Reduce rule [class_member_declarations -> class_member_declarations class_member_declaration] with [None,None] and goto state 33
-Result : <NoneType @ 0x8f5320> (None)
-
-State  : 33
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations . LexToken(TILDE,'~',26,74)
-Action : Shift and goto state 31
+State  : 39
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations method_body . LexToken(IDENTIFIER,'goal',23,57)
+Action : Reduce rule [method_declaration -> method_body] with [None] and goto state 31
+Result : <NoneType @ 0x8ff8d0> (None)
 
 State  : 31
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations TILDE . LexToken(IDENTIFIER,'goal',26,75)
-Action : Shift and goto state 61
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations method_declaration . LexToken(IDENTIFIER,'goal',23,57)
+Action : Reduce rule [class_member_declaration -> method_declaration] with [None] and goto state 70
+Result : <NoneType @ 0x8ff8d0> (None)
 
-State  : 61
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations TILDE IDENTIFIER . LexToken(LPAREN,'(',26,79)
-Action : Reduce rule [available_identifier -> IDENTIFIER] with ['goal'] and goto state 25
-Result : <NoneType @ 0x8f5320> (None)
+State  : 70
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations class_member_declaration . LexToken(IDENTIFIER,'goal',23,57)
+Action : Reduce rule [class_member_declarations -> class_member_declarations class_member_declaration] with [None,None] and goto state 35
+Result : <NoneType @ 0x8ff8d0> (None)
 
-State  : 25
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations TILDE available_identifier . LexToken(LPAREN,'(',26,79)
-Action : Reduce rule [identifier -> available_identifier] with [None] and goto state 60
-Result : <NoneType @ 0x8f5320> (None)
+State  : 35
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations . LexToken(IDENTIFIER,'goal',23,57)
+Action : Shift and goto state 12
 
-State  : 60
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations TILDE identifier . LexToken(LPAREN,'(',26,79)
-Action : Shift and goto state 82
+State  : 12
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations IDENTIFIER . LexToken(LPAREN,'(',23,61)
+Action : Reduce rule [identifier -> IDENTIFIER] with ['goal'] and goto state 50
+Result : <NoneType @ 0x8ff8d0> (None)
 
-State  : 82
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations TILDE identifier LPAREN . LexToken(RPAREN,')',26,80)
-Action : Shift and goto state 94
+State  : 50
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations identifier . LexToken(LPAREN,'(',23,61)
+Action : Shift and goto state 103
 
-State  : 94
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations TILDE identifier LPAREN RPAREN . LexToken(LBRACE,'{',26,81)
-Action : Shift and goto state 42
+State  : 103
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations identifier LPAREN . LexToken(RPAREN,')',23,62)
+Action : Shift and goto state 127
 
-State  : 42
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations TILDE identifier LPAREN RPAREN LBRACE . LexToken(RBRACE,'}',27,86)
-Action : Shift and goto state 75
+State  : 127
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations identifier LPAREN RPAREN . LexToken(LBRACE,'{',23,63)
+Action : Reduce rule [constructor_declarator -> identifier LPAREN RPAREN] with [None,'(',')'] and goto state 45
+Result : <NoneType @ 0x8ff8d0> (None)
 
-State  : 75
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations TILDE identifier LPAREN RPAREN LBRACE RBRACE . LexToken(RBRACE,'}',30,90)
-Action : Reduce rule [block -> LBRACE RBRACE] with ['{','}'] and goto state 107
-Result : <NoneType @ 0x8f5320> (None)
+State  : 45
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations constructor_declarator . LexToken(LBRACE,'{',23,63)
+Action : Shift and goto state 43
 
-State  : 107
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations TILDE identifier LPAREN RPAREN block . LexToken(RBRACE,'}',30,90)
-Action : Reduce rule [destructor_body -> block] with [None] and goto state 106
-Result : <NoneType @ 0x8f5320> (None)
+State  : 43
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations constructor_declarator LBRACE . LexToken(RBRACE,'}',24,68)
+Action : Shift and goto state 89
 
-State  : 106
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations TILDE identifier LPAREN RPAREN destructor_body . LexToken(RBRACE,'}',30,90)
-Action : Reduce rule [destructor_declaration -> TILDE identifier LPAREN RPAREN destructor_body] with ['~',None,'(',')',None] and goto state 48
-Result : <NoneType @ 0x8f5320> (None)
+State  : 89
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations constructor_declarator LBRACE RBRACE . LexToken(TILDE,'~',26,74)
+Action : Reduce rule [block -> LBRACE RBRACE] with ['{','}'] and goto state 101
+Result : <NoneType @ 0x8ff8d0> (None)
 
-State  : 48
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations destructor_declaration . LexToken(RBRACE,'}',30,90)
-Action : Reduce rule [class_member_declaration -> destructor_declaration] with [None] and goto state 69
-Result : <NoneType @ 0x8f5320> (None)
+State  : 101
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations constructor_declarator block . LexToken(TILDE,'~',26,74)
+Action : Reduce rule [constructor_body -> block] with [None] and goto state 99
+Result : <NoneType @ 0x8ff8d0> (None)
 
-State  : 69
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations class_member_declaration . LexToken(RBRACE,'}',30,90)
-Action : Reduce rule [class_member_declarations -> class_member_declarations class_member_declaration] with [None,None] and goto state 33
-Result : <NoneType @ 0x8f5320> (None)
+State  : 99
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations constructor_declarator constructor_body . LexToken(TILDE,'~',26,74)
+Action : Reduce rule [constructor_declaration -> constructor_declarator constructor_body] with [None,None] and goto state 29
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 29
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations constructor_declaration . LexToken(TILDE,'~',26,74)
+Action : Reduce rule [class_member_declaration -> constructor_declaration] with [None] and goto state 70
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 70
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations class_member_declaration . LexToken(TILDE,'~',26,74)
+Action : Reduce rule [class_member_declarations -> class_member_declarations class_member_declaration] with [None,None] and goto state 35
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 35
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations . LexToken(TILDE,'~',26,74)
+Action : Shift and goto state 33
 
 State  : 33
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations . LexToken(RBRACE,'}',30,90)
-Action : Shift and goto state 68
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations TILDE . LexToken(IDENTIFIER,'goal',26,75)
+Action : Shift and goto state 12
 
-State  : 68
-Stack  : class_modifiers CLASS IDENTIFIER LBRACE class_member_declarations RBRACE . $end
-Action : Reduce rule [class_body -> LBRACE class_member_declarations RBRACE] with ['{',None,'}'] and goto state 16
-Result : <NoneType @ 0x8f5320> (None)
+State  : 12
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations TILDE IDENTIFIER . LexToken(LPAREN,'(',26,79)
+Action : Reduce rule [identifier -> IDENTIFIER] with ['goal'] and goto state 63
+Result : <NoneType @ 0x8ff8d0> (None)
 
-State  : 16
-Stack  : class_modifiers CLASS IDENTIFIER class_body . $end
-Action : Reduce rule [class_declaration -> class_modifiers CLASS IDENTIFIER class_body] with [None,'class','goal',None] and goto state 5
-Result : <NoneType @ 0x8f5320> (None)
+State  : 63
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations TILDE identifier . LexToken(LPAREN,'(',26,79)
+Action : Shift and goto state 107
+
+State  : 107
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations TILDE identifier LPAREN . LexToken(RPAREN,')',26,80)
+Action : Shift and goto state 134
+
+State  : 134
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations TILDE identifier LPAREN RPAREN . LexToken(LBRACE,'{',26,81)
+Action : Shift and goto state 43
+
+State  : 43
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations TILDE identifier LPAREN RPAREN LBRACE . LexToken(RBRACE,'}',27,86)
+Action : Shift and goto state 89
+
+State  : 89
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations TILDE identifier LPAREN RPAREN LBRACE RBRACE . LexToken(RBRACE,'}',30,90)
+Action : Reduce rule [block -> LBRACE RBRACE] with ['{','}'] and goto state 152
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 152
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations TILDE identifier LPAREN RPAREN block . LexToken(RBRACE,'}',30,90)
+Action : Reduce rule [destructor_body -> block] with [None] and goto state 151
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 151
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations TILDE identifier LPAREN RPAREN destructor_body . LexToken(RBRACE,'}',30,90)
+Action : Reduce rule [destructor_declaration -> TILDE identifier LPAREN RPAREN destructor_body] with ['~',None,'(',')',None] and goto state 49
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 49
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations destructor_declaration . LexToken(RBRACE,'}',30,90)
+Action : Reduce rule [class_member_declaration -> destructor_declaration] with [None] and goto state 70
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 70
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations class_member_declaration . LexToken(RBRACE,'}',30,90)
+Action : Reduce rule [class_member_declarations -> class_member_declarations class_member_declaration] with [None,None] and goto state 35
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 35
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations . LexToken(RBRACE,'}',30,90)
+Action : Shift and goto state 69
+
+State  : 69
+Stack  : class_modifiers CLASS identifier LBRACE class_member_declarations RBRACE . $end
+Action : Reduce rule [class_body -> LBRACE class_member_declarations RBRACE] with ['{',None,'}'] and goto state 17
+Result : <NoneType @ 0x8ff8d0> (None)
+
+State  : 17
+Stack  : class_modifiers CLASS identifier class_body . $end
+Action : Reduce rule [class_declaration -> class_modifiers CLASS identifier class_body] with [None,'class',None,None] and goto state 5
+Result : <NoneType @ 0x8ff8d0> (None)
 
 State  : 5
 Stack  : class_declaration . $end
 Action : Reduce rule [class_declarations -> class_declaration] with [None] and goto state 1
-Result : <NoneType @ 0x8f5320> (None)
+Result : <NoneType @ 0x8ff8d0> (None)
 
 State  : 1
 Stack  : class_declarations . $end
-Action : Reduce rule [compilation_unit -> class_declarations] with [None] and goto state 3
-Result : <NoneType @ 0x8f5320> (None)
+Action : Reduce rule [start -> class_declarations] with [None] and goto state 6
+Result : <NoneType @ 0x8ff8d0> (None)
 
-State  : 3
-Stack  : compilation_unit . $end
-Done   : Returning <NoneType @ 0x8f5320> (None)
+State  : 6
+Stack  : start . $end
+Done   : Returning <NoneType @ 0x8ff8d0> (None)
 PLY: PARSE DEBUG END
