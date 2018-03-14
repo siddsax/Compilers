@@ -26,12 +26,12 @@ precedence = (
 	('left', 'MEMBERACCESS', 'INCREMENT', 'DECREMENT')
 )
 
-def p_start(p):
-	"""start : compilation_unit
-	"""
+# def p_start(p):
+# 	"""start : compilation_unit
+# 	"""
 
-def p_compilation_unit(p):
-	"""compilation_unit : class_declarations
+def p_start(p):
+	"""start : class_declarations
 	"""
 
 # CLASS #############################################################################
@@ -302,19 +302,34 @@ def p_statement_expression(p):
         | post_decrement_expression
         """
 
-def if_statement(p):
+
+def p_if_statement(p):
         """if_statement : IF LPAREN expression RPAREN embedded_statement
         | IF LPAREN expression RPAREN embedded_statement ELSE embedded_statement
         """
 
-def iteration_statement(p):
+def p_iteration_statement(p):
         """iteration_statement : WHILE LPAREN expression RPAREN embedded_statement
         """
-
-
 # EXPRESSION #####################################################################################
 def p_expression(p):
 	"""expression : empty
+	"""
+
+def p_object_creation_expression(p):
+	"""object_creation_expression : empty
+	"""
+
+def p_assignment(p):
+	"""assignment : empty
+	"""
+
+def p_post_increment_expression(p):
+	"""post_increment_expression : empty
+	"""
+
+def p_post_decrement_expression(p):
+	"""post_decrement_expression : empty
 	"""
 
 # EMPTY ##########################################################################################
@@ -328,7 +343,7 @@ def p_error(p):
 
 ##################################################################################################
 # Build the parser now
-parser = yacc.yacc(start='compilation_unit', debug=True, optimize=False)
+parser = yacc.yacc(start='start', debug=True, optimize=False)
 
 # Read the input program
 inputfile = open(filename, 'r')
