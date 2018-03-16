@@ -1,5 +1,5 @@
 #!/bin/bash
-python parser.py $1 2> output.txt > errors.txt
+python3 parser.py $1 2> output.txt > errors.txt
 echo "-----------------------------------------------------------"
 cat errors.txt
 echo "-----------------------------------------------------------"

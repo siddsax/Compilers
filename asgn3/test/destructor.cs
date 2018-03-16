@@ -1,3 +1,6 @@
+using System;
+using shit;
+using fuck;
 public class goal
 {
    public void foo( )
@@ -8,8 +11,8 @@ public class goal
    goal(){
    }
 
-   ~goal(){
-   }
+   ~goal();
+   
 
 
 }
