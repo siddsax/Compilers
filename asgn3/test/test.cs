@@ -7,3 +7,9 @@ public class goal
     }
 
 }
+public class lskdjflksjdf{
+void fn(){
+    int a = 0;
+       Console.Print(console.shit(), console.shit.fuck.cunt(a,b));
+    }
+}
