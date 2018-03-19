@@ -4,8 +4,8 @@ public class goal
 {
    public void foo( )
    {
-       int a;
-       test.print();
+       int a, b;
+       a = test.print(a, b);
    }
 
 }

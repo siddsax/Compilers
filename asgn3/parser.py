@@ -596,7 +596,7 @@ def p_argument(p):
         p[0] = ['argument', p[1], p[2]]
 
 def p_argument_name(p):
-    """argument_name : identifier TERMINATOR
+    """argument_name : identifier COLON
     """
     p[0] = ['argument_name', p[1], p[2]]
 
@@ -846,7 +846,9 @@ def printf(p, prev, nxt):
             if type(i) is list:
                 parse += " " + i[0]
             else:
-                parse += " " + i
+                if i is None:
+                   print('fuck')
+                parse += " " + str(i)
 
         print(prev + " <b style='color:blue'>" + parse + "</b> " + nxt + "<br>")
         global output
@@ -859,7 +861,7 @@ def printf(p, prev, nxt):
                 if type(p[j]) is list:
                     newp += " " + p[j][0]
                 else:
-                    newp += " " + p[j]
+                   newp += " " + str(p[j])
 
             nnxt = printf(p[i], newp, nxt)
             nxt = nnxt
