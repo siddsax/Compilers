@@ -442,6 +442,8 @@ def p_invocation_expression(p):
     | primary_expression LPAREN RPAREN
     | identifier LPAREN RPAREN
     | identifier LPAREN argument_list RPAREN
+    | proper_identifier LPAREN argument_list RPAREN
+    | proper_identifier LPAREN RPAREN
     """
     if len(p) == 4:
         p[0] = ['invocation_expression', p[1], p[2], p[3]]
@@ -516,9 +518,6 @@ def p_primary_no_array_creation_expression(p):
                                                                                     | object_creation_expression
                                                                                     | typeof_expression
     """
-    if p[1] is not None:
-        print(p[1])
-        print('=================================')
     p[0] = ['primary_no_array_creation_expression', p[1]]
 
 def p_parenthesized_expression(p):
@@ -589,9 +588,9 @@ def p_argument_list(p):
                                             | argument_list COMMA argument
     """
     if len(p) == 2:
-        p[0] == ['argument_list', p[1]]
+        p[0] = ['argument_list', p[1]]
     else:
-        p[0] == ['argument_list', p[1], p[2], p[3]]
+        p[0] = ['argument_list', p[1], p[2], p[3]]
 
 def p_argument(p):
     """argument : argument_name argument_value
@@ -842,7 +841,8 @@ parser = yacc.yacc(start='start', debug=True, optimize=False)
 # Read the input program
 inputfile = open(filename, 'r')
 data = inputfile.read()
-result = parser.parse(data)
+result = parser.parse(data, debug=2)
+#print(result)
 
 output = ""
 def printf(p, prev, nxt):

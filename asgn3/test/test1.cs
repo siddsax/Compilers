@@ -25,7 +25,7 @@ using System;
    
    class ExecuteRectangle 
    {
-      void Main(string[] args) 
+      void Main() 
       {
          Rectangle r = new Rectangle();
          r.Acceptdetails();

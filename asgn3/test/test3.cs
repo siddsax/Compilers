@@ -8,11 +8,11 @@ using System.Text;
  
     class Program
     {
-        static void Main()
+        void Main()
         {
             int num, sum = 0, r;
             System.WriteLine("Enter a Number : ");
-            num = int.Parse(Console.ReadLine());
+            num = Parse(Console.ReadLine());
             while (num != 0)
             {
                 r = num % 10;

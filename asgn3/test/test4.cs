@@ -5,7 +5,7 @@ using System.Text;
  
     class Program
     {
-        static void Main(string[] args)
+        void Main()
         {
             int num, reverse = 0;
             Console.WriteLine("Enter a Number : ");
