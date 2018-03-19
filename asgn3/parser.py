@@ -218,6 +218,15 @@ def p_method_declaration(p):
     """
     p[0] = ['method_declaration', p[1]]
 
+#def p_qualified_identifier(p):
+#    """qualified_identifier : identifier 
+#    | qualified_identifier MEMBERACCESS identifier
+#    """
+#    if len(p) == 2:
+#        p[0] = ['qualified_identifier', p[1]]
+#    else:
+#        p[0] = ['qualified_identifier', p[1], p[2], p[3]]
+
 def p_method_header(p):
     """method_header : return_type member_name LPAREN fixed_parameters RPAREN
                                             | modifiers  return_type member_name LPAREN fixed_parameters RPAREN
@@ -348,7 +357,7 @@ def p_statement(p):
     if len(p) == 2:
         p[0] = ['statement', p[1]]
     else:
-        p[0] = ['statement', p[1], p[2], p[3]]
+        p[0] = ['statement', p[1], p[2]]
 
 def p_embedded_statement(p):
     """embedded_statement : block
@@ -422,10 +431,20 @@ def p_local_variable_initializer(p): # TODO: Can be removed to reduce conflicts
 def p_statement_expression(p):
     """statement_expression : object_creation_expression
     | assignment
+    | invocation_expression
     | post_increment_expression
     | post_decrement_expression
     """
     p[0] = ['statement_expression' , p[1]]
+
+def p_invocation_expression(p):
+    """invocation_expression : primary_expression LPAREN argument_list RPAREN
+    | primary_expression LPAREN RPAREN
+    """
+    if len(p) == 4:
+        p[0] = ['invocation_expression', p[1], p[2], p[3]]
+    else:
+        p[0] = ['invocation_expression', p[1], p[2], p[3], p[4]]
 
 def p_if_statement(p):
     """if_statement : IF LPAREN expression RPAREN embedded_statement
@@ -488,6 +507,7 @@ def p_primary_no_array_creation_expression(p):
                                                                                     | member_access
                                                                                     | element_access
                                                                                     | post_increment_expression
+                                                                                    | invocation_expression
                                                                                     | post_decrement_expression
                                                                                     | object_creation_expression
                                                                                     | typeof_expression
@@ -846,7 +866,7 @@ def printf(p, prev, nxt):
 
         return nxt
     else:
-        return p + " " + nxt
+        return str(p) + " " + nxt
 
 print("<html>\n<head></head>\n<body>\n")
 print("<b style='color:blue'>start</b><br>")

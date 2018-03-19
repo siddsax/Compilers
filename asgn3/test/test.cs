@@ -1,9 +1,11 @@
 using System;
-using test;
+using Test;
 public class goal
 {
    public void foo( )
    {
+       int a;
+       test.print();
    }
 
 }
