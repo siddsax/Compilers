@@ -817,6 +817,7 @@ inputfile = open(filename, 'r')
 data = inputfile.read()
 result = parser.parse(data)
 
+output = ""
 def printf(p, prev, nxt):
 
     parse = ""
@@ -827,7 +828,9 @@ def printf(p, prev, nxt):
             else:
                 parse += " " + i
 
-        print(prev + " " + parse + " " + nxt)
+        print(prev + " <b style='color:blue'>" + parse + "</b> " + nxt + "<br>")
+        global output
+        output += prev + " <b style='color:blue'>" + parse + "</b> " + nxt + "<br>\n"
 
         for i in range(len(p)-1, 0, -1):
             newp = prev
@@ -839,11 +842,18 @@ def printf(p, prev, nxt):
                     newp += " " + p[j]
 
             nnxt = printf(p[i], newp, nxt)
-            nxt = nxt
+            nxt = nnxt
 
         return nxt
     else:
         return p + " " + nxt
 
+print("<html>\n<head></head>\n<body>\n")
+print("<b style='color:blue'>start</b><br>")
 result = printf(result, "", "")
-print(result)
+print("</body>\n</html>")
+
+output = "<html>\n<head></head>\n<body>\n" + "<b style='color:blue'>start</b><br>\n" + output + "</body>\n</html>"
+op = open('output.html', 'w+')
+op.write(output)
+op.close()
