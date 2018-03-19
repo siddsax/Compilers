@@ -155,7 +155,7 @@ def p_prefix(p):
 def p_array_type(p):
     """array_type : non_array_type LBRACKET RBRACKET
     """
-    p[0] = ['array_type', p[1], '(', ')']
+    p[0] = ['array_type', p[1], '[', ']']
 
 def p_non_array_type(p):
     """non_array_type : type
