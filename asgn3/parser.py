@@ -398,7 +398,7 @@ def p_literal(p):
     | STRCONST
     | CHARCONST
     """
-    p[0] = ['literal', 'INTCONST', 'STRCONST', 'CHARCONST']
+    p[0] = ['literal', p[1]]
 
 def p_local_variable_declaration(p):
     """local_variable_declaration : type local_variable_declarators
@@ -443,8 +443,6 @@ def p_invocation_expression(p):
     | identifier LPAREN RPAREN
     | identifier LPAREN argument_list RPAREN
     """
-    if p[3] is None:
-        print('skldjfklsdjfksjdfjsdlfjsdlfjsdlkfjlkj')
     if len(p) == 4:
         p[0] = ['invocation_expression', p[1], p[2], p[3]]
     else:
@@ -518,6 +516,9 @@ def p_primary_no_array_creation_expression(p):
                                                                                     | object_creation_expression
                                                                                     | typeof_expression
     """
+    if p[1] is not None:
+        print(p[1])
+        print('=================================')
     p[0] = ['primary_no_array_creation_expression', p[1]]
 
 def p_parenthesized_expression(p):
