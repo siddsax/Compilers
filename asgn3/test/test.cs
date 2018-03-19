@@ -5,7 +5,7 @@ public class goal
    public void foo( )
    {
        int a, b;
-       a = test.print(a, b);
+       a = print(a,c,c);
    }
 
 }

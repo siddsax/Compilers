@@ -440,7 +440,11 @@ def p_statement_expression(p):
 def p_invocation_expression(p):
     """invocation_expression : primary_expression LPAREN argument_list RPAREN
     | primary_expression LPAREN RPAREN
+    | identifier LPAREN RPAREN
+    | identifier LPAREN argument_list RPAREN
     """
+    if p[3] is None:
+        print('skldjfklsdjfksjdfjsdlfjsdlfjsdlkfjlkj')
     if len(p) == 4:
         p[0] = ['invocation_expression', p[1], p[2], p[3]]
     else:
@@ -492,8 +496,10 @@ def p_unary_expression(p):
     """
     if len(p) == 2:
         p[0] = ['unary_expression', p[1]]
-    else:
+    elif len(p) == 3:
         p[0] = ['unary_expression', p[1], p[2]]
+    else:
+        p[0] = ['unary_expression', p[1], p[2], p[3]]
 
 def p_primary_expression(p):
     """primary_expression : primary_no_array_creation_expression
