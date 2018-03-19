@@ -888,6 +888,7 @@ result = printf(result, "", "")
 print("</body>\n</html>")
 
 output = "<html>\n<head></head>\n<body>\n" + "<b style='color:blue'>start</b><br>\n" + output + "</body>\n</html>"
-op = open('output.html', 'w+')
+new_file = filename[5:-3]
+op = open(new_file + '.html', 'w+')
 op.write(output)
 op.close()

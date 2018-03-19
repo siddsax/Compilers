@@ -1,8 +1,8 @@
 using System;
-    class Hello 
+class Test
+{
+    void Main() 
     {
-        void Main() 
-        {
-            Console.WriteLine("Hello World!");
-        }
+        Console.WriteLine("Hello World!");
     }
+}

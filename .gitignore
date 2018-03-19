@@ -2,6 +2,7 @@ bin/
 asgn3/__pycache__/
 asgn3/parsetab.py
 asgn3/output.html
+asgn3/*.pdf
 asgn3/__pycache__/parsetab.cpython-35.pyc
 asgn3/__pycache__/lexer.cpython-35.pyc
 asgn3/parser.out
