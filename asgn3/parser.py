@@ -91,7 +91,8 @@ def p_class_body(p):
 def p_identifier(p):
     """identifier : IDENTIFIER
     """
-    p[0] = ['identifier', p[1]]
+    p[0] = ['identifier', str(p[1])]
+    print(p[0])
     
 def p_class_member_declarations(p):
     """class_member_declarations : class_member_declaration
@@ -140,7 +141,7 @@ def p_class_type(p):
 def p_proper_identifier(p):
     """proper_identifier : prefix identifier
     """
-    p[0] = ['proper_identifier', p[1]]
+    p[0] = ['proper_identifier', p[1], p[2]]
 
 def p_prefix(p):
     """prefix : identifier MEMBERACCESS 
@@ -846,6 +847,7 @@ parser = yacc.yacc(start='start', debug=True, optimize=False)
 inputfile = open(filename, 'r')
 data = inputfile.read()
 result = parser.parse(data, debug=2)
+print(result)
 
 output = ""
 def printf(p, prev, nxt):
