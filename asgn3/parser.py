@@ -228,10 +228,14 @@ def p_method_declaration(p):
 #        p[0] = ['qualified_identifier', p[1], p[2], p[3]]
 
 def p_method_header(p):
-    """method_header : return_type member_name LPAREN fixed_parameters RPAREN
-                                            | modifiers  return_type member_name LPAREN fixed_parameters RPAREN
-                                            | return_type member_name LPAREN RPAREN
-                                            | modifiers return_type member_name LPAREN RPAREN
+    """method_header : type member_name LPAREN fixed_parameters RPAREN
+                                            | modifiers  type member_name LPAREN fixed_parameters RPAREN
+                                            | type member_name LPAREN RPAREN
+                                            | modifiers type member_name LPAREN RPAREN
+                                            | VOID member_name LPAREN fixed_parameters RPAREN
+                                            | modifiers  VOID member_name LPAREN fixed_parameters RPAREN
+                                            | VOID member_name LPAREN RPAREN
+                                            | modifiers VOID member_name LPAREN RPAREN
     """
     if len(p) == 7:
         p[0] = ['method_header', p[1], p[2], p[3], '(', p[5], ')']
@@ -257,11 +261,11 @@ def p_modifier(p):
     """
     p[0] = ['modifier', p[1]]
 
-def p_return_type(p):
-    """return_type : type
-                                    | VOID
-    """
-    p[0] = ['return_type', p[1]]
+# def p_return_type(p):
+#     """return_type : type
+#                     | VOID
+#     """
+#     p[0] = ['return_type', p[1]]
 
 def p_member_name(p):
     """member_name : identifier
@@ -841,7 +845,7 @@ parser = yacc.yacc(start='start', debug=True, optimize=False)
 # Read the input program
 inputfile = open(filename, 'r')
 data = inputfile.read()
-result = parser.parse(data)
+result = parser.parse(data, debug=2)
 
 output = ""
 def printf(p, prev, nxt):
