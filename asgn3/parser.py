@@ -402,7 +402,7 @@ def p_literal(p):
     | STRCONST
     | CHARCONST
     """
-    p[0] = ['literal', 'INTCONST', 'STRCONST', 'CHARCONST']
+    p[0] = ['literal', p[1]]
 
 def p_local_variable_declaration(p):
     """local_variable_declaration : type local_variable_declarators
@@ -446,9 +446,9 @@ def p_invocation_expression(p):
     | primary_expression LPAREN RPAREN
     | identifier LPAREN RPAREN
     | identifier LPAREN argument_list RPAREN
+    | proper_identifier LPAREN argument_list RPAREN
+    | proper_identifier LPAREN RPAREN
     """
-    if p[3] is None:
-        print('skldjfklsdjfksjdfjsdlfjsdlfjsdlkfjlkj')
     if len(p) == 4:
         p[0] = ['invocation_expression', p[1], p[2], p[3]]
     else:
@@ -592,9 +592,9 @@ def p_argument_list(p):
                                             | argument_list COMMA argument
     """
     if len(p) == 2:
-        p[0] == ['argument_list', p[1]]
+        p[0] = ['argument_list', p[1]]
     else:
-        p[0] == ['argument_list', p[1], p[2], p[3]]
+        p[0] = ['argument_list', p[1], p[2], p[3]]
 
 def p_argument(p):
     """argument : argument_name argument_value
