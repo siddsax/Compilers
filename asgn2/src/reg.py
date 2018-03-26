@@ -40,7 +40,7 @@ class Reg:
     def condition_3(self, var1, lineno, blockNextUseTable, address_descriptor):
         best_k = ''
         best_v = ''
-        latest = 0
+        latest = -1
         nextUseList = blockNextUseTable[lineno]
         if var1 not in nextUseList.keys():
             return ''
@@ -50,6 +50,10 @@ class Reg:
                     best_v = v
                     best_k = k
                     latest = nextUseList[v]
+            else:
+                best_v = v
+                best_k = k
+                break
 
         asm = ''
         asm += 'movl ' + best_k + ', ' + best_v + '\n'

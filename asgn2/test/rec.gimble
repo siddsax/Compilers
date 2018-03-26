@@ -1,0 +1,17 @@
+1, =, g, 23
+2, fn_call_1, myfunc
+3, exit
+4, fn_def, myfunc
+5, =, g0, g
+6, conditional_goto, ==, g0, 0, D2046
+7, goto, D2047
+8, label, D2046
+9, return
+10, label, D2047
+11, =, g1, g
+12, print, g1
+13, =, g2, g
+14, -, g3, 1, g2
+15, =, g, g3
+16, fn_call_1, myfunc
+17, return

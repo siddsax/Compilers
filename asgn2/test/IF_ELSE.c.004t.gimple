@@ -1,0 +1,25 @@
+1, =, j, 1
+2, =, sum, 0
+3, =, i, 0
+4, =, j, 1
+5, =, D1732, 0
+6, goto, D1728
+7, label, D1727
+8, %, D1732, 10, j
+9, conditional_goto, ==, D1732, 0, D1733
+10, goto, D1734
+11, label, D1733
+12, print, j
+13, goto, D1735
+14, label, D1734
+15, +, sum, sum, i
+16, label, D1735
+17, +, i, i, 1
+18, *, j, i, 2
+19, label, D1728
+20, conditional_goto, leq, i, 99, D1727
+21, goto, D1729
+22, label, D1729
+23, print, sum
+24, =, D1736, 0
+25, exit

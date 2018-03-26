@@ -1,0 +1,8 @@
+1, =, a, 10
+2, scan, b
+3, label, loop
+4, +, a, a, b
+5, =, pr, 30
+6, print, a
+7, conditional_goto, leq, a, 50, loop
+8, exit

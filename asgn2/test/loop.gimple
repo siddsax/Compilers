@@ -1,0 +1,28 @@
+1, =, res, 0
+2, =, i, 4
+3, goto, D2052
+4, label, D2051
+5, =, j, 0
+6, goto, D2049
+7, label, D2048
+8, =, k, 0
+9, goto, D2046
+10, label, D2045
+11, +, res, res, 1
+12, +, k, k, 1
+13, label, D2046
+14, conditional_goto, leq, k, 9, D2045
+15, goto, D2047
+16, label, D2047
+17, +, j, j, 1
+18, label, D2049
+19, conditional_goto, leq, j, 9, D2048
+20, goto, D2050
+21, label, D2050
+22, +, i, i, 1
+23, label, D2052
+24, conditional_goto, leq, i, 9, D2051
+25, goto, D2053
+26, label, D2053
+27, print, res
+28, exit

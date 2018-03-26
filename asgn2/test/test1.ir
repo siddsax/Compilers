@@ -1,0 +1,20 @@
+1, =, a, 143
+2, =, b, 13
+3, =, c, 10
+4, fn_call_1, gcd
+5, print, a
+6, exit
+7, fn_def, gcd
+8, conditional_goto, ==, a, b, returning
+9, conditional_goto, ge, a, b, get
+10, conditional_goto, le, a, b, set
+11, label, get
+12, -, a, b, a
+13, fn_call_1, gcd
+14, return
+15, label, returning
+16, return
+17, label, set
+18, -, b, a, b
+19, fn_call_1, gcd
+20, return

@@ -1,0 +1,7 @@
+1, =, a, 8
+2, conditional_goto, leq, a, 10, ls
+3, =, a, 9
+4, print, a
+5, label, ls
+6, print, a
+7, exit

@@ -1,0 +1,26 @@
+1, =, a, 10
+2, +, b, a, 2
+3, *, c, a, 7
+4, +, d, a, -11
+5, conditional_goto, ge, a, 5, D1738
+6, goto, D1739
+7, label, D1738
+8, +, f, a, 40
+9, +, g, a, -40
+10, goto, D1740
+11, label, D1739
+12, +, i, a, 20
+13, +, j, a, -20
+14, label, D1740
+15, =, k, 0
+16, goto, D1735
+17, label, D1734
+18, +, a, a, 1
+19, +, i, i, 1
+20, +, j, j, i
+21, +, k, k, 1
+22, label, D1735
+23, conditional_goto, le, k, b, D1734
+24, goto, D1736
+25, label, D1736
+26, exit

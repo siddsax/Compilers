@@ -19,7 +19,6 @@ data_section += 'format1:\n'+'\t' + '.ascii \"%d\\n\\0\"\n'
 
 bss_section = ".section .bss\n"
 text_section = ".section .text\n" + ".globl main\n" + "main:\n"
-
 for key,val in example.Blocks.items():
 	flag = 0
 	for line in range(key,val+1):
@@ -39,7 +38,8 @@ for key,val in example.Blocks.items():
 				if(indx==4):
 					break
 
-		if(example.instrlist[line-1].split(', ')[1] == 'goto' or example.instrlist[line-1].split(', ')[1] == 'conditional_goto' or example.instrlist[line-1].split(', ')[1] == 'return' or example.instrlist[line-1].split(', ')[1] == 'fn_call_1' or example.instrlist[line-1].split(', ')[1] == 'fn_call_2'):
+		if(example.instrlist[line-1].split(', ')[1] == 'goto' or example.instrlist[line-1].split(', ')[1] \
+	        == 'conditional_goto' or example.instrlist[line-1].split(', ')[1] == 'return' or example.instrlist[line-1].split(', ')[1] == 'fn_call_1' or example.instrlist[line-1].split(', ')[1] == 'fn_call_2' or example.instrlist[line-1].split(', ')[1] == 'label'):
 			text_section += "### Flushing -----------\n"
 			for reg,var in registers.regdict.items():
 				if var is not "":
@@ -48,7 +48,6 @@ for key,val in example.Blocks.items():
 					example.address_descriptor[var] = var
 			text_section+= "### Flushed ------------\n"
 			flag=1
-
 
 		generated_code,example,registers = translate(example.instrlist[line-1], key, example, registers)
 		text_section += generated_code
