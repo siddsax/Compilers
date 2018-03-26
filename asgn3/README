@@ -1,0 +1,7 @@
+Build instructions:
+$ make
+
+Execute instructions:
+$ bin/parser test/<NAME_OF_FILE>.cs 
+
+This generates the output html file, which is of the form <NAME_OF_FILE>.html
