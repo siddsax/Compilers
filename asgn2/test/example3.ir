@@ -1,5 +1,5 @@
-1, =, a, 5
-2, +, a, a, 100
-3, =, b, 10
-4, print, a
+1, scan, a
+2, print, a
+3, scan, b
+4, print, b
 5, exit

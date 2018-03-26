@@ -1,0 +1,5 @@
+1, scan, a
+2, =, b, 6
+3, -, a, a, 1
+4, print, a
+5, exit

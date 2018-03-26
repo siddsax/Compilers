@@ -1,0 +1,14 @@
+1, =, a, 10
+2, =, b, 11
+3, =, c, 13
+4, =, d, 20
+5, =, e, 25
+6, label, kshit
+7, +, a, 4, b
+8, +, a, a, 7
+9, +, e, e, a
+10, +, e, 5, e
+11, +, a, a, b
+12, print, e
+13, conditional_goto, leq, e, 50, kshit
+14, exit

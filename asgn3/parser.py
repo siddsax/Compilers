@@ -516,9 +516,9 @@ def p_primary_no_array_creation_expression(p):
                                                                                     | object_creation_expression
                                                                                     | typeof_expression
     """
-    if p[1] is not None:
-        print(p[1])
-        print('=================================')
+    # if p[1] is not None:
+        # print(p[1])
+        # print('=================================')
     p[0] = ['primary_no_array_creation_expression', p[1]]
 
 def p_parenthesized_expression(p):
@@ -842,7 +842,7 @@ parser = yacc.yacc(start='start', debug=True, optimize=False)
 # Read the input program
 inputfile = open(filename, 'r')
 data = inputfile.read()
-result = parser.parse(data)
+result = parser.parse(data, debug=2)
 
 output = ""
 def printf(p, prev, nxt):
@@ -877,12 +877,12 @@ def printf(p, prev, nxt):
     else:
         return str(p) + " " + nxt
 
-print("<html>\n<head></head>\n<body>\n")
-print("<b style='color:blue'>start</b><br>")
-result = printf(result, "", "")
-print("</body>\n</html>")
+# print("<html>\n<head></head>\n<body>\n")
+# print("<b style='color:blue'>start</b><br>")
+# result = printf(result, "", "")
+# print("</body>\n</html>")
 
-output = "<html>\n<head></head>\n<body>\n" + "<b style='color:blue'>start</b><br>\n" + output + "</body>\n</html>"
-op = open('output.html', 'w+')
-op.write(output)
-op.close()
+# output = "<html>\n<head></head>\n<body>\n" + "<b style='color:blue'>start</b><br>\n" + output + "</body>\n</html>"
+# op = open('output.html', 'w+')
+# op.write(output)
+# op.close()

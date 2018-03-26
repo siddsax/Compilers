@@ -8,3 +8,4 @@ heroku.yml
 node_modules/
 tmp
 vendor/
+test/*.s

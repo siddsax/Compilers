@@ -1,0 +1,9 @@
+1, =, a, 10
+2, =, b, 15
+3, +, a, a, b
+4, fn_call_2, foo, dst
+5, print, dst
+6, exit
+7, fn_def, foo
+8, +, a, a, b
+9, return, a

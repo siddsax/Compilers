@@ -12,13 +12,14 @@ class IR:
 		# Consruct the instruction list
 		self.instrlist = []
 		self.instrlist = ircode.split('\n')
+		self.operators = ['=', '+', '-', '<<', '>>', '/', '*', 'scan']
 
-		self.instrtype = ['=', '+', '-', '<<','>>','<','>','==','~=','/', '*', '%', '&&', 'conditional_goto', 'goto', 'fn_call', 'fn_def', 'print', 'scan', 'return', 'exit',]
+		self.instrtype = ['=', '+', '-', '<<','>>','<','>' ,'/', '*', '%', '&&', 'conditional_goto', 'goto', 'fn_call', 'fn_def', 'print', 'scan', 'return', 'exit',]
 		self.Blocks = self.Build_Blocks() #  dict { leader_no. : last_line_no }
+		self.address_descriptor = {}
 		self.variable_list = self.Build_varlist()
 		# list of dicts(blocks) where each key(variables) is a list pf list (use lines of that var in that live range)
 		self.next_use_table, self.lineVars = self.Build_next_use_table() 
-		self.address_descriptor = {}
 
 	def Build_Blocks(self):
 		Blocks = {}
@@ -30,7 +31,7 @@ class IR:
 				leaders.append(int(instr[0])+1)
 			if(instr[1] == 'label'):
 				leaders.append(int(instr[0]))
-			if((instr[1]=='fn_call') or (instr[1]=='fn_def')):
+			if((instr[1]=='fn_call_1') or (instr[1]=='fn_call_2') or (instr[1]=='fn_def')):
 				leaders.append(int(instr[0]))
 
 		leaders = list(set(leaders))
@@ -48,10 +49,15 @@ class IR:
 		varz = []
 		for instr in self.instrlist:
 			instr = instr.split(', ')
-			if(instr[1] == '=' or instr[1] == 'scan' or instr[1] == '+' or instr[1] == '-' or instr[1] == '*' or instr[1] == '/' or instr[1] == '%'):
+			if(instr[1] in self.operators):
 				var = instr[2]
 				if(var not in varz):
 					varz.append(var)
+
+			elif instr[1] == 'fn_call_2':
+				varz.append(instr[-1])
+		for x in varz:
+			self.address_descriptor[x] = x
 		return varz
 
 	def Build_next_use_table(self):
@@ -88,20 +94,3 @@ class IR:
 			table[start] = line
 			lineVars[start] = line_2
 		return table,lineVars
-
-	# def Build_address_descriptor(self):
-	# 	table = {}
-	# 	for var in self.variable_list
-	# 		table[var] = ""
-
-
-# for keys, vals in table.iteritems():
-# 	print(keys)
-# 	print(vals)
-# 	print('================================')
-
-# print("---------------")
-# for keys, vals in varz.iteritems():
-# 	print(keys)
-# 	print(vals)
-# 	print('================================')

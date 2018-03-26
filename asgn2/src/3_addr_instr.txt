@@ -1,0 +1,40 @@
+#Description of the Three-Address Language(TAC)
+
+#Assignment Operation
+line_no, =, dst, src
+
+#Operators
+# + , -, *, /, %, << , >> , ~
+line_no, op, dst, src1, src2
+
+# conditional if
+line_no, conditional_goto, op, arg1, arg2, label_name
+
+#goto
+line_no, goto, label_name
+
+#Label
+line_number, label, label_name
+
+# function def
+line_number, fn_def, fn_name
+
+# function return
+line_number, return, variable_name
+line_number, return
+
+# call
+line_no, fn_call_1, fn_name
+
+# call with assignment
+line_no, fn_call_2, fn_name, dst
+
+# Print
+line_number, print, arg
+
+# Scan
+line_number, scan, targ_var
+
+# Exit
+line_number, exit
+(note -> We need to compulsarily call exit after main for safe code termination. Also main should be at the top.)

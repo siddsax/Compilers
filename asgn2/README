@@ -1,0 +1,86 @@
+To run the examples 
+cd src
+bash script.sh [examplenumber]
+(eg script.sh 1) to run example1.ir in test folder. This script directly executes the code
+This will save a file by the same name and .s extension in test folder.
+
+----------------------------------------------------------------------
+
+#Description of the Three-Address Language(TAC)
+
+#Assignment Operation
+line_no, =, dst, src
+
+#Operators
+# + , -, *, /, %, << , >> , ~
+line_no, op, dst, src1, src2
+
+# conditional if
+line_no, conditional_goto, op, arg1, arg2, label_name
+
+#goto
+line_no, goto, label_name
+
+#Label
+line_number, label, label_name
+
+# function def
+line_number, fn_def, fn_name
+
+# function return		
+line_number, return, variable_name
+line_number, return
+
+# call
+line_no, fn_call_1, fn_name
+
+# call with assignment
+line_no, fn_call_2, fn_name, dst
+
+# Print
+line_number, print, arg
+
+# Scan
+line_number, scan, targ_var
+
+# Exit
+line_number, exit
+(note -> We need to compulsarily call exit after main for safe code termination. Also main should be at the top.)
+
+---------------------------------------------------------------------------------------------
+
+Outline of our Compiler
+
+Data-structures used
+
+IR.py File :
+
+a) Next Use Table: It is a dict of dict of dict that holds the leader's line as the key of outermost dict, then the line number for the keys of the middle dict (which we call blockNextUseTable in some places) and then the outermost level keys are the variables and keys as the next use line [Note that variables that have no next se are not in the table]
+
+b) Blocks : It is a dict which holds the keys as leader lines and vals as the last line of the basic block ( we handle print/scan calls separately hence they are also considered within the basic block)
+
+c) Varlist : list of all variables in the code
+
+d) Address Descriptor : This is a dict that holds the most recent value of each variable if its in the memory or some register
+
+Reg.py :
+
+a) regdict : Dict that holds registers as keys and the variable that they hold as value
+
+b) getReg : takes care of register allocation for operators using conditions (1,2,3,4) as taught in class
+
+c) getRegister : Does the same thing for conditional statements
+
+d) asm : this holds some code that we might want to add while allocating registers in the assembly mostly move 
+
+parser.py
+
+Parses the code line by line and forms a dict holding the killed and used variables in each line ( where killed are the ones that are assigned a new val and used are like in operations, scan etc.)
+
+translate.py
+
+The main routine to generate the code line by line. It is fed the present state of the machine and code using the register object and the IR object. then it traslates all operations separately in if/else
+
+main.py
+
+Here we go over all the variables and allocate them in the data section as globals then we go block by block first loading the variables that will be used n the register on the basis of next use and then flushing them as well after the end of block

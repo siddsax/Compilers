@@ -1,0 +1,7 @@
+#!/bin/bash
+python parser.py $1 2> output.txt > errors.txt
+echo "-----------------------------------------------------------"
+cat errors.txt
+echo "-----------------------------------------------------------"
+./make_html
+xdg-open right_derivation.html
