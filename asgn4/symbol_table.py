@@ -82,14 +82,14 @@ class environment:
         self.pres_env.labels[label_name]['category'] = 'label'
         return label_name
 
-    def mktemp(self):
+    def mktemp(self, Dtype):
         self.temp_count += 1
         temp_name = '_t' + str(self.temp_count)
         while self.global_lookup(temp_name, self.pres_env):
             self.temp_count += 1
             temp_name = '_t' + str(self.temp_count)
 
-        self.pres_env.enter_var(temp_name, tmp=True)
+        self.pres_env.enter_var(temp_name, Dtype, tmp=True)
         return temp_name
 
     def new_scope(self):

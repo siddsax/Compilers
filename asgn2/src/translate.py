@@ -49,7 +49,7 @@ def translate(instruction, leader, ir,register):
 			elif(instruction[1] == '&&'):
 				generated_code += "movl $" + str(int(instruction[4]) and int(instruction[3])) + ", " + new_place + "\n"
 			elif(instruction[1] == '||'):
-				generated_code += "movl $" + str(int(instruction[4]) or int(instruction[3])) + ", " + new_place + "\n"			
+				generated_code += "movl $" + str(int(instruction[4]) or int(instruction[3])) + ", " + new_place + "\n"
 
 		elif isNumeric(instruction[3]) and not isNumeric(instruction[4]):
 			ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list)
@@ -98,7 +98,7 @@ def translate(instruction, leader, ir,register):
 					generated_code += ops[instruction[1]] + " " + isMem(ir.address_descriptor[instruction[3]],register.regdict.keys()) + ", " + new_place + "\n"
 
 
-# # --------------------------------------------------------------------------------------- 
+# # ---------------------------------------------------------------------------------------
 	elif instruction[1] == '*':
 		#<line number,operator,destination, arg1, arg2>
 
@@ -113,7 +113,7 @@ def translate(instruction, leader, ir,register):
 
 		if isNumeric(instruction[3]) and isNumeric(instruction[4]):
 			generated_code += '\t' + "movl $" + str(int(instruction[3])*int(instruction[4])) + ", " + "%edx" + "\n"
-		
+
 		elif isNumeric(instruction[3]) and not isNumeric(instruction[4]):
 			generated_code += '\t' +"movl $" + str(int(instruction[3])) + ", " + "%eax" + "\n"
 			generated_code += '\t' +"movl " + ir.address_descriptor[instruction[4]] + ", " + "%edx" + "\n"
@@ -135,7 +135,7 @@ def translate(instruction, leader, ir,register):
 				register.regdict[regs] = ''
 		register.regdict["%eax"] = instruction[2]
 
-# --------------------------------------------------------------------------------------- 
+# ---------------------------------------------------------------------------------------
 	elif instruction[1] == '/' or instruction[1] == '%' :
 		#<line number,operator,destination, arg1, arg2>
 		#Divide EDX(0):EAX(arg1) by arg2 and quotient in EAX and the remainder in EDX.
@@ -188,7 +188,7 @@ def translate(instruction, leader, ir,register):
 					register.regdict[regs] = ''
 			register.regdict["%edx"] = instruction[2]
 
-# --------------------------------------------------------------------------------------- 
+# ---------------------------------------------------------------------------------------
 
 	elif instruction[1] == "~" or instruction[1] == "=" :
 		if isNumeric(instruction[3]):
@@ -217,7 +217,7 @@ def translate(instruction, leader, ir,register):
 		generated_code += instruction[-1] + ": \n"
 
 	# if instruction[1] == 'if':
-	# 	#Syntax <line number,operator,condition_op,arg1,arg2,line_no>	
+	# 	#Syntax <line number,operator,condition_op,arg1,arg2,line_no>
 	# 	#lt , gt , leq, geq, ne, eq
 
 	elif instruction[1] == 'goto':
@@ -258,16 +258,16 @@ def translate(instruction, leader, ir,register):
 
 		generated_code += instruction[-1] + '\n'
 
-	elif instruction[1] == 'fn_call_1': 
+	elif instruction[1] == 'fn_call_1':
 		generated_code += '\t' + 'call ' + instruction[2] + '\n'
 
-	elif instruction[1] == 'fn_call_2': 
+	elif instruction[1] == 'fn_call_2':
 		generated_code += '\t' + 'call ' + instruction[2] + '\n'
 		generated_code += 'movl %eax, ' + instruction[-1] + '\n'
 		ir.address_descriptor[instruction[-1]] = '%eax'
 		register.regdict['%eax'] = instruction[-1]
 
-	elif instruction[1] == 'fn_def': 
+	elif instruction[1] == 'fn_def':
 		generated_code += instruction[-1] + ':\n'
 		generated_code += '\t' + 'pushl %ebp\n'
 		generated_code += '\t' + 'movl %esp, %ebp\n'
@@ -279,7 +279,7 @@ def translate(instruction, leader, ir,register):
 		elif len(instruction) is 2:
 			generated_code += '\t' + 'leave\n'
 			generated_code += '\t' + 'ret\n'
-		
+
 		else:
 			var = instruction[-1]
 			generated_code += '\t' + 'movl ' + isMem(ir.address_descriptor[instruction[-1]], register.regdict.keys()) + ', %eax\n'

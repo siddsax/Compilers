@@ -3,6 +3,7 @@
 #Assignment Operation
 line_no, =, dst, src
 
+#TOD0: Add '||' and '&&' and '^'(XOR) and '&' and '==' and '~=' and '<=' and '>=' and '<' and '>'
 #Operators
 # + , -, *, /, %, << , >> , ~
 line_no, op, dst, src1, src2

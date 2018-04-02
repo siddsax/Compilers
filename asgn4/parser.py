@@ -12,6 +12,7 @@ else:
     print("Use as python parser.py file.cs")
     sys.exit
 
+env = st.environment()
 # Precedence
 precedence = (
     ('left', 'CONOR'),
@@ -62,7 +63,7 @@ def p_using_directive(p):
     """
     p[0] = {}
     # p[0] = ['using_directive', 'USING', p[2], ';']
-    p[0]['code'] = ""
+    p[0]['code'] = [""]
 # CLASS #############################################################################
 def p_class_declarations(p):
     """class_declarations : class_declarations class_declaration 
@@ -111,7 +112,7 @@ def p_identifier(p):
     """
     # p[0] = ['identifier', str(p[1])]
     p[0] = {}
-    p[0]['val'] = str(p[1])
+    p[0]['value'] = str(p[1])
     # print(p[0])
     
 def p_class_member_declarations(p):
@@ -170,14 +171,14 @@ def p_class_type(p):
     if p[1] == 'object':
         # p[0] = 
         pass
-    p[0] = st.type(p[1]['val'], False, False, None)
+    p[0] = st.type(p[1]['value'], False, False, None)
 
 def p_proper_identifier(p):
     """proper_identifier : prefix identifier
     """
     # p[0] = ['proper_identifier', p[1], p[2]]
     p[0] = {}
-    p[0]['val'] = p[1]['val'] + p[2]['val']
+    p[0]['value'] = p[1]['value'] + p[2]['value']
 
 def p_prefix(p):
     """prefix : identifier MEMBERACCESS 
@@ -186,11 +187,11 @@ def p_prefix(p):
     if len(p) == 3:
         # p[0] = ['prefix', p[1], '.']
         p[0] = {}
-        p[0]['val'] = p[1]['val'] + str(p[2])
+        p[0]['value'] = p[1]['value'] + str(p[2])
     else:
         # p[0] = ['prefix', p[1], p[2], '.']
         p[0] = {}
-        p[0]['val'] = p[1]['val'] + p[2]['val'] + str(p[3])
+        p[0]['value'] = p[1]['value'] + p[2]['value'] + str(p[3])
 
 def p_array_type(p):
     """array_type : non_array_type LBRACKET RBRACKET
@@ -232,17 +233,17 @@ def p_variable_declarator(p):
     p[0] = {}
     if len(p) == 2:
         # p[0] = ['variable_declarator', p[1]]
-        p[0]['name'] = p[1]['val']
+        p[0]['name'] = p[1]['value']
     else:
         # p[0] = ['variable_declarator', p[1], '=', p[3]]
-        p[0]['name'] = p[1]['val']
+        p[0]['name'] = p[1]['value']
 
 def p_variable_initializer(p):
     """variable_initializer : expression
                                                     | array_initializer
     """
     # p[0] = ['variable_initializer', p[1]]
-    p[0]['val'] = p[1]['val']
+    p[0]['value'] = p[1]['value']
 
 def p_array_initializer(p):
     """array_initializer : LBRACE variable_initializer_list RBRACE
@@ -460,7 +461,9 @@ def p_literal(p):
     | STRCONST
     | CHARCONST
     """
-    p[0] = ['literal', p[1]]
+	p[0] = {}
+	p[0]['code'] = [""]
+	p[0]['value'] = p[1]
 
 def p_local_variable_declaration(p):
     """local_variable_declaration : type local_variable_declarators
@@ -548,45 +551,68 @@ def p_assignment_operator(p):
 
 def p_unary_expression(p):
     """unary_expression : primary_expression
-                                            | PLUS unary_expression
-                                            | PLUS identifier
-                                            | MINUS unary_expression
-                                            | MINUS identifier
-                                            | LNOT unary_expression
-                                            | LNOT identifier
-                                            | TILDE unary_expression
-                                            | TILDE identifier
+                        | PLUS unary_expression
+                        | PLUS identifier
+                        | MINUS unary_expression
+                        | MINUS identifier
+                        | LNOT unary_expression
+                        | LNOT identifier
+                        | TILDE unary_expression
+                        | TILDE identifier
     """
+    # if len(p) == 2:
+    #     p[0] = ['unary_expression', p[1]]
+    # elif len(p) == 3:
+    #     p[0] = ['unary_expression', p[1], p[2]]
+    # else:
+    #     p[0] = ['unary_expression', p[1], p[2], p[3]]
+    p[0] = {}
     if len(p) == 2:
-        p[0] = ['unary_expression', p[1]]
-    elif len(p) == 3:
-        p[0] = ['unary_expression', p[1], p[2]]
+        p[0] = dp(p[1])
     else:
-        p[0] = ['unary_expression', p[1], p[2], p[3]]
-
+        if p[1] == '+':
+            p[0] = dp(p[2])
+        elif p[1] == '-':
+            t = env.mktemp('int')
+            p[0]['value'] = t
+            p[0]['code'] = dp(p[2]['code'])
+            p[0]['code'] += ["-, " + p[0]['value'] + ", " + p[2]['value'] + ", 0"]
+        elif p[1] is '~' or '!':
+            t = env.mktemp('int')
+            p[0]['value'] = t
+            p[0]['code'] = dp(p[2]['code'])
+            p[0]['code'] += ["~, " + p[0]['value'] + ", " + p[2]['value'] ]         
 def p_primary_expression(p):
     """primary_expression : primary_no_array_creation_expression
-                                                    | array_creation_expression
+                            | array_creation_expression
     """
-    p[0] = ['primary_expression', p[1]]
+    # p[0] = ['primary_expression', p[1]]
+    p[0] = dp(p[1])
 
 def p_primary_no_array_creation_expression(p):
     """primary_no_array_creation_expression : literal
-                                                                                    | parenthesized_expression
-                                                                                    | member_access
-                                                                                    | element_access
-                                                                                    | post_increment_expression
-                                                                                    | invocation_expression
-                                                                                    | post_decrement_expression
-                                                                                    | object_creation_expression
-                                                                                    | typeof_expression
+                                            | parenthesized_expression
+                                            | member_access
+                                            | element_access
+                                            | post_increment_expression
+                                            | invocation_expression
+                                            | post_decrement_expression
+                                            | object_creation_expression
+                                            | typeof_expression
     """
-    p[0] = ['primary_no_array_creation_expression', p[1]]
+    # p[0] = ['primary_no_array_creation_expression', p[1]]
+    # Not Done - element_access, member_access
+    # Not DOne - invocation_expression
+    # Not Done - post dec/inc
+    # Not done - typeof
+    # Not done - object creation
+    p[0] = dp(p[1])
 
 def p_parenthesized_expression(p):
     """parenthesized_expression : LPAREN expression RPAREN
     """
-    p[0] = ['parenthesized_expression', p[1], p[2], p[3]]
+    # p[0] = ['parenthesized_expression', p[1], p[2], p[3]]
+    p[0] = dp(p[2])
 
 def p_member_access(p):
     """member_access : primary_expression MEMBERACCESS identifier
@@ -623,7 +649,8 @@ def p_post_increment_expression(p):
     """post_increment_expression : primary_expression INCREMENT
                                                                     | identifier INCREMENT
     """
-    p[0] = ['post_increment_expression', p[1], p[2]]
+    # p[0] = ['post_increment_expression', p[1], p[2]]
+    
 
 def p_post_decrement_expression(p):
     """post_decrement_expression : primary_expression DECREMENT
@@ -781,100 +808,184 @@ def p_conditional_expression(p):
 
 def p_conditional_or_expression(p):
     """conditional_or_expression : conditional_and_expression
-                                                                    | conditional_or_expression CONOR conditional_and_expression
+                                    | conditional_or_expression CONOR conditional_and_expression
     """
     if len(p) == 2:
-        p[0] = ['conditional_or_expression', p[1]]
+        # p[0] = ['conditional_or_expression', p[1]]
+        p[0] = dp(p[1])
     else:
-        p[0] = ['conditional_or_expression', p[1], p[2], p[3]]
+        # p[0] = ['conditional_or_expression', p[1], p[2], p[3]]
+        p[0] = {}
+        t = env.mktemp('int')
+        p[0]['value'] = t
+        p[0]['code'] = p[1]['code'] + p[3]['code']
+        p[0]['code'] += ["||, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
 
 def p_conditional_and_expression(p):
     """conditional_and_expression : inclusive_or_expression
-                                                                    | conditional_and_expression CONAND inclusive_or_expression
+                                    | conditional_and_expression CONAND inclusive_or_expression
     """
     if len(p) == 2:
-        p[0] = ['conditional_and_expression', p[1]]
+        # p[0] = ['conditional_and_expression', p[1]]
+        p[0] = dp(p[1])      
     else:
-        p[0] = ['conditional_and_expression', p[1], p[2], p[3]]
+        # p[0] = ['conditional_and_expression', p[1], p[2], p[3]]
+        p[0] = {}
+        t = env.mktemp('int')
+        p[0]['value'] = t
+        p[0]['code'] = p[1]['code'] + p[3]['code']
+        p[0]['code'] += ["&&, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
 
 def p_inclusive_or_expression(p):
     """inclusive_or_expression : exclusive_or_expression
-                                                            | inclusive_or_expression OR exclusive_or_expression
+                                | inclusive_or_expression OR exclusive_or_expression
     """
     if len(p) == 2:
-        p[0] = ['inclusive_or_expression', p[1]]
+        # p[0] = ['inclusive_or_expression', p[1]]
+        p[0] = dp(p[1])
     else:
-        p[0] = ['inclusive_or_expression', p[1], p[2], p[3]]
+        # p[0] = ['inclusive_or_expression', p[1], p[2], p[3]]
+        p[0] = {}
+        t = env.mktemp('int')
+        p[0]['value'] = t
+        p[0]['code'] = p[1]['code'] + p[3]['code']
+        p[0]['code'] += ["||, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
 
 def p_exclusive_or_expression(p):
     """exclusive_or_expression : and_expression
-                                                            | exclusive_or_expression XOR and_expression
+                                | exclusive_or_expression XOR and_expression
     """
     if len(p) == 2:
-        p[0] = ['exclusive_or_expression', p[1]]
+        # p[0] = ['exclusive_or_expression', p[1]]
+        p[0] = dp(p[1])
     else:
-        p[0] = ['exclusive_or_expression', p[1], p[2], p[3]]
+        # p[0] = ['exclusive_or_expression', p[1], p[2], p[3]]
+        p[0] = {}
+        t = env.mktemp('int')
+        p[0]['value'] = t
+        p[0]['code'] = p[1]['code'] + p[3]['code']
+        p[0]['code'] += ["^, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
 
 def p_and_expression(p):
     """and_expression : equality_expression
-                                            | and_expression AND equality_expression
+                        | and_expression AND equality_expression
     """
     if len(p) == 2:
-        p[0] = ['and_expression', p[1]]
+        # p[0] = ['and_expression', p[1]]
+        p[0] = dp(p[1])
+       
     else:
-        p[0] = ['and_expression', p[1], p[2], p[3]]
+        # p[0] = ['and_expression', p[1], p[2], p[3]]
+        p[0] = {}
+        t = env.mktemp('int')
+        p[0]['value'] = t
+        p[0]['code'] = p[1]['code'] + p[3]['code']
+        p[0]['code'] += ["&, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+
 
 def p_equality_expression(p):
     """equality_expression : relational_expression
-                                                    | equality_expression EQ relational_expression
-                                                    | equality_expression NE relational_expression
+                            | equality_expression EQ relational_expression
+                            | equality_expression NE relational_expression
     """
+    # if len(p) == 2:
+    #     p[0] = ['equality_expression', p[1]]
+    # else:
+    #     p[0] = ['equality_expression', p[1], p[2], p[3]]
     if len(p) == 2:
-        p[0] = ['equality_expression', p[1]]
+        p[0] = dp(p[1])
     else:
-        p[0] = ['equality_expression', p[1], p[2], p[3]]
+        p[0] = {}
+        t = env.mktemp('int')
+        p[0]['value'] = t
+        p[0]['code'] = p[1]['code'] + p[3]['code']
+        if p[2] == '==':
+            p[0]['code'] += ["==, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+        elif p[2] == '!=':
+            p[0]['code'] += ["~=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+
 
 def p_relational_expression(p):
     """ relational_expression : shift_expression
-                                                            | relational_expression LT shift_expression
-                                                            | relational_expression GT shift_expression
-                                                            | relational_expression LEQ shift_expression
-                                                            | relational_expression GEQ shift_expression
+                                | relational_expression LT shift_expression
+                                | relational_expression GT shift_expression
+                                | relational_expression LEQ shift_expression
+                                | relational_expression GEQ shift_expression
     """
+    # if len(p) == 2:
+    #     p[0] = ['relational_expression', p[1]]
+    # else:
+    #     p[0] = ['relational_expression', p[1], p[2], p[3]]
     if len(p) == 2:
-        p[0] = ['relational_expression', p[1]]
+        p[0] = dp(p[1])
     else:
-        p[0] = ['relational_expression', p[1], p[2], p[3]]
+        p[0] = {}
+        t = env.mktemp('int')
+        p[0]['value'] = t
+        p[0]['code'] = p[1]['code'] + p[3]['code']
+        if p[2] == '<':
+            p[0]['code'] += ["<, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+        elif p[2] == '>':
+            p[0]['code'] += [">, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+        elif p[2] == '<=':
+            p[0]['code'] += ["<=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+        elif p[2] == '>=':
+            p[0]['code'] += [">=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
 
 def p_shift_expression(p):
     """shift_expression : additive_expression
-                                            | shift_expression LSHIFT additive_expression
-                                            | shift_expression RSHIFT additive_expression
+                        | shift_expression LSHIFT additive_expression
+                        | shift_expression RSHIFT additive_expression
     """
+    # if len(p) == 2:
+    #     p[0] = ['shift_expression', p[1]]
+    # else:
+    #     p[0] = ['shift_expression', p[1], p[2], p[3]]
     if len(p) == 2:
-        p[0] = ['shift_expression', p[1]]
+        p[0] = dp(p[1])
     else:
-        p[0] = ['shift_expression', p[1], p[2], p[3]]
+        p[0] = {}
+        t = env.mktemp('int')
+        p[0]['value'] = t
+        p[0]['code'] = p[1]['code'] + p[3]['code']
+        if p[2] == '<<':
+            p[0]['code'] += ["<<, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
+        elif p[2] == '>>':
+            p[0]['code'] += [">>, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
+
 
 def p_additive_expression(p):
     """additive_expression : multiplicative_expression
-                                                    | additive_expression PLUS multiplicative_expression 
-                                                    | additive_expression MINUS multiplicative_expression
+                            | additive_expression PLUS multiplicative_expression 
+                            | additive_expression MINUS multiplicative_expression
     """
+    # if len(p) == 2:
+    #     p[0] = ['additive_expression', p[1]]
+    # else:
+    #     p[0] = ['additive_expression', p[1], p[2], p[3]]
     if len(p) == 2:
-        p[0] = ['additive_expression', p[1]]
+        p[0] = dp(p[1])
     else:
-        p[0] = ['additive_expression', p[1], p[2], p[3]]
+        p[0] = {}
+        t = env.mktemp('int')
+        p[0]['value'] = t
+        #print(p[1], p[2], p[3])
+        p[0]['code'] = p[1]['code'] + p[3]['code']
+        if p[2] == '+':
+            p[0]['code'] += ["+, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+        elif p[2] == '-':
+            p[0]['code'] += ["-, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
+
 
 def p_multiplicative_expression(p):
     """multiplicative_expression : unary_expression
-                                                                    | identifier
-                                                                    | multiplicative_expression TIMES unary_expression
-                                                                    | multiplicative_expression DIVIDE unary_expression
-                                                                    | multiplicative_expression MOD unary_expression
-                                                                    | multiplicative_expression TIMES identifier
-                                                                    | multiplicative_expression DIVIDE identifier
-                                                                    | multiplicative_expression MOD identifier
+                                | identifier
+                                | multiplicative_expression TIMES unary_expression
+                                | multiplicative_expression DIVIDE unary_expression
+                                | multiplicative_expression MOD unary_expression
+                                | multiplicative_expression TIMES identifier
+                                | multiplicative_expression DIVIDE identifier
+                                | multiplicative_expression MOD identifier
     """
     if len(p) == 2:
         p[0] = ['multiplicative_expression', p[1]]
