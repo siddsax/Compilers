@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 class table:
     def __init__(self, previous = None):
         self.parent = previous # None means the start
@@ -7,15 +9,17 @@ class table:
         self.keywords()
         # Add list of all keywords
         self.keywords_list = ['print', 'scan', 'int', 'abstract']
-    
-    def enter_var(self, name, Dtype, arr=None):
+
+    def enter_var(self, name, Dtype, arr=None, tmp=False):
         self.entries[name] = {}
         self.entries[name]['type'] = Dtype
         self.entries[name]['category'] = 'var'
         if(arr):
             self.entries[name]['category'] = 'arr'
+        elif tmp:
+            self.entries[name]['category'] = 'temp'
 
-    def enter_temp_var(self, Dtype):
+    '''def enter_temp_var(self, Dtype):
         i = 0
         flag = False
         while(not flag):
@@ -27,6 +31,7 @@ class table:
                 self.entries[tname]['type'] = Dtype
                 self.entries[tname]['category'] = 'temp_var'
         return tname
+    '''
 
     def enter_function(self, method_name, return_type, param_types):
 		if method_name not in self.entries:
@@ -41,7 +46,7 @@ class table:
             return True
         else:
             return False
-    
+
     def keywords(self):
         for kw in self.keywords_list:
             self.entries[kw] = {}
@@ -52,7 +57,8 @@ class environment:
         self.global_env = table()
         self.pres_env = self.global_env
         self.label_count = 0
-    
+        self.temp_count = 0
+
     def mklabel(self):
         label_name = 'l' + str(self.label_count)
         self.label_count +=1
@@ -60,17 +66,27 @@ class environment:
         self.pres_env.labels[label_name]['category'] = 'label'
         return label_name
 
+    def mktemp(self):
+        self.temp_count += 1
+        temp_name = '_t' + str(self.temp_count)
+        while self.global_lookup(temp_name, self.pres_env):
+            self.temp_count += 1
+            temp_name = '_t' + str(self.temp_count)
+
+        self.pres_env.enter_var(temp_name, tmp=True)
+        return temp_name
+
     def new_scope(self):
 		new_env = table(self.pres_env)
 		self.pres_env.children.append(new_env)
 		self.pres_env = new_env
 		# return self.pres_env
-    
+
     def close_scope(self):
 		self.pres_env = self.pres_env.parent
         # return self.pres_env
 
-    def global_lookup(self,name,env):
+    def global_lookup(self, name, env):
         if env is None:
             return False
         else:
