@@ -3,7 +3,8 @@
 import sys
 import ply.yacc as yacc
 from lexer import *
-import symbol_table as symtab
+import symbol_table as st
+from copy import deepcopy as dp
 
 if len(sys.argv) == 2:
     filename = sys.argv[1]
@@ -30,40 +31,48 @@ precedence = (
 def p_start(p):
     """start : compilation_unit
     """
-    p[0] = ['start', p[1]]
+    # p[0] = ['start', p[1]]
+    p[0] = dp(p[1])
 
 def p_compilation_unit(p):
     """compilation_unit : class_declarations
     | using_directives class_declarations
     """
+    p[0] = {}
     if len(p) == 2:
-        p[0] = ['compilation_unit', p[1]]
+        # p[0] = ['compilation_unit', p[1]]
+        p[0]['code'] = p[1]['code']
     else:
-        p[0] = ['compilation_unit', p[1], p[2]]
-
+        # p[0] = ['compilation_unit', p[1], p[2]]
+        p[0]['code'] = p[1]['code'] + p[2]['code']
 # USING #############################################################################
 def p_using_directives(p):
     """using_directives : using_directive
     | using_directives using_directive
     """
+    p[0] = {}
     if len(p) == 2:
-        p[0] = ['using_directives', p[1]]
+        # p[0] = ['using_directives', p[1]]
+        p[0]['code'] = p[1]['code'] 
     else:
-        p[0] = ['using_directives', p[1], p[2]]
-
+        # p[0] = ['using_directives', p[1], p[2]]
+        p[0]['code'] = p[1]['code'] + p[2]['code']
 def p_using_directive(p):
     """using_directive : USING identifier TERMINATOR
     """
-    p[0] = ['using_directive', 'USING', p[2], ';']
+    p[0] = {}
+    # p[0] = ['using_directive', 'USING', p[2], ';']
+    p[0]['code'] = ""
 # CLASS #############################################################################
 def p_class_declarations(p):
     """class_declarations : class_declarations class_declaration 
     | class_declaration
     """
+    p[0] = {}
     if len(p) == 3:
-        p[0] = ['class_declarations', p[1], p[2]]
+        p[0]['code'] = p[1]['code'] + p[2]['code']
     else:
-        p[0] = ['class_declarations', p[1]]
+        p[0]['code'] = p[1]['code']
 
 def p_class_declaration(p):
     """class_declaration : modifiers CLASS identifier class_body TERMINATOR
@@ -71,38 +80,51 @@ def p_class_declaration(p):
     | CLASS identifier class_body
     | modifiers CLASS identifier class_body
     """
+    p[0] = {}
     if len(p) == 6:
-        p[0] = ['class_declaration', p[1], 'CLASS', p[3], p[4], ';']
+        # p[0] = ['class_declaration', p[1], 'CLASS', p[3], p[4], ';']
+        p[0]['code'] = p[4]['code']
     elif len(p) == 4:
-        p[0] = ['class_declaration', 'CLASS', p[2], p[3], ';']
+        # p[0] = ['class_declaration', 'CLASS', p[2], p[3], ';']
+        p[0]['code'] = p[3]['code']
     elif p[1] == 'CLASS':
-        p[0] = ['class_declaration', 'CLASS', p[2], p[3], ';']
+        # p[0] = ['class_declaration', 'CLASS', p[2], p[3], ';']
+        p[0]['code'] = p[3]['code']
     else:
-        p[0] = ['class_declaration', p[1], 'CLASS', p[3], p[4], ';'];
+        # p[0] = ['class_declaration', p[1], 'CLASS', p[3], p[4], ';'];
+        p[0]['code'] = p[4]['code']
 
 def p_class_body(p):
     """class_body : LBRACE class_member_declarations RBRACE 
     | LBRACE RBRACE
     """
+    p[0] = {}
     if len(p) == 3:
-        p[0] = ['class_body', '{', '}']
+        p[0]['code'] = p[2]['code']
+        # p[0] = ['class_body', '{', '}']
     else:
-        p[0] = ['class_body', '{', p[2], '}']
+        # p[0] = ['class_body', '{', p[2], '}']
+    
 
 def p_identifier(p):
     """identifier : IDENTIFIER
     """
-    p[0] = ['identifier', str(p[1])]
-    print(p[0])
+    # p[0] = ['identifier', str(p[1])]
+    p[0] = {}
+    p[0]['val'] = str(p[1])
+    # print(p[0])
     
 def p_class_member_declarations(p):
     """class_member_declarations : class_member_declaration
     | class_member_declarations class_member_declaration
     """
+    p[0] = {}
     if len(p) == 2:
-        p[0] = ['class_member_declerations', p[1]]
+        p[0]['code'] = p[1]['code']
+        # p[0] = ['class_member_declerations', p[1]]
     else:
-        p[0] = ['class_member_declerations', p[1], p[2]]
+        p[0]['code'] = p[1]['code'] + p[2]['code']
+        # p[0] = ['class_member_declerations', p[1], p[2]]
 
 def p_class_member_declaration(p):
     """class_member_declaration : field_declaration
@@ -110,14 +132,17 @@ def p_class_member_declaration(p):
     | constructor_declaration
     | destructor_declaration
     """
-    p[0] = ['class_member_declaration', p[1]]
+    # p[0] = ['class_member_declaration', p[1]]
+    p[0] = dp(p[1])
 
 def p_field_declaration(p):
     """field_declaration : modifiers type variable_declarators TERMINATOR
     | type variable_declarators TERMINATOR
     """
+    p[0] = {}
     if len(p) == 4:
-        p[0] = ['field_declaration', p[1], p[2], ';']
+        p[0]['code'] = p[1]['']
+        # p[0] = ['field_declaration', p[1], p[2], ';']
     else:
         p[0] = ['field_declaration', p[1], p[2], p[3], ';']
 
@@ -125,56 +150,78 @@ def p_type(p):
     """type : reference_type
     | type_parameter
     """
-    p[0] = ['type', p[1]]
+    # p[0] = ['type', p[1]]
+    p[0] = dp(p[1])
 
 def p_reference_type(p):
     """reference_type : class_type
     | array_type
     """
-    p[0] = ['reference_type', p[1]]
+    # p[0] = ['reference_type', p[1]]
+    p[0] = dp(p[1])
+    #TODO: Put the type for the corresponding identifier    
 
 def p_class_type(p):
     """class_type : proper_identifier
     | OBJECT
     """
-    p[0] = ['class_type', p[1]]
+    # p[0] = ['class_type', p[1]]
+    # TODO: Do check for object
+    if p[1] == 'object':
+        # p[0] = 
+        pass
+    p[0] = st.type(p[1]['val'], False, False, None)
 
 def p_proper_identifier(p):
     """proper_identifier : prefix identifier
     """
-    p[0] = ['proper_identifier', p[1], p[2]]
+    # p[0] = ['proper_identifier', p[1], p[2]]
+    p[0] = {}
+    p[0]['val'] = p[1]['val'] + p[2]['val']
 
 def p_prefix(p):
     """prefix : identifier MEMBERACCESS 
             | prefix identifier MEMBERACCESS 
     """
     if len(p) == 3:
-        p[0] = ['prefix', p[1], '.']
+        # p[0] = ['prefix', p[1], '.']
+        p[0] = {}
+        p[0]['val'] = p[1]['val'] + str(p[2])
     else:
-        p[0] = ['prefix', p[1], p[2], '.']
+        # p[0] = ['prefix', p[1], p[2], '.']
+        p[0] = {}
+        p[0]['val'] = p[1]['val'] + p[2]['val'] + str(p[3])
 
 def p_array_type(p):
     """array_type : non_array_type LBRACKET RBRACKET
     """
-    p[0] = ['array_type', p[1], '[', ']']
+    # p[0] = ['array_type', p[1], '[', ']']
+    p[0] = st.type(p[1], False, True, None)
 
 def p_non_array_type(p):
     """non_array_type : type
     """
     p[0] = ['non_array_type', p[1]]
+    p[0] = dp(p[1])
 
 def p_type_parameter(p):
     """type_parameter : identifier
     | predefined_type
     """
-    p[0] = ['type_parameter', p[1]]
+    # p[0] = ['type_parameter', p[1]]
+    if p[1] == 'int' or p[1] == 'char':
+        p[0] = st.type(p[1], True, False, None)
+    else:
+        p[0] = st.type(p[1], False, False, None)
+        
+
 
 def p_variable_declarators(p):
     """variable_declarators : variable_declarator
     | variable_declarators COMMA variable_declarator
     """
     if len(p) == 2:
-        p[0] = ['variable_declarators', p[1]]
+        # p[0] = ['variable_declarators', p[1]]
     else:
         p[0] = ['variable_declarators', p[1], ',', p[3]]
 
@@ -182,16 +229,20 @@ def p_variable_declarator(p):
     """variable_declarator : identifier
     | identifier EQUALS variable_initializer
     """
+    p[0] = {}
     if len(p) == 2:
-        p[0] = ['variable_declarator', p[1]]
+        # p[0] = ['variable_declarator', p[1]]
+        p[0]['name'] = p[1]['val']
     else:
-        p[0] = ['variable_declarator', p[1], '=', p[3]]
+        # p[0] = ['variable_declarator', p[1], '=', p[3]]
+        p[0]['name'] = p[1]['val']
 
 def p_variable_initializer(p):
     """variable_initializer : expression
                                                     | array_initializer
     """
-    p[0] = ['variable_initializer', p[1]]
+    # p[0] = ['variable_initializer', p[1]]
+    p[0]['val'] = p[1]['val']
 
 def p_array_initializer(p):
     """array_initializer : LBRACE variable_initializer_list RBRACE
@@ -252,16 +303,21 @@ def p_modifiers(p):
     """modifiers : modifier
                                             | modifiers modifier
     """
+    p[0] = {}
     if len(p) == 2:
-        p[0] = ['modifiers', p[1]]
+        p[0]['code'] = p[1]['code'] 
+        # p[0] = ['modifiers', p[1]]
     else:
-        p[0] = ['modifiers', p[1], p[2]]
+        p[0]['code'] = p[1]['code'] + p[2]['code'] 
+        # p[0] = ['modifiers', p[1], p[2]]
 
 def p_modifier(p):
     """modifier : PUBLIC
                                     | PRIVATE
     """
-    p[0] = ['modifier', p[1]]
+    p[0] = {}
+    p[0]['code'] = ""
+    # p[0] = ['modifier', p[1]]
 
 # def p_return_type(p):
 #     """return_type : type
@@ -474,7 +530,8 @@ def p_expression(p):
     """expression : non_assignment_expression 
                                     | assignment
     """
-    p[0] = ['expression', p[1]]
+    # p[0] = ['expression', p[1]]
+
 
 def p_assignment(p):
     """assignment : unary_expression assignment_operator expression
@@ -619,14 +676,14 @@ def p_argument_value(p):
 
 def p_object_or_collection_initializer(p):
     """object_or_collection_initializer : object_initializer
-                                                                            | collection_initializer
+                                        | collection_initializer
     """
     p[0] = ['object_or_collection_initializer', p[1]]
 
 def p_object_initializer(p):
     """object_initializer : LBRACE member_initializer_list RBRACE
-                                                    | LBRACE RBRACE
-                                                    | LBRACE member_initializer_list COMMA RBRACE
+                            | LBRACE RBRACE
+                            | LBRACE member_initializer_list COMMA RBRACE
     """
     if len(p) == 3:
         p[0] = ['object_initializer', p[1], p[2]]
@@ -651,13 +708,13 @@ def p_member_initializer(p):
 
 def p_initializer_value(p):
     """initializer_value : expression
-                                            | object_or_collection_initializer
+                            | object_or_collection_initializer
     """
     p[0] = ['initializer_value', p[1]]
 
 def p_collection_initializer(p):
     """collection_initializer : LBRACE element_initializer_list RBRACE
-                                                            | LBRACE element_initializer_list COMMA RBRACE
+                                | LBRACE element_initializer_list COMMA RBRACE
     """
     if len(p) == 4:
         p[0] = ['collection_initializer', p[1], p[2], p[3]]
@@ -666,7 +723,7 @@ def p_collection_initializer(p):
 
 def p_element_initializer_list(p):
     """element_initializer_list : element_initializer
-                                                            | element_initializer_list COMMA element_initializer
+                                | element_initializer_list COMMA element_initializer
     """
     if len(p) == 2:
         p[0] = ['element_initializer_list', p[1]]

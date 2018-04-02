@@ -1,4 +1,20 @@
 #!/usr/bin/env python3
+class type:
+	def __init__(self, name, isbasic, isarray, length):
+		self.dict = {}
+        self.dict['name'] = name
+		self.dict['isbasic'] = isbasic
+		self.dict['isarray'] = isarray
+		# self.dict['ispointer'] = ispointer
+		# self.dict['width'] = width
+		# self.dict['elem_type'] = elem_type
+		self.dict['length'] = length
+	
+	def type_name(self):
+		if self.dict['isbasic']:
+			return self.dict['name']
+		elif self.dict['isarray']:
+			return "array of " + self.dict['elem_type'].type_name() + ", length " + str(self.dict['length'])
 
 class table:
     def __init__(self, previous = None):
