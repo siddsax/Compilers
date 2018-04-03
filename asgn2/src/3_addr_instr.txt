@@ -25,10 +25,10 @@ line_number, return, variable_name
 line_number, return
 
 # call
-line_no, fn_call_1, fn_name
+line_no, fn_call_1, fn_name, num_args, .......(all the args) ....
 
 # call with assignment
-line_no, fn_call_2, fn_name, dst
+line_no, fn_call_2, fn_name, num_args, .......(all the args) .... , dst
 
 # Print
 line_number, print, arg

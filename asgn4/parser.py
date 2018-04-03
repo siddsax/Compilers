@@ -4,7 +4,7 @@ import sys
 import ply.yacc as yacc
 from lexer import *
 import symbol_table as st
-from copy import deepcopy as dp
+from copy import dp as dp
 
 if len(sys.argv) == 2:
     filename = sys.argv[1]
@@ -511,9 +511,49 @@ def p_invocation_expression(p):
     | proper_identifier LPAREN RPAREN
     """
     if len(p) == 4:
-        p[0] = ['invocation_expression', p[1], p[2], p[3]]
+        indx = -1 
+    #     p[0] = ['invocation_expression', p[1], p[2], p[3]]
     else:
-        p[0] = ['invocation_expression', p[1], p[2], p[3], p[4]]
+        indx = 3
+    #     p[0] = ['invocation_expression', p[1], p[2], p[3], p[4]]
+	p[0] = {}
+    p[0]['code'] = ""
+    p[0]['value'] = None
+	name = st.prev_lookup(p[1], st.pres_env)
+	if name != False:
+		if name['category'] == 'function':
+			arg_cnt = 0
+			if indx is not -1:
+				argc = len(p[indx])
+			if st.pres_env.entries[name]['arg_num'] == argc:
+				if argc > 0:
+					for arg in p[3]:
+						p[0]['code'] += arg['code']
+				if p[0]['code']['type'] is not 'void':
+					t = symbol_table.maketemp(name['type'], symbol_table.curr_table)
+					p[0]['value'] = t
+                    code = 'fn_call_2, ' + p[1] + ', ' + str(argc)
+                    for arg in p[3]:
+                        code += ',' + arg['value']
+					p[0]['code'] += [code + ', ' + t]
+				else:
+                    code = 'fn_call_1, ' + p[1] + ', ' + str(argc)
+                    for arg in p[3]:
+                        code += ',' + arg['value']
+					p[0]['code'] += [code]
+			else:
+				print("ERROR L", p.lineno(1), "Function",p[1], "needs exactly", st.pres_env.entries['arg_num'], "parameters, given", len(p[3]))
+				print("Compilation Terminated")
+				exit()
+		else:
+			print("error in Line No. ", p.lineno(1), "Function", p[1], "This is not defined as a function")
+			print("Compilation Terminated")
+			exit()
+	else:
+		print("error in Line No. ", p.lineno(1), "Function", p[1], "This is not a function")
+		print("Compilation Terminated")
+		exit()
+
 
 def p_if_statement(p):
     """if_statement : IF LPAREN expression RPAREN embedded_statement
@@ -538,7 +578,7 @@ def p_expression(p):
 
 def p_assignment(p):
     """assignment : unary_expression assignment_operator expression
-                                    | identifier assignment_operator expression
+                    | identifier assignment_operator expression
     """
     p[0] = ['assignment', p[1], p[2], p[3]]
 
@@ -601,9 +641,10 @@ def p_primary_no_array_creation_expression(p):
                                             | typeof_expression
     """
     # p[0] = ['primary_no_array_creation_expression', p[1]]
-    # Not Done - element_access, member_access
-    # Not DOne - invocation_expression
-    # Not Done - post dec/inc
+    # Not Done - element_access THIS IS ELEMENT IN ARRAY ACCESS
+    # Not Done - member_access
+    # Not DOne - invocation_expression for functions
+    # Done - post dec/inc
     # Not done - typeof
     # Not done - object creation
     p[0] = dp(p[1])
@@ -650,13 +691,18 @@ def p_post_increment_expression(p):
                                                                     | identifier INCREMENT
     """
     # p[0] = ['post_increment_expression', p[1], p[2]]
-    
+	p[0] = dp(p[1])
+	p[0]['code'] += ["+, " + p[0]['value'] + ", 1, " + p[0]['value']]
+
 
 def p_post_decrement_expression(p):
     """post_decrement_expression : primary_expression DECREMENT
-                                                                    | identifier DECREMENT
+                                 | identifier DECREMENT
     """
-    p[0] = ['post_decrement_expression', p[1], p[2]]
+    # p[0] = ['post_decrement_expression', p[1], p[2]]
+	# t = symbol_table.maketemp('int', symbol_table.curr_table)
+	p[0] = dp(p[1])
+	p[0]['code'] += ["-, " + p[0]['value'] + ", 1, " + p[0]['value']]
 
 def p_object_creation_expression(p):
     """object_creation_expression : NEW type LPAREN argument_list RPAREN object_or_collection_initializer
@@ -675,31 +721,37 @@ def p_object_creation_expression(p):
 
 def p_argument_list(p):
     """ argument_list : argument
-                                            | argument_list COMMA argument
+                      | argument_list COMMA argument
     """
-    if len(p) == 2:
-        p[0] = ['argument_list', p[1]]
-    else:
-        p[0] = ['argument_list', p[1], p[2], p[3]]
+    # if len(p) == 2:
+    #     p[0] = ['argument_list', p[1]]
+    # else:
+    #     p[0] = ['argument_list', p[1], p[2], p[3]]
+	if len(p) == 2:
+		p[0] = [dp(p[1])]
+	else:
+		p[0] = dp(p[1]) + [dp(p[3])]	
 
 def p_argument(p):
-    """argument : argument_name argument_value
-                            | argument_value
-    """
-    if len(p) == 2:
-        p[0] = ['argument', p[1]]
-    else:
-        p[0] = ['argument', p[1], p[2]]
+#     """argument : argument_name argument_value
+#                             | argument_value
+#     """
+#     if len(p) == 2:
+#         p[0] = ['argument', p[1]]
+#     else:
+#         p[0] = ['argument', p[1], p[2]]
 
-def p_argument_name(p):
-    """argument_name : identifier COLON
-    """
-    p[0] = ['argument_name', p[1], p[2]]
+# def p_argument_name(p):
+#     """argument_name : identifier COLON
+#     """
+#     # p[0] = ['argument_name', p[1], p[2]]
 
-def p_argument_value(p):
-    """ argument_value : expression
+
+# def p_argument_value(p):
+    """ argument : expression
     """
-    p[0] = ['argument_value', p[1]]
+    # p[0] = ['argument_value', p[1]]
+    p[0] = dp(p[1])
 
 def p_object_or_collection_initializer(p):
     """object_or_collection_initializer : object_initializer

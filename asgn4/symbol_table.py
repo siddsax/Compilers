@@ -35,20 +35,6 @@ class table:
         elif tmp:
             self.entries[name]['category'] = 'temp'
 
-    '''def enter_temp_var(self, Dtype):
-        i = 0
-        flag = False
-        while(not flag):
-            i+=1
-            tname = 'temp' + str(i)
-            if tname not in self.entries:
-                flag = True
-                self.entries[tname] = {}
-                self.entries[tname]['type'] = Dtype
-                self.entries[tname]['category'] = 'temp_var'
-        return tname
-    '''
-
     def enter_function(self, method_name, return_type, param_types):
 		if method_name not in self.entries:
 			self.entries[method_name] = {}
@@ -102,12 +88,12 @@ class environment:
 		self.pres_env = self.pres_env.parent
         # return self.pres_env
 
-    def global_lookup(self, name, env):
+    def prev_lookup(self, name, env):
         if env is None:
             return False
         else:
             flag = env.lookup(name)
             if(not flag):
-                return self.global_lookup(name,env.parent)
+                return self.prev_lookup(name, env.parent)
             else:
                 return True
