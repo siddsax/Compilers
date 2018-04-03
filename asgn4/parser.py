@@ -116,6 +116,8 @@ def p_identifier(p):
     # p[0] = ['identifier', str(p[1])]
     p[0] = {}
     p[0]['value'] = str(p[1])
+    p[0]['code'] = ['']
+
     # print(p[0])
 
 def p_class_member_declarations(p):
@@ -338,7 +340,7 @@ def p_method_header(p):
         if params != None:
             param_types = [param[0] for param in params]
         # param_num = len(params)
-        env.pres_env.enter_function(p[3], p[2], param_types)
+        env.pres_env.enter_function(p[3]['value'], p[2], param_types)
     elif len(p) == 5:
         # p[0] = ['method_header', p[1], p[2], '(', ')']
         p[0] = {}
@@ -351,7 +353,8 @@ def p_method_header(p):
         if params != None:
             param_types = [param[0] for param in params]
         # param_num = len(params)
-        env.pres_env.enter_function(p[2], p[1], param_types)
+        print(p[2])
+        env.pres_env.enter_function(p[2]['value'], p[1], param_types)
     elif p[3] == '(':
         # p[0] = ['method_header', p[1], p[2], '(', p[4], ')']
         p[0] = {}
@@ -408,7 +411,7 @@ def p_modifier(p):
 def p_member_name(p):
     """member_name : identifier
     """
-    p[0] = ['member_name', p[1]]
+    p[0] = dp(p[1])
 
 # TODO: May need to do scope changing here
 def p_method_body(p):
@@ -636,7 +639,7 @@ def p_invocation_expression(p):
         indx = 3
     #     p[0] = ['invocation_expression', p[1], p[2], p[3], p[4]]
     p[0] = {}
-    p[0]['code'] = []
+    p[0]['code'] = [""]
     p[0]['value'] = None
     function = st.prev_lookup(p[1], st.pres_env)
     if function is not None:
@@ -734,13 +737,13 @@ def p_assignment(p):
     #p[0] = ['assignment', p[1], p[2], p[3]]
     curr_env = env.pres_env
     p[0] = {}
-    if curr_env.lookup(p[0]['value']) is not None:
+    if curr_env.lookup(p[1]['value']) is not None:
         p[0]['value'] = p[1]['value']
         p[0]['code'] = dp(p[3]['code'])
         p[0]['code'] += ['=, ' + p[0]['value'] + ', ' + p[3]['value']]
     else:
-        print('Error in line 598')
-        print("ERROR: symbol", p[1]['value'], " used without declaration")
+        # print('Error in line 598')
+        print("ERROR: symbol '"+ p[1]['value'] +"' used without declaration")
         print("Compilation Terminated")
         exit()
 
@@ -751,7 +754,7 @@ def p_assignment_operator(p):
     """
     #p[0] = ['assignment_operator', p[1]]
     p[0] = {}
-    p[0]['value'] = p[1]['value']
+    p[0]['value'] = p[1]
 
 def p_unary_expression(p):
     """unary_expression : primary_expression
@@ -842,7 +845,7 @@ def p_element_access(p):
     """
     # p[0] = ['element_access', p[1], p[2], p[3], p[4]]
     p[0] = {}
-    p[0]['code'] = []
+    p[0]['code'] = [""]
     p[0]['value'] = None
     array = st.pre_lookup(p[1], st.pres_env)
     if array is not None:
@@ -1216,7 +1219,8 @@ def p_additive_expression(p):
         p[0] = {}
         t = env.mktemp('int')
         p[0]['value'] = t
-        #print(p[1], p[2], p[3])
+        print(p[1]['code'])
+        print(p[3]['code'])
         p[0]['code'] = p[1]['code'] + p[3]['code']
         if p[2] == '+':
             p[0]['code'] += ["+, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
@@ -1237,6 +1241,7 @@ def p_multiplicative_expression(p):
     if len(p) == 2:
         #p[0] = ['multiplicative_expression', p[1]]
         p[0] = dp(p[1])
+        # print("klopp")
     else:
         p[0] = {}
         t = env.mktemp('int')
