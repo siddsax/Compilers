@@ -55,6 +55,25 @@ class table:
             self.entries[kw] = {}
             self.entries[kw]['category'] = 'keyword'
 
+    def print_symbol_table(self):
+    print("")
+    for key in self.entries:
+        print("NAME: ", key)
+        for k in self.entries[key]:
+            if k == 'type' and not isinstance(self.entries[key][k], str):
+                print(k, ': ', self.entries[key][k].type_name())
+            elif k == 'arg_types':
+                types = []
+                for t in self.entries[key][k]:
+                    if not isinstance(t, str):
+                        types.append(t.type_name())
+                    else:
+                        types.append(t)
+                print(k, ': ', types)
+            else:
+                print(k, ': ', self.entries[key][k])
+        print("")
+
 class environment:
     def __init__(self):
         self.global_env = table()
@@ -98,3 +117,9 @@ class environment:
                 return self.prev_lookup(name, env.parent)
             else:
                 return var
+
+    def print_symbol_table(self, t):
+        t.print_symbol_table()
+        print("----------------")
+        for c in t.children:
+            self.print_symbol_table(c)
