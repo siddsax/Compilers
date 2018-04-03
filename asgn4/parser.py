@@ -338,7 +338,7 @@ def p_method_header(p):
         param_types = []
         # param_num = 0
         if params != None:
-            param_types = [param[0] for param in params]
+            param_types = [param['type'] for param in params]
         # param_num = len(params)
         env.pres_env.enter_function(p[3]['value'], p[2], param_types)
     elif len(p) == 5:
@@ -351,7 +351,7 @@ def p_method_header(p):
         param_types = []
         # param_num = 0
         if params != None:
-            param_types = [param[0] for param in params]
+            param_types = [param['type'] for param in params]
         # param_num = len(params)
         print(p[2])
         env.pres_env.enter_function(p[2]['value'], p[1], param_types)
@@ -365,7 +365,7 @@ def p_method_header(p):
         param_types = []
         # param_num = 0
         if params != None:
-            param_types = [param[0] for param in params]
+            param_types = [param['type'] for param in params]
         # param_num = len(params)
         env.pres_env.enter_function(p[2], p[1], param_types)
     else:
@@ -378,7 +378,7 @@ def p_method_header(p):
         param_types = []
         # param_num = 0
         if params != None:
-            param_types = [param[0] for param in params]
+            param_types = [param['type'] for param in params]
         # param_num = len(params)
         env.pres_env.enter_function(p[3], p[2], param_types)
 
@@ -429,18 +429,25 @@ def p_fixed_parameters(p):
                                             | fixed_parameters COMMA fixed_parameter
     """
     if len(p) == 2:
-        p[0] = ['fixed_parameters', p[1]]
+        #p[0] = ['fixed_parameters', p[1]]
+        p[0] = [p[1]]
     else:
-        p[0] = ['fixed_parameters', p[1], ',', p[3]]
+        #p[0] = ['fixed_parameters', p[1], ',', p[3]]
+        p[0] = p[1] + [p[3]]
 
 def p_fixed_parameter(p):
     """fixed_parameter : type identifier default_argument
                                             | type identifier
     """
+    # TODO: Default argument
     if len(p) == 3:
-        p[0] = ['fixed_parameter', p[1], p[2]]
+        #p[0] = ['fixed_parameter', p[1], p[2]]
+        p[0]['type'] = p[1]
+        p[0]['value'] = p[2]['value']
     else:
-        p[0] = ['fixed_parameter', p[1], p[2], p[3]]
+        #p[0] = ['fixed_parameter', p[1], p[2], p[3]]
+        p[0]['type'] = p[1]
+        p[0]['value'] = p[2]['value']
 
 def p_default_argument(p):
     """default_argument : EQUALS expression
