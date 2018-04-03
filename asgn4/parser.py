@@ -4,7 +4,7 @@ import sys
 import ply.yacc as yacc
 from lexer import *
 import symbol_table as st
-from copy import dp as dp
+from copy import deepcopy as dp
 
 if len(sys.argv) == 2:
     filename = sys.argv[1]
@@ -105,6 +105,7 @@ def p_class_body(p):
         # p[0] = ['class_body', '{', '}']
     else:
         # p[0] = ['class_body', '{', p[2], '}']
+        pass
     
 
 def p_identifier(p):
@@ -223,6 +224,7 @@ def p_variable_declarators(p):
     | variable_declarators COMMA variable_declarator
     """
     if len(p) == 2:
+        pass
         # p[0] = ['variable_declarators', p[1]]
     else:
         p[0] = ['variable_declarators', p[1], ',', p[3]]
@@ -332,6 +334,7 @@ def p_member_name(p):
     """
     p[0] = ['member_name', p[1]]
 
+# TODO: May need to do scope changing here
 def p_method_body(p):
     """method_body : block
                                     | TERMINATOR
@@ -365,7 +368,7 @@ def p_constructor_declaration(p):
     """constructor_declaration : constructor_declarator constructor_body
     """
     p[0] = ['constructor_declaration', p[1], p[2]]
-    
+
 def p_constructor_declarator(p):
     """constructor_declarator : identifier LPAREN fixed_parameters RPAREN
                                                             | identifier LPAREN  RPAREN
@@ -462,9 +465,10 @@ def p_literal(p):
     | STRCONST
     | CHARCONST
     """
-	p[0] = {}
-	p[0]['code'] = [""]
-	p[0]['value'] = p[1]
+
+    p[0] = {}
+    p[0]['code'] = [""]
+    p[0]['value'] = p[1]
 
 def p_local_variable_declaration(p):
     """local_variable_declaration : type local_variable_declarators
@@ -517,43 +521,43 @@ def p_invocation_expression(p):
     else:
         indx = 3
     #     p[0] = ['invocation_expression', p[1], p[2], p[3], p[4]]
-	p[0] = {}
+    p[0] = {}
     p[0]['code'] = []
     p[0]['value'] = None
-	function = st.prev_lookup(p[1], st.pres_env)
-	if function is not None:
-		if function['category'] == 'function':
-			argc = 0
-			if indx is not -1:
-				argc = len(p[indx])
-			if function['arg_num'] == argc:
-				if argc > 0:
-					for arg in p[3]:
-						p[0]['code'] += arg['code']
-				if function['type'] is not 'void':
-					t = st.mktemp(function['type'])
-					p[0]['value'] = t
+    function = st.prev_lookup(p[1], st.pres_env)
+    if function is not None:
+        if function['category'] == 'function':
+            argc = 0
+            if indx is not -1:
+                argc = len(p[indx])
+            if function['arg_num'] == argc:
+                if argc > 0:
+                    for arg in p[3]:
+                        p[0]['code'] += arg['code']
+                if function['type'] is not 'void':
+                    t = st.mktemp(function['type'])
+                    p[0]['value'] = t
                     code = 'fn_call_2, ' + p[1] + ', ' + str(argc)
                     for arg in p[3]:
                         code += ',' + arg['value']
-					p[0]['code'] += [code + ', ' + t]
-				else:
+                    p[0]['code'] += [code + ', ' + t]
+                else:
                     code = 'fn_call_1, ' + p[1] + ', ' + str(argc)
                     for arg in p[3]:
                         code += ',' + arg['value']
-					p[0]['code'] += [code]
-			else:
-				print("error in Line No. ", p.lineno(1), "Function",p[1], "needs exactly", st.pres_env.entries['arg_num'], "parameters, given", len(p[3]))
-				print("Compilation Terminated")
-				exit()
-		else:
-			print("error in Line No. ", p.lineno(1), "Function", p[1], "This is not defined as a function")
-			print("Compilation Terminated")
-			exit()
-	else:
-		print("error in Line No. ", p.lineno(1), "Function", p[1], "This is not a function")
-		print("Compilation Terminated")
-		exit()
+                    p[0]['code'] += [code]
+            else:
+                print("error in Line No. ", p.lineno(1), "Function",p[1], "needs exactly", st.pres_env.entries['arg_num'], "parameters, given", len(p[3]))
+                print("Compilation Terminated")
+                exit()
+        else:
+            print("error in Line No. ", p.lineno(1), "Function", p[1], "This is not defined as a function")
+            print("Compilation Terminated")
+            exit()
+    else:
+        print("error in Line No. ", p.lineno(1), "Function", p[1], "This is not a function")
+        print("Compilation Terminated")
+        exit()
 
 
 def p_if_statement(p):
@@ -569,26 +573,41 @@ def p_iteration_statement(p):
     """iteration_statement : WHILE LPAREN expression RPAREN embedded_statement
     """
     p[0] = ['iteration_statement', p[1], p[2], p[3], p[4], p[5]]
+
 # EXPRESSION #####################################################################################
 def p_expression(p):
     """expression : non_assignment_expression 
                                     | assignment
     """
     # p[0] = ['expression', p[1]]
+    p[0] = dp(p[1])
 
 
 def p_assignment(p):
     """assignment : unary_expression assignment_operator expression
                     | identifier assignment_operator expression
     """
-    p[0] = ['assignment', p[1], p[2], p[3]]
+    #p[0] = ['assignment', p[1], p[2], p[3]]
+    curr_env = env.pres_env
+    p[0] = {}
+    if curr_env.lookup(p[0]['value']) is not None:
+        p[0]['value'] = p[1]['value']
+        p[0]['code'] = dp(p[3]['code'])
+        p[0]['code'] += ['=, ' + p[0]['value'] + ', ' + p[3]['value']]
+    else:
+        print('Error in line 598')
+        print("ERROR: symbol", p[1]['value'], " used without declaration")
+        print("Compilation Terminated")
+        exit()
 
 def p_assignment_operator(p):
     """assignment_operator : EQUALS
                                                     | PLUSEQUAL
                                                     | MINUSEQUAL
     """
-    p[0] = ['assignment_operator', p[1]]
+    #p[0] = ['assignment_operator', p[1]]
+    p[0] = {}
+    p[0]['value'] = p[1]['value']
 
 def p_unary_expression(p):
     """unary_expression : primary_expression
@@ -622,7 +641,8 @@ def p_unary_expression(p):
             t = env.mktemp('int')
             p[0]['value'] = t
             p[0]['code'] = dp(p[2]['code'])
-            p[0]['code'] += ["~, " + p[0]['value'] + ", " + p[2]['value'] ]         
+            p[0]['code'] += ["~, " + p[0]['value'] + ", " + p[2]['value'] ]
+
 def p_primary_expression(p):
     """primary_expression : primary_no_array_creation_expression
                             | array_creation_expression
@@ -680,28 +700,28 @@ def p_element_access(p):
     p[0] = {}
     p[0]['code'] = []
     p[0]['value'] = None
-	array = st.pre_lookup(p[1], st.pres_env)
-	if array is not None:
-		if array['category'] == 'array':
+    array = st.pre_lookup(p[1], st.pres_env)
+    if array is not None:
+        if array['category'] == 'array':
             if(len(p[3]['value'].split(',')) > 1):
                 print("error in Line No. ", p.lineno(1), "array", p[1], "is not 1D")
-			p[0]['code'] += p[3]['code']
-			t1 = st.mktemp('int')
-			t2 = st.mktemp('int')
-			t = st.mktemp(array['type'].dict['arr_elem_type'])
-			p[0]['code'] += ['=, ' + t1 + ', ' + p[3]['value']]
+            p[0]['code'] += p[3]['code']
+            t1 = st.mktemp('int')
+            t2 = st.mktemp('int')
+            t = st.mktemp(array['type'].dict['arr_elem_type'])
+            p[0]['code'] += ['=, ' + t1 + ', ' + p[3]['value']]
             # add width feature !!!!!!!!!!!!!!!!!!!!!!!!!!
-			p[0]['code'] += ['*, ' + t2 + ', ' + t1 + ', ' + str(array['type'].dict['arr_elem_type'].dict['width'])]
-			p[0]['code'] += ['array_access, ' + t + ', ' + p[1] + ', ' + t2]
-			p[0]['value'] = t
-		else:
-			print("error in Line No. ", p.lineno(1), "Function", p[1], "not defined as an array")
-			print("Compilation Terminated")
-			exit()
-	else:
-		print("error in Line No. ", p.lineno(1), ": symbol", p[0], "array doesnt exist")
-		print("Compilation Terminated")
-		exit()
+            p[0]['code'] += ['*, ' + t2 + ', ' + t1 + ', ' + str(array['type'].dict['arr_elem_type'].dict['width'])]
+            p[0]['code'] += ['array_access, ' + t + ', ' + p[1] + ', ' + t2]
+            p[0]['value'] = t
+        else:
+            print("error in Line No. ", p.lineno(1), "Function", p[1], "not defined as an array")
+            print("Compilation Terminated")
+            exit()
+    else:
+        print("error in Line No. ", p.lineno(1), ": symbol", p[0], "array doesnt exist")
+        print("Compilation Terminated")
+        exit()
 
 def p_expression_list(p):
     """expression_list : expression
@@ -717,8 +737,8 @@ def p_post_increment_expression(p):
                                                                     | identifier INCREMENT
     """
     # p[0] = ['post_increment_expression', p[1], p[2]]
-	p[0] = dp(p[1])
-	p[0]['code'] += ["+, " + p[0]['value'] + ", 1, " + p[0]['value']]
+    p[0] = dp(p[1])
+    p[0]['code'] += ["+, " + p[0]['value'] + ", 1, " + p[0]['value']]
 
 
 def p_post_decrement_expression(p):
@@ -726,9 +746,9 @@ def p_post_decrement_expression(p):
                                  | identifier DECREMENT
     """
     # p[0] = ['post_decrement_expression', p[1], p[2]]
-	# t = symbol_table.maketemp('int', symbol_table.curr_table)
-	p[0] = dp(p[1])
-	p[0]['code'] += ["-, " + p[0]['value'] + ", 1, " + p[0]['value']]
+    # t = symbol_table.maketemp('int', symbol_table.curr_table)
+    p[0] = dp(p[1])
+    p[0]['code'] += ["-, " + p[0]['value'] + ", 1, " + p[0]['value']]
 
 def p_object_creation_expression(p):
     """object_creation_expression : NEW type LPAREN argument_list RPAREN object_or_collection_initializer
@@ -753,10 +773,10 @@ def p_argument_list(p):
     #     p[0] = ['argument_list', p[1]]
     # else:
     #     p[0] = ['argument_list', p[1], p[2], p[3]]
-	if len(p) == 2:
-		p[0] = [dp(p[1])]
-	else:
-		p[0] = dp(p[1]) + [dp(p[3])]	
+    if len(p) == 2:
+        p[0] = [dp(p[1])]
+    else:
+        p[0] = dp(p[1]) + [dp(p[3])]    
 
 def p_argument(p):
 #     """argument : argument_name argument_value
@@ -877,12 +897,14 @@ def p_iMEMAi(p):
 def p_non_assignment_expression(p):
     """non_assignment_expression : conditional_expression
     """
-    p[0] = ['non_assignment_expression', p[1]]
+    #p[0] = ['non_assignment_expression', p[1]]
+    p[0] = dp(p[1])
 
 def p_conditional_expression(p):
     """conditional_expression : conditional_or_expression
     """
-    p[0] = ['conditional_expression', p[1]]
+    #p[0] = ['conditional_expression', p[1]]
+    p[0] = dp(p[1])
 
 def p_conditional_or_expression(p):
     """conditional_or_expression : conditional_and_expression
@@ -951,7 +973,6 @@ def p_and_expression(p):
     if len(p) == 2:
         # p[0] = ['and_expression', p[1]]
         p[0] = dp(p[1])
-       
     else:
         # p[0] = ['and_expression', p[1], p[2], p[3]]
         p[0] = {}
@@ -1066,9 +1087,24 @@ def p_multiplicative_expression(p):
                                 | multiplicative_expression MOD identifier
     """
     if len(p) == 2:
-        p[0] = ['multiplicative_expression', p[1]]
+        #p[0] = ['multiplicative_expression', p[1]]
+        p[0] = dp(p[1])
     else:
-        p[0] = ['multiplicative_expression', p[1], p[2], p[3]]
+        p[0] = {}
+        t = env.mktemp('int')
+        if p[2] == '*':
+            p[0]['value'] = t
+            p[0]['code'] = p[1]['code'] + p[3]['code']
+            p[0]['code'] += ["*, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+        elif p[2] == '/':
+            p[0]['value'] = t
+            p[0]['code'] = p[1]['code'] + p[3]['code']
+            p[0]['code'] += ["/, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+        elif p[2] == '%':
+            p[0]['value'] = t
+            p[0]['code'] = p[1]['code'] + p[3]['code']
+            p[0]['code'] += ["%, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+        #p[0] = ['multiplicative_expression', p[1], p[2], p[3]]
 
 # def p_(p):
 #     """
