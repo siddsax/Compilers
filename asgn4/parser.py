@@ -168,10 +168,11 @@ def p_class_type(p):
     """
     # p[0] = ['class_type', p[1]]
     # TODO: Do check for object
+    # TODO : Find the data_width for this case
     if p[1] == 'object':
         # p[0] = 
         pass
-    p[0] = st.type(p[1]['value'], False, False, None)
+    p[0] = st.type(p[1]['value'], False, False, None, None, None)
 
 def p_proper_identifier(p):
     """proper_identifier : prefix identifier
@@ -197,7 +198,7 @@ def p_array_type(p):
     """array_type : non_array_type LBRACKET RBRACKET
     """
     # p[0] = ['array_type', p[1], '[', ']']
-    p[0] = st.type(p[1], False, True, None)
+    p[0] = st.type(p[1], False, True, None, None, p[1])
 
 def p_non_array_type(p):
     """non_array_type : type
@@ -211,9 +212,9 @@ def p_type_parameter(p):
     """
     # p[0] = ['type_parameter', p[1]]
     if p[1] == 'int' or p[1] == 'char':
-        p[0] = st.type(p[1], True, False, None)
+        p[0] = st.type(p[1], True, False, None, 4, None)
     else:
-        p[0] = st.type(p[1], False, False, None)
+        p[0] = st.type(p[1], False, False, None, 1, None)
         
 
 
@@ -517,20 +518,20 @@ def p_invocation_expression(p):
         indx = 3
     #     p[0] = ['invocation_expression', p[1], p[2], p[3], p[4]]
 	p[0] = {}
-    p[0]['code'] = ""
+    p[0]['code'] = []
     p[0]['value'] = None
-	name = st.prev_lookup(p[1], st.pres_env)
-	if name != False:
-		if name['category'] == 'function':
-			arg_cnt = 0
+	function = st.prev_lookup(p[1], st.pres_env)
+	if function is not None:
+		if function['category'] == 'function':
+			argc = 0
 			if indx is not -1:
 				argc = len(p[indx])
-			if st.pres_env.entries[name]['arg_num'] == argc:
+			if function['arg_num'] == argc:
 				if argc > 0:
 					for arg in p[3]:
 						p[0]['code'] += arg['code']
-				if p[0]['code']['type'] is not 'void':
-					t = symbol_table.maketemp(name['type'], symbol_table.curr_table)
+				if function['type'] is not 'void':
+					t = st.mktemp(function['type'])
 					p[0]['value'] = t
                     code = 'fn_call_2, ' + p[1] + ', ' + str(argc)
                     for arg in p[3]:
@@ -542,7 +543,7 @@ def p_invocation_expression(p):
                         code += ',' + arg['value']
 					p[0]['code'] += [code]
 			else:
-				print("ERROR L", p.lineno(1), "Function",p[1], "needs exactly", st.pres_env.entries['arg_num'], "parameters, given", len(p[3]))
+				print("error in Line No. ", p.lineno(1), "Function",p[1], "needs exactly", st.pres_env.entries['arg_num'], "parameters, given", len(p[3]))
 				print("Compilation Terminated")
 				exit()
 		else:
@@ -643,7 +644,7 @@ def p_primary_no_array_creation_expression(p):
     # p[0] = ['primary_no_array_creation_expression', p[1]]
     # Not Done - element_access THIS IS ELEMENT IN ARRAY ACCESS
     # Not Done - member_access
-    # Not DOne - invocation_expression for functions
+    # DOne - invocation_expression for functions
     # Done - post dec/inc
     # Not done - typeof
     # Not done - object creation
@@ -675,7 +676,32 @@ def p_element_access(p):
     """element_access : primary_no_array_creation_expression LBRACKET expression_list RBRACKET 
                                             | identifier LBRACKET expression_list RBRACKET
     """
-    p[0] = ['element_access', p[1], p[2], p[3], p[4]]
+    # p[0] = ['element_access', p[1], p[2], p[3], p[4]]
+    p[0] = {}
+    p[0]['code'] = []
+    p[0]['value'] = None
+	array = st.pre_lookup(p[1], st.pres_env)
+	if array is not None:
+		if array['category'] == 'array':
+            if(len(p[3]['value'].split(',')) > 1):
+                print("error in Line No. ", p.lineno(1), "array", p[1], "is not 1D")
+			p[0]['code'] += p[3]['code']
+			t1 = st.mktemp('int')
+			t2 = st.mktemp('int')
+			t = st.mktemp(array['type'].dict['arr_elem_type'])
+			p[0]['code'] += ['=, ' + t1 + ', ' + p[3]['value']]
+            # add width feature !!!!!!!!!!!!!!!!!!!!!!!!!!
+			p[0]['code'] += ['*, ' + t2 + ', ' + t1 + ', ' + str(array['type'].dict['arr_elem_type'].dict['width'])]
+			p[0]['code'] += ['array_access, ' + t + ', ' + p[1] + ', ' + t2]
+			p[0]['value'] = t
+		else:
+			print("error in Line No. ", p.lineno(1), "Function", p[1], "not defined as an array")
+			print("Compilation Terminated")
+			exit()
+	else:
+		print("error in Line No. ", p.lineno(1), ": symbol", p[0], "array doesnt exist")
+		print("Compilation Terminated")
+		exit()
 
 def p_expression_list(p):
     """expression_list : expression

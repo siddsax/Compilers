@@ -39,3 +39,6 @@ line_number, scan, targ_var
 # Exit
 line_number, exit
 (note -> We need to compulsarily call exit after main for safe code termination. Also main should be at the top.)
+
+# Array access
+line_number, array_access, dst, src_array_pt, index

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 class type:
-	def __init__(self, name, isbasic, isarray, length):
+	def __init__(self, name, isbasic, isarray, length, data_width, arr_elem_type):
 		self.dict = {}
         self.dict['name'] = name
 		self.dict['isbasic'] = isbasic
 		self.dict['isarray'] = isarray
 		# self.dict['ispointer'] = ispointer
-		# self.dict['width'] = width
-		# self.dict['elem_type'] = elem_type
+		self.dict['data_width'] = width # int is 4, char is 1  ....
+		self.dict['arr_elem_type'] = elem_type
 		self.dict['length'] = length
 	
 	def type_name(self):
@@ -45,9 +45,9 @@ class table:
 
     def lookup(self, name):
         if name in self.entries:
-            return True
+            return self.entries['name']
         else:
-            return False
+            return None
 
     def keywords(self):
         for kw in self.keywords_list:
@@ -92,8 +92,8 @@ class environment:
         if env is None:
             return False
         else:
-            flag = env.lookup(name)
-            if(not flag):
+            var = env.lookup(name)
+            if(var is None):
                 return self.prev_lookup(name, env.parent)
             else:
-                return True
+                return var
