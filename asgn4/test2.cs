@@ -1,7 +1,6 @@
 class Main{
     void main(){
-    int a;
-    a = 29;
-
+    int a = 29;
+    int b = a + 44;
     }
 }

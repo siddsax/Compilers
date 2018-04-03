@@ -91,7 +91,7 @@ class environment:
     def mktemp(self, Dtype):
         self.temp_count += 1
         temp_name = '_t' + str(self.temp_count)
-        while self.global_lookup(temp_name, self.pres_env):
+        while self.prev_lookup(temp_name, self.pres_env):
             self.temp_count += 1
             temp_name = '_t' + str(self.temp_count)
 
