@@ -27,6 +27,7 @@ class table:
         # Add list of all keywords
 
     def enter_var(self, name, Dtype, arr=None, tmp=False):
+        print(name)
         self.entries[name] = {}
         self.entries[name]['type'] = Dtype
         self.entries[name]['category'] = 'var'
@@ -44,7 +45,7 @@ class table:
             self.entries[method_name]['arg_num'] = len(param_types)
 
     def lookup(self, name):
-        if name in self.entries:
+        if name in self.entries.keys():
             return self.entries['name']
         else:
             return None

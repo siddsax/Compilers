@@ -101,9 +101,11 @@ def p_class_body(p):
     """
     p[0] = {}
     if len(p) == 3:
-        p[0]['code'] = p[2]['code']
+        p[0]['code'] = ['']
         # p[0] = ['class_body', '{', '}']
     else:
+        print("wabba labba dub dub")
+        p[0]['code'] = p[2]['code']
         # p[0] = ['class_body', '{', p[2], '}']
         pass
 
@@ -145,22 +147,19 @@ def p_field_declaration(p):
     if len(p) == 4:
         p[0]['code'] = ['']
         p[0]['value'] = None
-        # tp = st.type
         for var in p[2]:
-            if env.pres_env.lookup(var) is None:
-                env.pres_env.enter_var(var, p[1])
+            p[0]['code'] += var['code']
+            if env.pres_env.lookup(var['name']) is None:
+                env.pres_env.enter_var(var['name'], p[1])
             else:
                 print('Error, var declared again')
-        # p[0] = ['field_declaration', p[1], p[2], ';']
     else:
-        # p[0] = ['field_declaration', p[1], p[2], p[3], ';']
-        # p[0]['code'] = ['']
         p[0]['code'] = ['']
         p[0]['value'] = None
-        # tp = st.type
         for var in p[3]:
-            if env.pres_env.lookup(var) is None:
-                env.pres_env.enter_var(var, p[2])
+            p[0]['code'] += var['code']
+            if env.pres_env.lookup(var['name']) is None:
+                env.pres_env.enter_var(var['name'], p[2])
             else:
                 print('Error, var declared again')
 
@@ -252,10 +251,12 @@ def p_variable_declarator(p):
     | identifier EQUALS variable_initializer
     """
     p[0] = {}
+    p[0]['code'] = ['']
     if len(p) == 2:
         # p[0] = ['variable_declarator', p[1]]
         p[0]['name'] = p[1]['value']
     else:
+        p[0]['code'] = ['=, ' + p[1]['value'] + ', ' + p[3]['value']]
         # p[0] = ['variable_declarator', p[1], '=', p[3]]
         p[0]['name'] = p[1]['value']
 
@@ -1234,7 +1235,7 @@ def print_tac(pclass):
     print("1, call, Main")
     print("2, exit")
     c = 3
-    for member in pclass:
+    for member in [pclass]:
         for line in member['code']:
             if line != "":
                 print(str(c) + ", " + line)
