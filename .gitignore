@@ -16,3 +16,6 @@ asgn3/parsetab.pyc
 asgn3/right_derivation.html
 asgn3/*.pyc
 asgn3/errors.txt
+asgn4/__pycache__/
+asgn4/parser.out
+asgn4/parsetab.py

@@ -54,7 +54,7 @@ def p_using_directives(p):
     p[0] = {}
     if len(p) == 2:
         # p[0] = ['using_directives', p[1]]
-        p[0]['code'] = p[1]['code'] 
+        p[0]['code'] = p[1]['code']
     else:
         # p[0] = ['using_directives', p[1], p[2]]
         p[0]['code'] = p[1]['code'] + p[2]['code']
@@ -66,7 +66,7 @@ def p_using_directive(p):
     p[0]['code'] = [""]
 # CLASS #############################################################################
 def p_class_declarations(p):
-    """class_declarations : class_declarations class_declaration 
+    """class_declarations : class_declarations class_declaration
     | class_declaration
     """
     p[0] = {}
@@ -96,7 +96,7 @@ def p_class_declaration(p):
         p[0]['code'] = p[4]['code']
 
 def p_class_body(p):
-    """class_body : LBRACE class_member_declarations RBRACE 
+    """class_body : LBRACE class_member_declarations RBRACE
     | LBRACE RBRACE
     """
     p[0] = {}
@@ -106,7 +106,7 @@ def p_class_body(p):
     else:
         # p[0] = ['class_body', '{', p[2], '}']
         pass
-    
+
 
 def p_identifier(p):
     """identifier : IDENTIFIER
@@ -115,7 +115,7 @@ def p_identifier(p):
     p[0] = {}
     p[0]['value'] = str(p[1])
     # print(p[0])
-    
+
 def p_class_member_declarations(p):
     """class_member_declarations : class_member_declaration
     | class_member_declarations class_member_declaration
@@ -143,10 +143,27 @@ def p_field_declaration(p):
     """
     p[0] = {}
     if len(p) == 4:
-        p[0]['code'] = p[1]['']
+        p[0]['code'] = ['']
+        p[0]['value'] = None
+        # tp = st.type
+        for var in p[2]:
+            if env.pres_env.lookup(var) is None:
+                env.pres_env.enter_var(var, p[1])
+            else:
+                print('Error, var declared again')
         # p[0] = ['field_declaration', p[1], p[2], ';']
     else:
-        p[0] = ['field_declaration', p[1], p[2], p[3], ';']
+        # p[0] = ['field_declaration', p[1], p[2], p[3], ';']
+        # p[0]['code'] = ['']
+        p[0]['code'] = ['']
+        p[0]['value'] = None
+        # tp = st.type
+        for var in p[3]:
+            if env.pres_env.lookup(var) is None:
+                env.pres_env.enter_var(var, p[2])
+            else:
+                print('Error, var declared again')
+
 
 def p_type(p):
     """type : reference_type
@@ -161,7 +178,7 @@ def p_reference_type(p):
     """
     # p[0] = ['reference_type', p[1]]
     p[0] = dp(p[1])
-    #TODO: Put the type for the corresponding identifier    
+    #TODO: Put the type for the corresponding identifier
 
 def p_class_type(p):
     """class_type : proper_identifier
@@ -171,7 +188,7 @@ def p_class_type(p):
     # TODO: Do check for object
     # TODO : Find the data_width for this case
     if p[1] == 'object':
-        # p[0] = 
+        # p[0] =
         pass
     p[0] = st.type(p[1]['value'], False, False, None, None, None)
 
@@ -183,8 +200,8 @@ def p_proper_identifier(p):
     p[0]['value'] = p[1]['value'] + p[2]['value']
 
 def p_prefix(p):
-    """prefix : identifier MEMBERACCESS 
-            | prefix identifier MEMBERACCESS 
+    """prefix : identifier MEMBERACCESS
+            | prefix identifier MEMBERACCESS
     """
     if len(p) == 3:
         # p[0] = ['prefix', p[1], '.']
@@ -216,7 +233,7 @@ def p_type_parameter(p):
         p[0] = st.type(p[1], True, False, None, 4, None)
     else:
         p[0] = st.type(p[1], False, False, None, 1, None)
-        
+
 
 
 def p_variable_declarators(p):
@@ -224,10 +241,11 @@ def p_variable_declarators(p):
     | variable_declarators COMMA variable_declarator
     """
     if len(p) == 2:
-        pass
+        p[0] = [p[1]]
         # p[0] = ['variable_declarators', p[1]]
     else:
-        p[0] = ['variable_declarators', p[1], ',', p[3]]
+        # p[0] = ['variable_declarators', p[1], ',', p[3]]
+        p[0] = p[1] + [p[3]]
 
 def p_variable_declarator(p):
     """variable_declarator : identifier
@@ -246,6 +264,7 @@ def p_variable_initializer(p):
                                                     | array_initializer
     """
     # p[0] = ['variable_initializer', p[1]]
+    p[0] = {}
     p[0]['value'] = p[1]['value']
 
 def p_array_initializer(p):
@@ -273,20 +292,22 @@ def p_method_declaration(p):
     """method_declaration : method_header method_body
     """
     # p[0] = ['method_declaration', p[1]]
-	return_type = p[1][0]
-	method_name = p[1][1]
-	method_params = p[1][2]
-	method_body = p[2]
-	p[0] = {'code':[], 'value':None}
-	p[0]['code'] += ['function, ' + method_name]
-	if method_params != None:
-		for param in method_params:
-			# parameters would have been pushed to the stack, so we just pop them off
-			p[0]['code'] += ['pop, ' + param[1]]
-	p[0]['code'] += p[2]['code']
+    return_type = p[1]['type']
+    method_name = p[1]['name']
+    method_params = p[1]['params']
+    method_body = p[2]
+    p[0] = {'code':[], 'value':None}
+    #if return_type != 'void':
+    # TODO: Add arguments x86 code
+    p[0]['code'] += ['fn_def, ' + method_name + ', ' + len(method_params) + ', ' + ', '.join(x for x in method_params)]
+    if method_params != None:
+        for param in method_params:
+            # parameters would have been pushed to the stack, so we just pop them off
+            p[0]['code'] += ['pop, ' + param[1]]
+    p[0]['code'] += p[2]['code']
 
 #def p_qualified_identifier(p):
-#    """qualified_identifier : identifier 
+#    """qualified_identifier : identifier
 #    | qualified_identifier MEMBERACCESS identifier
 #    """
 #    if len(p) == 2:
@@ -305,13 +326,57 @@ def p_method_header(p):
                         | modifiers VOID member_name LPAREN RPAREN
     """
     if len(p) == 7:
-        p[0] = ['method_header', p[1], p[2], p[3], '(', p[5], ')']
+        # p[0] = ['method_header', p[1], p[2], p[3], '(', p[5], ')']
+        p[0] = {}
+        p[0]['type'] = p[2]
+        p[0]['name'] = p[3]
+        p[0]['params'] = p[5]
+        params = p[5]
+        param_types = []
+        # param_num = 0
+        if params != None:
+            param_types = [param[0] for param in params]
+        # param_num = len(params)
+        env.pres_env.enter_function(p[3], p[2], param_types)
     elif len(p) == 5:
-        p[0] = ['method_header', p[1], p[2], '(', ')']
+        # p[0] = ['method_header', p[1], p[2], '(', ')']
+        p[0] = {}
+        p[0]['type'] = p[1]
+        p[0]['name'] = p[2]
+        p[0]['params'] = []
+        params = []
+        param_types = []
+        # param_num = 0
+        if params != None:
+            param_types = [param[0] for param in params]
+        # param_num = len(params)
+        env.pres_env.enter_function(p[2], p[1], param_types)
     elif p[3] == '(':
-        p[0] = ['method_header', p[1], p[2], '(', p[4], ')']
+        # p[0] = ['method_header', p[1], p[2], '(', p[4], ')']
+        p[0] = {}
+        p[0]['type'] = p[1]
+        p[0]['name'] = p[2]
+        p[0]['params'] = p[4]
+        params = p[4]
+        param_types = []
+        # param_num = 0
+        if params != None:
+            param_types = [param[0] for param in params]
+        # param_num = len(params)
+        env.pres_env.enter_function(p[2], p[1], param_types)
     else:
-        p[0] = ['method_header', p[1], p[2], p[3], '(', ')']
+        # p[0] = ['method_header', p[1], p[2], p[3], '(', ')']
+        p[0] = {}
+        p[0]['type'] = p[2]
+        p[0]['name'] = p[3]
+        p[0]['params'] = []
+        params = []
+        param_types = []
+        # param_num = 0
+        if params != None:
+            param_types = [param[0] for param in params]
+        # param_num = len(params)
+        env.pres_env.enter_function(p[3], p[2], param_types)
 
 def p_modifiers(p):
     """modifiers : modifier
@@ -319,10 +384,10 @@ def p_modifiers(p):
     """
     p[0] = {}
     if len(p) == 2:
-        p[0]['code'] = p[1]['code'] 
+        p[0]['code'] = p[1]['code']
         # p[0] = ['modifiers', p[1]]
     else:
-        p[0]['code'] = p[1]['code'] + p[2]['code'] 
+        p[0]['code'] = p[1]['code'] + p[2]['code']
         # p[0] = ['modifiers', p[1], p[2]]
 
 def p_modifier(p):
@@ -351,12 +416,12 @@ def p_method_body(p):
     """
     # p[0] = ['method_body', p[1]]
     if p[1] == ';':
-    	p[0] = {'code':[], 'value':None}
+        p[0] = {'code':[], 'value':None}
     else:
-        p[0] = dp(p[1])    
+        p[0] = dp(p[1])
 
 def p_fixed_parameters(p):
-    """fixed_parameters : fixed_parameter 
+    """fixed_parameters : fixed_parameter
                                             | fixed_parameters COMMA fixed_parameter
     """
     if len(p) == 2:
@@ -381,36 +446,42 @@ def p_default_argument(p):
 def p_constructor_declaration(p):
     """constructor_declaration : constructor_declarator constructor_body
     """
-    p[0] = ['constructor_declaration', p[1], p[2]]
+    # p[0] = ['constructor_declaration', p[1], p[2]]
+    p[0] = {'code': [""], value: None}
 
 def p_constructor_declarator(p):
     """constructor_declarator : identifier LPAREN fixed_parameters RPAREN
                                                             | identifier LPAREN  RPAREN
     """
-    if len(p) == 4:
-        p[0] = ['constructor_declarator', p[1], '(', ')']
-    else:
-        p[0] = ['constructor_declarator', p[1], '(', p[3], ')']
+    # if len(p) == 4:
+    #     p[0] = ['constructor_declarator', p[1], '(', ')']
+    # else:
+    #     p[0] = ['constructor_declarator', p[1], '(', p[3], ')']
+    p[0] = {'code': [""], value: None}
 
 def p_constructor_body(p):
     """constructor_body : block
                                             | TERMINATOR
     """
-    if p[1] is ';':
-        p[0] = ['constructor_body', ';']
-    else:
-        p[0] = ['constructor_body', p[1]]
+    # if p[1] is ';':
+    #     p[0] = ['constructor_body', ';']
+    # else:
+    #     p[0] = ['constructor_body', p[1]]
+    p[0] = {'code': [""], value: None}
 
-def p_destructor_declaration(p): 
+def p_destructor_declaration(p):
     """destructor_declaration : TILDE identifier LPAREN RPAREN destructor_body
     """
-    p[0] = ['destructor_declaration', p[1], p[2], p[3], p[4], p[5]]
+    # p[0] = ['destructor_declaration', p[1], p[2], p[3], p[4], p[5]]
+    p[0] = {'code': [""], value: None}
 
 def p_destructor_body(p):
     """destructor_body : block
                                             | TERMINATOR
     """
-    p[0] = ['destructor_body', p[1]]
+    # p[0] = ['destructor_body', p[1]]
+    p[0] = {'code': [""], value: None}
+
 
 # STATEMENT #######################################################################
 def p_block(p):
@@ -468,7 +539,7 @@ def p_embedded_statement(p):
     # else:
     #     p[0] = ['embedded_statement', p[1], p[2]]
     if p[1] == ';':
-        p[0] = {}        
+        p[0] = {}
         p[0]['code'] = ['']
         p[0]['value'] = None
     else:
@@ -550,7 +621,7 @@ def p_invocation_expression(p):
     | proper_identifier LPAREN RPAREN
     """
     if len(p) == 4:
-        indx = -1 
+        indx = -1
     #     p[0] = ['invocation_expression', p[1], p[2], p[3]]
     else:
         indx = 3
@@ -610,7 +681,7 @@ def p_iteration_statement(p):
 
 # EXPRESSION #####################################################################################
 def p_expression(p):
-    """expression : non_assignment_expression 
+    """expression : non_assignment_expression
                                     | assignment
     """
     # p[0] = ['expression', p[1]]
@@ -721,13 +792,13 @@ def p_member_access(p):
         p[0] = ['member_access', p[1], p[2], p[3]]
 
 def p_predefined_type(p):
-    """predefined_type : INT 
+    """predefined_type : INT
                                             | CHAR
     """
     p[0] = ['predefined_type', p[1]]
 
 def p_element_access(p):
-    """element_access : primary_no_array_creation_expression LBRACKET expression_list RBRACKET 
+    """element_access : primary_no_array_creation_expression LBRACKET expression_list RBRACKET
                                             | identifier LBRACKET expression_list RBRACKET
     """
     # p[0] = ['element_access', p[1], p[2], p[3], p[4]]
@@ -814,7 +885,7 @@ def p_argument_list(p):
     if len(p) == 2:
         p[0] = [dp(p[1])]
     else:
-        p[0] = dp(p[1]) + [dp(p[3])]    
+        p[0] = dp(p[1]) + [dp(p[3])]
 
 def p_argument(p):
 #     """argument : argument_name argument_value
@@ -894,7 +965,7 @@ def p_element_initializer_list(p):
         p[0] = ['element_initializer_list', p[1], p[2], p[3]]
 
 def p_element_initializer(p):
-    """element_initializer : non_assignment_expression 
+    """element_initializer : non_assignment_expression
                                                     | LBRACE expression_list RBRACE
     """
     if len(p) == 2:
@@ -965,7 +1036,7 @@ def p_conditional_and_expression(p):
     """
     if len(p) == 2:
         # p[0] = ['conditional_and_expression', p[1]]
-        p[0] = dp(p[1])      
+        p[0] = dp(p[1])
     else:
         # p[0] = ['conditional_and_expression', p[1], p[2], p[3]]
         p[0] = {}
@@ -1093,7 +1164,7 @@ def p_shift_expression(p):
 
 def p_additive_expression(p):
     """additive_expression : multiplicative_expression
-                            | additive_expression PLUS multiplicative_expression 
+                            | additive_expression PLUS multiplicative_expression
                             | additive_expression MINUS multiplicative_expression
     """
     # if len(p) == 2:
@@ -1155,49 +1226,60 @@ parser = yacc.yacc(start='start', debug=True, optimize=False)
 # Read the input program
 inputfile = open(filename, 'r')
 data = inputfile.read()
-result = parser.parse(data, debug=2)
-print(result)
+result = parser.parse(data, debug=0)
+# print(result)
 
-output = ""
-def printf(p, prev, nxt):
+def print_tac(pclass):
+    print("")
+    print("1, call, Main")
+    print("2, exit")
+    c = 3
+    for member in pclass:
+        for line in member['code']:
+            if line != "":
+                print(str(c) + ", " + line)
+                c = c + 1
+print_tac(result)
+# output = ""
+# def printf(p, prev, nxt):
 
-    parse = ""
-    if type(p) is list:
-        for i in p[1:]:
-            if type(i) is list:
-                parse += " " + i[0]
-            else:
-                if i is None:
-                   print('fuck')
-                parse += " " + str(i)
+#     parse = ""
+#     if type(p) is list:
+#         for i in p[1:]:
+#             if type(i) is list:
+#                 parse += " " + i[0]
+#             else:
+#                 if i is None:
+#                    print('fuck')
+#                 parse += " " + str(i)
 
-        print(prev + " <b style='color:blue'>" + parse + "</b> " + nxt + "<br>")
-        global output
-        output += prev + " <b style='color:blue'>" + parse + "</b> " + nxt + "<br>\n"
+#         print(prev + " <b style='color:blue'>" + parse + "</b> " + nxt + "<br>")
+#         global output
+#         output += prev + " <b style='color:blue'>" + parse + "</b> " + nxt + "<br>\n"
 
-        for i in range(len(p)-1, 0, -1):
-            newp = prev
+#         for i in range(len(p)-1, 0, -1):
+#             newp = prev
 
-            for j in range(1, i):
-                if type(p[j]) is list:
-                    newp += " " + p[j][0]
-                else:
-                   newp += " " + str(p[j])
+#             for j in range(1, i):
+#                 if type(p[j]) is list:
+#                     newp += " " + p[j][0]
+#                 else:
+#                    newp += " " + str(p[j])
 
-            nnxt = printf(p[i], newp, nxt)
-            nxt = nnxt
+#             nnxt = printf(p[i], newp, nxt)
+#             nxt = nnxt
 
-        return nxt
-    else:
-        return str(p) + " " + nxt
+#         return nxt
+#     else:
+#         return str(p) + " " + nxt
 
-print("<html>\n<head></head>\n<body>\n")
-print("<b style='color:blue'>start</b><br>")
-result = printf(result, "", "")
-print("</body>\n</html>")
+# print("<html>\n<head></head>\n<body>\n")
+# print("<b style='color:blue'>start</b><br>")
+# result = printf(result, "", "")
+# print("</body>\n</html>")
 
-output = "<html>\n<head></head>\n<body>\n" + "<b style='color:blue'>start</b><br>\n" + output + "</body>\n</html>"
-new_file = filename[5:-3]
-op = open(new_file + '.html', 'w+')
-op.write(output)
-op.close()
+# output = "<html>\n<head></head>\n<body>\n" + "<b style='color:blue'>start</b><br>\n" + output + "</body>\n</html>"
+# new_file = filename[5:-3]
+# op = open(new_file + '.html', 'w+')
+# op.write(output)
+# op.close()

@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 class type:
-	def __init__(self, name, isbasic, isarray, length, data_width, arr_elem_type):
-		self.dict = {}
+    def __init__(self, name, isbasic, isarray, length, data_width, arr_elem_type):
+        self.dict = {}
         self.dict['name'] = name
-		self.dict['isbasic'] = isbasic
-		self.dict['isarray'] = isarray
-		# self.dict['ispointer'] = ispointer
-		self.dict['data_width'] = width # int is 4, char is 1  ....
-		self.dict['arr_elem_type'] = elem_type
-		self.dict['length'] = length
-	
-	def type_name(self):
-		if self.dict['isbasic']:
-			return self.dict['name']
-		elif self.dict['isarray']:
-			return "array of " + self.dict['elem_type'].type_name() + ", length " + str(self.dict['length'])
+        self.dict['isbasic'] = isbasic
+        self.dict['isarray'] = isarray
+        # self.dict['ispointer'] = ispointer
+        self.dict['data_width'] = data_width # int is 4, char is 1  ....
+        self.dict['arr_elem_type'] = arr_elem_type
+        self.dict['length'] = length
+
+    def type_name(self):
+        if self.dict['isbasic']:
+            return self.dict['name']
+        elif self.dict['isarray']:
+            return "array of " + self.dict['elem_type'].type_name() + ", length " + str(self.dict['length'])
 
 class table:
     def __init__(self, previous = None):
@@ -22,9 +22,9 @@ class table:
         self.children = []
         self.entries = {}
         self.labels = {}
+        self.keywords_list = ['print', 'scan', 'int', 'abstract']
         self.keywords()
         # Add list of all keywords
-        self.keywords_list = ['print', 'scan', 'int', 'abstract']
 
     def enter_var(self, name, Dtype, arr=None, tmp=False):
         self.entries[name] = {}
@@ -36,12 +36,12 @@ class table:
             self.entries[name]['category'] = 'temp'
 
     def enter_function(self, method_name, return_type, param_types):
-		if method_name not in self.entries:
-			self.entries[method_name] = {}
-			self.entries[method_name]['type'] = return_type
-			self.entries[method_name]['category'] = 'function'
-			self.entries[method_name]['arg_types'] = param_types
-			self.entries[method_name]['arg_num'] = len(param_types)
+        if method_name not in self.entries:
+            self.entries[method_name] = {}
+            self.entries[method_name]['type'] = return_type
+            self.entries[method_name]['category'] = 'function'
+            self.entries[method_name]['arg_types'] = param_types
+            self.entries[method_name]['arg_num'] = len(param_types)
 
     def lookup(self, name):
         if name in self.entries:
@@ -79,13 +79,13 @@ class environment:
         return temp_name
 
     def new_scope(self):
-		new_env = table(self.pres_env)
-		self.pres_env.children.append(new_env)
-		self.pres_env = new_env
-		# return self.pres_env
+        new_env = table(self.pres_env)
+        self.pres_env.children.append(new_env)
+        self.pres_env = new_env
+        # return self.pres_env
 
     def close_scope(self):
-		self.pres_env = self.pres_env.parent
+        self.pres_env = self.pres_env.parent
         # return self.pres_env
 
     def prev_lookup(self, name, env):
