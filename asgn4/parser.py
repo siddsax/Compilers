@@ -270,10 +270,20 @@ def p_variable_initializer_list(p):
         p[0] = ['variable_initializer_list', p[1], ',', p[3]]
 
 def p_method_declaration(p):
-    """method_declaration : method_header
-                                                    | method_body
+    """method_declaration : method_header method_body
     """
-    p[0] = ['method_declaration', p[1]]
+    # p[0] = ['method_declaration', p[1]]
+	return_type = p[1][0]
+	method_name = p[1][1]
+	method_params = p[1][2]
+	method_body = p[2]
+	p[0] = {'code':[], 'value':None}
+	p[0]['code'] += ['function, ' + method_name]
+	if method_params != None:
+		for param in method_params:
+			# parameters would have been pushed to the stack, so we just pop them off
+			p[0]['code'] += ['pop, ' + param[1]]
+	p[0]['code'] += p[2]['code']
 
 #def p_qualified_identifier(p):
 #    """qualified_identifier : identifier 
@@ -286,13 +296,13 @@ def p_method_declaration(p):
 
 def p_method_header(p):
     """method_header : type member_name LPAREN fixed_parameters RPAREN
-                                            | modifiers  type member_name LPAREN fixed_parameters RPAREN
-                                            | type member_name LPAREN RPAREN
-                                            | modifiers type member_name LPAREN RPAREN
-                                            | VOID member_name LPAREN fixed_parameters RPAREN
-                                            | modifiers  VOID member_name LPAREN fixed_parameters RPAREN
-                                            | VOID member_name LPAREN RPAREN
-                                            | modifiers VOID member_name LPAREN RPAREN
+                        | modifiers  type member_name LPAREN fixed_parameters RPAREN
+                        | type member_name LPAREN RPAREN
+                        | modifiers type member_name LPAREN RPAREN
+                        | VOID member_name LPAREN fixed_parameters RPAREN
+                        | modifiers  VOID member_name LPAREN fixed_parameters RPAREN
+                        | VOID member_name LPAREN RPAREN
+                        | modifiers VOID member_name LPAREN RPAREN
     """
     if len(p) == 7:
         p[0] = ['method_header', p[1], p[2], p[3], '(', p[5], ')']
@@ -339,7 +349,11 @@ def p_method_body(p):
     """method_body : block
                                     | TERMINATOR
     """
-    p[0] = ['method_body', p[1]]
+    # p[0] = ['method_body', p[1]]
+    if p[1] == ';':
+    	p[0] = {'code':[], 'value':None}
+    else:
+        p[0] = dp(p[1])    
 
 def p_fixed_parameters(p):
     """fixed_parameters : fixed_parameter 
@@ -403,28 +417,41 @@ def p_block(p):
     """block : LBRACE RBRACE
             | LBRACE statement_list RBRACE
     """
+    # if len(p) == 3:
+    #     p[0] = ['block', p[1], p[2]]
+    # else:
+    #     p[0] = ['block', p[1], p[2], p[3]]
     if len(p) == 3:
-        p[0] = ['block', p[1], p[2]]
+        p[0] = {}
+        p[0]['code'] = ['']
+        p[0]['value'] = None
     else:
-        p[0] = ['block', p[1], p[2], p[3]]
+        p[0] = dp(p[2])
+        env.close_scope()
 
 def p_statement_list(p):
     """statement_list : statement
                         | statement_list statement
     """
     if len(p) == 2:
-        p[0] = ['statement_list', p[1]]
+        # p[0] = ['statement_list', p[1]]
+        p[0] = dp(p[1])
     else:
-        p[0] = ['statement_list', p[1], p[2]]
+        # p[0] = ['statement_list', p[1], p[2]]
+        p[0] = dp(p[1])
+        p[0]['code'] += p[2]['code']
+        p[0]['value'] = None
+
 
 def p_statement(p):
     """statement : local_variable_declaration TERMINATOR
     | embedded_statement
     """
-    if len(p) == 2:
-        p[0] = ['statement', p[1]]
-    else:
-        p[0] = ['statement', p[1], p[2]]
+    # if len(p) == 2:
+    #     p[0] = ['statement', p[1]]
+    # else:
+    #     p[0] = ['statement', p[1], p[2]]
+    p[0] = dp(p[1])
 
 def p_embedded_statement(p):
     """embedded_statement : block
@@ -436,10 +463,16 @@ def p_embedded_statement(p):
     | continue_statement
     | return_statement
     """
-    if len(p) == 2:
-        p[0] = ['embedded_statement', p[1]]
+    # if len(p) == 2:
+    #     p[0] = ['embedded_statement', p[1]]
+    # else:
+    #     p[0] = ['embedded_statement', p[1], p[2]]
+    if p[1] == ';':
+        p[0] = {}        
+        p[0]['code'] = ['']
+        p[0]['value'] = None
     else:
-        p[0] = ['embedded_statement', p[1], p[2]]
+        p[0] = dp(p[1])
 
 def p_break_statement(p):
     """break_statement : BREAK TERMINATOR
@@ -505,7 +538,8 @@ def p_statement_expression(p):
     | post_increment_expression
     | post_decrement_expression
     """
-    p[0] = ['statement_expression' , p[1]]
+    # p[0] = ['statement_expression' , p[1]]
+    p[0] = dp(p[1])
 
 def p_invocation_expression(p):
     """invocation_expression : primary_expression LPAREN argument_list RPAREN
@@ -752,18 +786,22 @@ def p_post_decrement_expression(p):
 
 def p_object_creation_expression(p):
     """object_creation_expression : NEW type LPAREN argument_list RPAREN object_or_collection_initializer
-                                                                    | NEW type LPAREN argument_list RPAREN
-                                                                    | NEW type LPAREN RPAREN
-                                                                    | NEW type object_or_collection_initializer
+                                    | NEW type LPAREN argument_list RPAREN
+                                    | NEW type LPAREN RPAREN
+                                    | NEW type object_or_collection_initializer
     """
-    if len(p) == 4:
-        p[0] = ['object_creation_expression', p[1], p[2], p[3]]
-    elif len(p) == 5:
-        p[0] = ['object_creation_expression', p[1], p[2], p[3], p[4]]
-    elif len(p) == 6:
-        p[0] = ['object_creation_expression', p[1], p[2], p[3], p[4], p[5]]
-    else:
-        p[0] = ['object_creation_expression', p[1], p[2], p[3], p[4], p[5], p[6]]
+    # if len(p) == 4:
+    #     p[0] = ['object_creation_expression', p[1], p[2], p[3]]
+    # elif len(p) == 5:
+    #     p[0] = ['object_creation_expression', p[1], p[2], p[3], p[4]]
+    # elif len(p) == 6:
+    #     p[0] = ['object_creation_expression', p[1], p[2], p[3], p[4], p[5]]
+    # else:
+    #     p[0] = ['object_creation_expression', p[1], p[2], p[3], p[4], p[5], p[6]]
+    p[0] = {}
+    p[0]['code'] = ['']
+    p[0]['value'] = None
+
 
 def p_argument_list(p):
     """ argument_list : argument
@@ -1099,24 +1137,12 @@ def p_multiplicative_expression(p):
         elif p[2] == '/':
             p[0]['value'] = t
             p[0]['code'] = p[1]['code'] + p[3]['code']
-            p[0]['code'] += ["/, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+            p[0]['code'] += ["/, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
         elif p[2] == '%':
             p[0]['value'] = t
             p[0]['code'] = p[1]['code'] + p[3]['code']
-            p[0]['code'] += ["%, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+            p[0]['code'] += ["%, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
         #p[0] = ['multiplicative_expression', p[1], p[2], p[3]]
-
-# def p_(p):
-#     """
-#     """
-
-# def p_(p):
-#     """
-#     """
-# EMPTY ##########################################################################################
-# def p_empty(p):
-#     """empty : 
-#     """
 
 # Error rule for syntax errors
 def p_error(p):
