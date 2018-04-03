@@ -549,20 +549,28 @@ def p_break_statement(p):
     """break_statement : BREAK TERMINATOR
     """
     p[0] = ['break_statement', 'BREAK', p[2]]
+    #TODO: Implement
 
 def p_continue_statement(p):
     """continue_statement : CONTINUE TERMINATOR
     """
     p[0] = ['continue_statement', 'CONTINUE', p[2]]
+    #TODO: Implement
 
 def p_return_statement(p):
     """return_statement : RETURN TERMINATOR
     | RETURN expression TERMINATOR
     """
     if len(p) == 3:
-        p[0] = ['return_statement', 'RETURN', p[2]]
+        # p[0] = ['return_statement', 'RETURN', p[2]]
+        p[0] = {'code':[], 'value':None}        
+        p[0]['code'] = ['return']
     else:
-        p[0] = ['return_statement', 'RETURN', p[2], p[3]]
+        # p[0] = ['return_statement', 'RETURN', p[2], p[3]]
+        p[0] = {'code':[], 'value':None}
+        p[0]['code'] += p[2]['code']
+        p[0]['value'] = p[2]['value']
+        p[0]['code'] += ['return, ' + p[2]['value']]
 
 def p_literal(p):
     """literal : INTCONST
@@ -669,15 +677,45 @@ def p_if_statement(p):
     """if_statement : IF LPAREN expression RPAREN embedded_statement
     | IF LPAREN expression RPAREN embedded_statement ELSE embedded_statement
     """
+	p[0] = {'code':[''], 'value':None}    
     if len(p) == 6:
-        p[0] = ['if_statement', p[1], p[2], p[3], p[4], p[5]]
+        # p[0] = ['if_statement', p[1], p[2], p[3], p[4], p[5]]
+        p[3]['True'] = env.mklabel()
+        p[3]['False'] = env.mklabel()
+        p[0]['code'] += p[3]['code']
+        p[0]['code'] += ['conditional_goto, ==, 1, ' + p[3]['value'] + ", " + p[3]['True']]
+        p[0]['code'] += ['goto, ' + p[3]['False']]
+        p[0]['code'] += ['label, ' + p[3]['True']]
+        p[0]['code'] += p[5]['code']
+        p[0]['code'] += ['label, ' + p[3]['False']]
     else:
-        p[0] = ['if_statement', p[1], p[2], p[3], p[4], p[5], p[6], p[7]]
+        # p[0] = ['if_statement', p[1], p[2], p[3], p[4], p[5], p[6], p[7]]
+        p[3]['True'] = env.mklabel()
+        p[0]['next'] = env.mklabel()
+        p[0]['code'] += p[3]['code']
+        p[0]['code'] += ['conditional_goto, ==, 1, ' + p[3]['value'] + ", " + p[3]['True']]
+        p[0]['code'] += p[7]['code']
+        p[0]['code'] += ['goto, ' + p[0]['next']]
+        p[0]['code'] += ['label, ' + p[3]['True']]
+        p[0]['code'] += p[5]['code']
+        p[0]['code'] += ['label, ' + p[0]['next']]	
 
 def p_iteration_statement(p):
     """iteration_statement : WHILE LPAREN expression RPAREN embedded_statement
     """
-    p[0] = ['iteration_statement', p[1], p[2], p[3], p[4], p[5]]
+    # p[0] = ['iteration_statement', p[1], p[2], p[3], p[4], p[5]]
+    p[0] = {'code':[''], 'value':None}
+    p[0]['begin'] = env.mklabel()
+    p[0]['next'] = env.mklabel()
+    p[3]['True'] = env.mklabel()
+    p[0]['code'] += ['label, ' + p[0]['begin']]
+    p[0]['code'] += p[3]['code']
+    p[0]['code'] += ['conditional_goto, ==, 1, ' + p[3]['value'] + ", " + p[3]['True']]
+    p[0]['code'] += ['goto, ' + p[0]['next']]
+    p[0]['code'] += ['label, ' + p[3]['True']]
+    p[0]['code'] += p[5]['code']
+    p[0]['code'] += ['goto, ' + p[0]['begin']]
+    p[0]['code'] += ['label, ' + p[0]['next']]
 
 # EXPRESSION #####################################################################################
 def p_expression(p):
@@ -928,7 +966,7 @@ def p_object_initializer(p):
 
 def p_member_initializer_list(p):
     """member_initializer_list : member_initializer
-                                                            | member_initializer_list COMMA member_initializer
+                                | member_initializer_list COMMA member_initializer
     """
     if len(p) == 2:
         p[0] = ['member_initializer_list', p[1]]
@@ -966,7 +1004,7 @@ def p_element_initializer_list(p):
 
 def p_element_initializer(p):
     """element_initializer : non_assignment_expression
-                                                    | LBRACE expression_list RBRACE
+                            | LBRACE expression_list RBRACE
     """
     if len(p) == 2:
         p[0] = ['element_initializer', p[1]]
@@ -975,7 +1013,7 @@ def p_element_initializer(p):
 
 def p_array_creation_expression(p):
     """array_creation_expression : NEW non_array_type LBRACKET expression RBRACKET
-                                                                    | NEW array_type array_initializer
+                                | NEW array_type array_initializer
     """
     if len(p) == 4:
         p[0] = ['array_creation_expression', p[1], p[2], p[3]]
@@ -984,14 +1022,14 @@ def p_array_creation_expression(p):
 
 def p_typeof_expression(p):
     """typeof_expression : TYPEOF LPAREN type RPAREN
-                                                    | TYPEOF LPAREN unbound_type_name RPAREN
-                                                    | TYPEOF LPAREN VOID RPAREN
+                        | TYPEOF LPAREN unbound_type_name RPAREN
+                        | TYPEOF LPAREN VOID RPAREN
     """
     p[0] = ['typeof_expression', p[1], p[2], p[3], p[4]]
 
 def p_unbound_type_name(p):
     """unbound_type_name : iMEMAi
-                                                    | unbound_type_name MEMBERACCESS identifier
+                        | unbound_type_name MEMBERACCESS identifier
     """
     if len(p) == 2:
         p[0] = ['unbound_type_name', p[1]]
