@@ -678,7 +678,7 @@ def p_if_statement(p):
     """if_statement : IF LPAREN expression RPAREN embedded_statement
     | IF LPAREN expression RPAREN embedded_statement ELSE embedded_statement
     """
-	p[0] = {'code':[''], 'value':None}    
+    p[0] = {'code':[''], 'value':None}    
     if len(p) == 6:
         # p[0] = ['if_statement', p[1], p[2], p[3], p[4], p[5]]
         p[3]['True'] = env.mklabel()
@@ -699,7 +699,7 @@ def p_if_statement(p):
         p[0]['code'] += ['goto, ' + p[0]['next']]
         p[0]['code'] += ['label, ' + p[3]['True']]
         p[0]['code'] += p[5]['code']
-        p[0]['code'] += ['label, ' + p[0]['next']]	
+        p[0]['code'] += ['label, ' + p[0]['next']]    
 
 def p_iteration_statement(p):
     """iteration_statement : WHILE LPAREN expression RPAREN embedded_statement
