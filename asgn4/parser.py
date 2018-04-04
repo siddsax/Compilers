@@ -174,7 +174,7 @@ def p_type(p):
 
 def p_reference_type(p):
     """reference_type : class_type
-    | array_type
+                        | array_type
     """
     # p[0] = ['reference_type', p[1]]
     p[0] = dp(p[1])
@@ -221,7 +221,7 @@ def p_array_type(p):
 def p_non_array_type(p):
     """non_array_type : type
     """
-    p[0] = ['non_array_type', p[1]]
+    # p[0] = ['non_array_type', p[1]]
     p[0] = dp(p[1])
 
 def p_type_parameter(p):
@@ -229,8 +229,10 @@ def p_type_parameter(p):
     | predefined_type
     """
     # p[0] = ['type_parameter', p[1]]
-    if p[1] == 'int' or p[1] == 'char':
+    if p[1][1] == 'int':
         p[0] = st.type(p[1], True, False, None, 4, None)
+    elif p[1][1] == 'char':
+        p[0] = st.type(p[1], True, False, None, 1, None)
     else:
         p[0] = st.type(p[1], False, False, None, 1, None)
 
@@ -263,25 +265,25 @@ def p_variable_declarator(p):
 
 def p_variable_initializer(p):
     """variable_initializer : expression
-                                                    | array_initializer
     """
+                                                    # | array_initializer
     # p[0] = ['variable_initializer', p[1]]
     p[0] = {}
     p[0]['value'] = p[1]['value']
 
-def p_array_initializer(p):
-    """array_initializer : LBRACE variable_initializer_list RBRACE
-                        | LBRACE RBRACE
-                        | LBRACE variable_initializer_list COMMA RBRACE
-    """
-    if len(p) == 3:
-        # p[0] = ['array_initializer', '{', '}']
-	p[0] = {'code':[], 'value':p[1]}
-    # elif len(p) == 4:
-    #     p[0] = ['array_initializer', '{', p[1], '}']
-    else:
-        # p[0] = ['array_initializer', '{', p[1], ',', '}']
-        p[0] = dp(p[2])
+# def p_array_initializer(p):
+#     """array_initializer : LBRACE variable_initializer_list RBRACE
+#                         | LBRACE RBRACE
+#                         | LBRACE variable_initializer_list COMMA RBRACE
+#     """
+#     if len(p) == 3:
+#         # p[0] = ['array_initializer', '{', '}']
+# 	p[0] = {'code':[], 'value':p[1]}
+#     # elif len(p) == 4:
+#     #     p[0] = ['array_initializer', '{', p[1], '}']
+#     else:
+#         # p[0] = ['array_initializer', '{', p[1], ',', '}']
+#         p[0] = dp(p[2])
 
 def p_variable_initializer_list(p):
     """variable_initializer_list : variable_initializer
@@ -619,13 +621,23 @@ def p_local_variable_declaration(p):
     p[0] = {'code': [''], 'value': None}
     typ = p[1]
     for var in p[2]:
+        # print(var)
         name, init, code = var['value'], var['init'], var['code']
         if env.pres_env.lookup(name) is None:
             p[0]['code'] += code
             if not init:
                 env.pres_env.enter_var(name, typ)
             else:
-                env.pres_env.enter_var(name, typ)
+                arr_flag = False
+                if 'length' in init.keys():
+                    # this means we have an array
+                    el_typ = dp(typ)
+                    typ.dict['isarray'] = True
+                    typ.dict['arr_elem_type'] = el_typ
+                    typ.dict['length'] = init['length']
+                    arr_flag = True
+
+                env.pres_env.enter_var(name, typ,arr=arr_flag)
                 p[0]['code'] += ['=, ' + name + ', ' + init['value']]
         else:
             print('Double declaration')
@@ -656,6 +668,8 @@ def p_local_variable_declarator(p):
         #p[0] = ['local_variable_declarator', p[1], p[2], p[3]]
         p[0]['value'] = p[1]['value']
         p[0]['init'] = p[3]
+        print(p[3])
+        print("111111111")
         p[0]['code'] = p[3]['code']
 
 def p_local_variable_initializer(p): # TODO: Can be removed to reduce conflicts
@@ -671,6 +685,7 @@ def p_statement_expression(p):
     | post_increment_expression
     | post_decrement_expression
     """
+    print("boobies")
     # p[0] = ['statement_expression' , p[1]]
     p[0] = dp(p[1])
 
@@ -725,7 +740,8 @@ def p_invocation_expression(p):
         print("error in Line No. ", p.lineno(1), "Function", p[1], "This is not a function")
         print("Compilation Terminated")
         exit()
-
+    print(p[0])
+    print("~~~~~~~~~~~~~")
 
 def p_if_statement(p):
     """if_statement : IF LPAREN expression RPAREN embedded_statement
@@ -777,6 +793,7 @@ def p_expression(p):
                     | assignment
     """
     # p[0] = ['expression', p[1]]
+    print("pussy")
     p[0] = dp(p[1])
 
 
@@ -785,7 +802,6 @@ def p_assignment(p):
                     | identifier assignment_operator expression
     """
     #p[0] = ['assignment', p[1], p[2], p[3]]
-    curr_env = env.pres_env
     p[0] = {}
     if env.prev_lookup(p[1]['value'] , env.pres_env) is not None:
         p[0]['value'] = p[1]['value']
@@ -799,8 +815,6 @@ def p_assignment(p):
 
 def p_assignment_operator(p):
     """assignment_operator : EQUALS
-                                                    | PLUSEQUAL
-                                                    | MINUSEQUAL
     """
     #p[0] = ['assignment_operator', p[1]]
     p[0] = {}
@@ -824,6 +838,7 @@ def p_unary_expression(p):
     # else:
     #     p[0] = ['unary_expression', p[1], p[2], p[3]]
     p[0] = {}
+    print("vibrator")
     if len(p) == 2:
         p[0] = dp(p[1])
     else:
@@ -897,19 +912,22 @@ def p_element_access(p):
     p[0] = {}
     p[0]['code'] = [""]
     p[0]['value'] = None
-    array = env.prev_lookup(p[1], env.pres_env)
-    if array is not None:
-        if array['category'] == 'array':
-            if(len(p[3]['value'].split(',')) > 1):
+    array = env.prev_lookup(p[1]['value'], env.pres_env)
+    print(array)
+    print("--")
+    if array is not False:
+        if array['category'] == 'arr':
+            print p[3][1]
+            if(len(p[3][1]['value'].split(',')) > 1):
                 print("error in Line No. ", p.lineno(1), "array", p[1], "is not 1D")
-            p[0]['code'] += p[3]['code']
+            p[0]['code'] += p[3][1]['code']
             t1 = env.mktemp('int')
             t2 = env.mktemp('int')
             t = env.mktemp(array['type'].dict['arr_elem_type'])
-            p[0]['code'] += ['=, ' + t1 + ', ' + p[3]['value']]
+            p[0]['code'] += ['=, ' + t1 + ', ' + p[3][1]['value']]
             # add width feature !!!!!!!!!!!!!!!!!!!!!!!!!!
-            p[0]['code'] += ['*, ' + t2 + ', ' + t1 + ', ' + str(array['type'].dict['arr_elem_type'].dict['width'])]
-            p[0]['code'] += ['array_access, ' + t + ', ' + p[1] + ', ' + t2]
+            p[0]['code'] += ['*, ' + t2 + ', ' + t1 + ', ' + str(array['type'].dict['arr_elem_type'].dict['data_width'])]
+            p[0]['code'] += ['array_access, ' + t + ', ' + p[1]['value'] + ', ' + t2]
             p[0]['value'] = t
         else:
             print("error in Line No. ", p.lineno(1), "Function", p[1], "not defined as an array")
@@ -1060,6 +1078,7 @@ def p_element_initializer(p):
     """element_initializer : non_assignment_expression
                             | LBRACE expression_list RBRACE
     """
+
     if len(p) == 2:
         p[0] = ['element_initializer', p[1]]
     else:
@@ -1067,12 +1086,21 @@ def p_element_initializer(p):
 
 def p_array_creation_expression(p):
     """array_creation_expression : NEW non_array_type LBRACKET expression RBRACKET
-                                | NEW array_type array_initializer
     """
+                                # | NEW array_type array_initializer
+    p[0] = {}
     if len(p) == 4:
         p[0] = ['array_creation_expression', p[1], p[2], p[3]]
     else:
-        p[0] = ['array_creation_expression', p[1], p[2], p[3], p[4], p[5]]
+        if(p[2].dict['name'][1] != 'int'):
+            print("error, only array of type int are allowed")
+            exit()
+        else:
+            p[0]['code'] = p[4]['code']
+            p[0]['value'] = 'arr_init, ' + p[4]['value']
+            p[0]['length'] =  p[4]['value']
+            print("lund")
+        # p[0] = ['array_creation_expression', p[1], p[2], p[3], p[4], p[5]]
 
 def p_typeof_expression(p):
     """typeof_expression : TYPEOF LPAREN type RPAREN
@@ -1099,6 +1127,8 @@ def p_non_assignment_expression(p):
     """non_assignment_expression : conditional_expression
     """
     #p[0] = ['non_assignment_expression', p[1]]
+
+    print("vagina")
     p[0] = dp(p[1])
 
 def p_conditional_expression(p):
@@ -1286,6 +1316,7 @@ def p_multiplicative_expression(p):
                                 | multiplicative_expression MOD identifier
     """
     if len(p) == 2:
+        print("dildo")
         #p[0] = ['multiplicative_expression', p[1]]
         p[0] = dp(p[1])
     else:
@@ -1316,7 +1347,7 @@ parser = yacc.yacc(start='start', debug=True, optimize=False)
 # Read the input program
 inputfile = open(filename, 'r')
 data = inputfile.read()
-result = parser.parse(data, debug=2)
+result = parser.parse(data, debug=0)
 # print(result)
 
 def print_tac(pclass):

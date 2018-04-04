@@ -42,3 +42,6 @@ line_number, exit
 
 # Array access
 line_number, array_access, dst, src_array_pt, index
+
+# Array init
+line_number, =, variable, arr_init, size 
