@@ -18,6 +18,6 @@ public class goal
     void main(){
         int c;
         fn(c);
-        // int j = fn(c);
+        int j = fn(c);
     }
 }

@@ -692,9 +692,9 @@ def p_invocation_expression(p):
     p[0] = {}
     p[0]['code'] = [""]
     p[0]['value'] = None
-    function = env.prev_lookup(p[1], env.pres_env)
-    print(function, 'mooooorty')
-    print(env.print_symbol_table(env.pres_env))
+    function = env.prev_lookup(p[1]['value'], env.pres_env)
+    # print(env.print_symbol_table(env.pres_env.parent))
+    # print(env.pres_env.parent.print_symbol_table())
     if function is not False:
         if function['category'] == 'function':
             argc = 0
@@ -707,25 +707,25 @@ def p_invocation_expression(p):
                 if function['type'] is not 'void':
                     t = env.mktemp(function['type'])
                     p[0]['value'] = t
-                    code = 'fn_call_2, ' + p[1] + ', ' + str(argc)
+                    code = 'fn_call_2, ' + p[1]['value'] + ', ' + str(argc)
                     for arg in p[3]:
                         code += ',' + arg['value']
                     p[0]['code'] += [code + ', ' + t]
                 else:
-                    code = 'fn_call_1, ' + p[1] + ', ' + str(argc)
+                    code = 'fn_call_1, ' + p[1]['value'] + ', ' + str(argc)
                     for arg in p[3]:
                         code += ',' + arg['value']
                     p[0]['code'] += [code]
             else:
-                print("error in Line No. ", p.lineno(1), "Function",p[1], "needs exactly", st.pres_env.entries['arg_num'], "parameters, given", len(p[3]))
+                print("error in Line No. ", p.lineno(1), "Function",p[1]['value'], "needs exactly", st.pres_env.entries['arg_num'], "parameters, given", len(p[3]))
                 print("Compilation Terminated")
                 exit()
         else:
-            print("error in Line No. ", p.lineno(1), "Function", p[1], "This is not defined as a function")
+            print("error in Line No. ", p.lineno(1), "Function", p[1]['value'], "This is not defined as a function")
             print("Compilation Terminated")
             exit()
     else:
-        print("error in Line No. ", p.lineno(1), "Function", p[1], "This is not a function")
+        print("error in Line No. ", p.lineno(1), "Function", p[1]['value'], "This is not a function")
         print("Compilation Terminated")
         exit()
 

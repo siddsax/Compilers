@@ -106,11 +106,14 @@ class environment:
         # return self.pres_env
 
     def prev_lookup(self, name, env):
+        # print(env)
         if env is None:
             return False
         else:
             var = env.lookup(name)
             if(var is None):
+                print('boo')
+                # print(env.parent.print_symbol_table())
                 return self.prev_lookup(name, env.parent)
             else:
                 return var
@@ -119,4 +122,5 @@ class environment:
         t.print_symbol_table()
         print("----------------")
         for c in t.children:
+            print('noooo')
             self.print_symbol_table(c)
