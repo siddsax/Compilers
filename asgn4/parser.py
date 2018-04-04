@@ -610,7 +610,7 @@ def p_local_variable_declaration(p):
     typ = p[1]
     for var in p[2]:
         name, init, code = var['value'], var['init'], var['code']
-        if env.prev_lookup(name, env.pres_env) is None:
+        if env.pres_env.lookup(name) is None:
             p[0]['code'] += code
             if not init:
                 env.pres_env.enter_var(name, typ)
@@ -618,7 +618,7 @@ def p_local_variable_declaration(p):
                 env.pres_env.enter_var(name, typ)
                 p[0]['code'] += ['=, ' + name + ', ' + init['value']]
         else:
-            print('Error in line 607')
+            print('Double declaration')
             exit()
 
 def p_local_variable_declarators(p):
@@ -777,7 +777,7 @@ def p_assignment(p):
     #p[0] = ['assignment', p[1], p[2], p[3]]
     curr_env = env.pres_env
     p[0] = {}
-    if env.prev_lookup(p[1]['value', env.pres_env) is not None:
+    if env.prev_lookup(p[1]['value'] , env.pres_env) is not None:
         p[0]['value'] = p[1]['value']
         p[0]['code'] = dp(p[3]['code'])
         p[0]['code'] += ['=, ' + p[0]['value'] + ', ' + p[3]['value']]
