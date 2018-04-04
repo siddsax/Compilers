@@ -19,3 +19,4 @@ asgn3/errors.txt
 asgn4/__pycache__/
 asgn4/parser.out
 asgn4/parsetab.py
+asgn4/*.pyc
