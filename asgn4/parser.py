@@ -150,7 +150,7 @@ def p_field_declaration(p):
         p[0]['value'] = None
         for var in p[2]:
             p[0]['code'] += var['code']
-            if env.pres_env.lookup(var['name']) is None:
+            if env.prev_lookup(var['name'], env.pres_env) is None:
                 env.pres_env.enter_var(var['name'], p[1])
             else:
                 print('Error, var declared again')
@@ -159,7 +159,7 @@ def p_field_declaration(p):
         p[0]['value'] = None
         for var in p[3]:
             p[0]['code'] += var['code']
-            if env.pres_env.lookup(var['name']) is None:
+            if env.prev_lookup(var['name'], env.pres_env) is None:
                 env.pres_env.enter_var(var['name'], p[2])
             else:
                 print('Error, var declared again')
@@ -610,7 +610,7 @@ def p_local_variable_declaration(p):
     typ = p[1]
     for var in p[2]:
         name, init, code = var['value'], var['init'], var['code']
-        if env.pres_env.lookup(name) is None:
+        if env.prev_lookup(name, env.pres_env) is None:
             p[0]['code'] += code
             if not init:
                 env.pres_env.enter_var(name, typ)
@@ -777,7 +777,7 @@ def p_assignment(p):
     #p[0] = ['assignment', p[1], p[2], p[3]]
     curr_env = env.pres_env
     p[0] = {}
-    if curr_env.lookup(p[1]['value']) is not None:
+    if env.prev_lookup(p[1]['value', env.pres_env) is not None:
         p[0]['value'] = p[1]['value']
         p[0]['code'] = dp(p[3]['code'])
         p[0]['code'] += ['=, ' + p[0]['value'] + ', ' + p[3]['value']]
