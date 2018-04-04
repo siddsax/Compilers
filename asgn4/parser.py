@@ -550,6 +550,7 @@ def p_embedded_statement(p):
     | statement_expression TERMINATOR
     | if_statement
     | iteration_statement
+    | print_statement
     | break_statement
     | continue_statement
     | return_statement
@@ -564,6 +565,15 @@ def p_embedded_statement(p):
         p[0]['value'] = None
     else:
         p[0] = dp(p[1])
+
+
+def p_print_statement(p):
+    """ print_statement : PRINT LPAREN expression RPAREN TERMINATOR
+    """
+    print("asdadas")
+    p[0] = {}
+    p[0]['code'] = p[3]['code']
+    p[0]['code'] += ['print, ' + p[3]['value']]
 
 def p_break_statement(p):
     """break_statement : BREAK TERMINATOR
@@ -1306,13 +1316,13 @@ parser = yacc.yacc(start='start', debug=True, optimize=False)
 # Read the input program
 inputfile = open(filename, 'r')
 data = inputfile.read()
-result = parser.parse(data, debug=0)
+result = parser.parse(data, debug=2)
 # print(result)
 
 def print_tac(pclass):
     print("")
     print("1, fn_call_1, Main")
-    c = 3
+    c = 2
     for member in [pclass]:
         for line in member['code']:
             if line != "":
