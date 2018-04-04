@@ -15,7 +15,9 @@ public class goal
                }
     return d;
     }
-    int c;
-    // c = fn(c);
-    // int j = fn(c);
+    void main(){
+        int c;
+        fn(c);
+        // int j = fn(c);
+    }
 }

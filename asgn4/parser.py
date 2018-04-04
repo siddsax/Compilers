@@ -302,12 +302,12 @@ def p_method_declaration(p):
     p[0] = {'code':[], 'value':None}
     #if return_type != 'void':
     # TODO: Add arguments x86 code
-    print(method_name)
-    p[0]['code'] += ['fn_def, ' + method_name + ', ' + str(len(method_params)) + ', '.join(x for x in method_params)]
+    print('calling function', method_name)
+    p[0]['code'] += ['fn_def, ' + method_name + ', ' + str(len(method_params)) + ', '.join(x['value'] for x in method_params)]
     if method_params != None:
         for param in method_params:
             # parameters would have been pushed to the stack, so we just pop them off
-            p[0]['code'] += ['pop, ' + param[1]]
+            p[0]['code'] += ['pop, ' + param['value']]
     # print(p[2])
     p[0]['code'] += p[2]['code']
 
@@ -693,7 +693,9 @@ def p_invocation_expression(p):
     p[0]['code'] = [""]
     p[0]['value'] = None
     function = env.prev_lookup(p[1], env.pres_env)
-    if function is not None:
+    print(function, 'mooooorty')
+    print(env.print_symbol_table(env.pres_env))
+    if function is not False:
         if function['category'] == 'function':
             argc = 0
             if indx is not -1:
