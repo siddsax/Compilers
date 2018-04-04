@@ -104,7 +104,6 @@ def p_class_body(p):
         p[0]['code'] = ['']
         # p[0] = ['class_body', '{', '}']
     else:
-        print("wabba labba dub dub")
         p[0]['code'] = p[2]['code']
         # p[0] = ['class_body', '{', p[2], '}']
         pass
@@ -289,9 +288,9 @@ def p_variable_initializer_list(p):
                                 | variable_initializer_list COMMA variable_initializer
     """
     if len(p) == 2:
-        # p[0] = ['variable_initializer_list', p[1]]
+        p[0] = ['variable_initializer_list', p[1]]
     else:
-        # p[0] = ['variable_initializer_list', p[1], ',', p[3]]
+        p[0] = ['variable_initializer_list', p[1], ',', p[3]]
 
 def p_method_declaration(p):
     """method_declaration : method_header method_body
@@ -309,6 +308,7 @@ def p_method_declaration(p):
         for param in method_params:
             # parameters would have been pushed to the stack, so we just pop them off
             p[0]['code'] += ['pop, ' + param[1]]
+    print(p[2])
     p[0]['code'] += p[2]['code']
 
 #def p_qualified_identifier(p):
@@ -355,7 +355,6 @@ def p_method_header(p):
         if params != None:
             param_types = [param['type'] for param in params]
         # param_num = len(params)
-        print(p[2])
         env.pres_env.enter_function(p[2]['value'], p[1], param_types)
     elif p[3] == '(':
         # p[0] = ['method_header', p[1], p[2], '(', p[4], ')']
@@ -499,7 +498,7 @@ def p_destructor_body(p):
 # STATEMENT #######################################################################
 def p_block(p):
     """block : LBRACE RBRACE
-            | LBRACE statement_list RBRACE
+            | LBRACE scope_marker statement_list RBRACE
     """
     # if len(p) == 3:
     #     p[0] = ['block', p[1], p[2]]
@@ -512,6 +511,14 @@ def p_block(p):
     else:
         p[0] = dp(p[3])
         env.close_scope()
+
+
+def p_scope_marker(p):
+    """scope_marker :
+    """
+    p[0] = None
+    env.new_scope()
+
 
 def p_statement_list(p):
     """statement_list : statement
@@ -591,8 +598,6 @@ def p_literal(p):
     | STRCONST
     | CHARCONST
     """
-    print("koko")
-    print(p[1])
     p[0] = {}
     p[0]['code'] = [""]
     p[0]['value'] = p[1]
@@ -621,14 +626,17 @@ def p_local_variable_declarators(p):
     | local_variable_declarators COMMA local_variable_declarator
     """
     if len(p) == 2:
-        p[0] = ['local_variable_declarators', p[1]]
+        # p[0] = ['local_variable_declarators', p[1]]
+        p[0] = [p[1]]
     else:
-        p[0] = ['local_variable_declarators', p[1], p[2], p[3]]
+        # p[0] = ['local_variable_declarators', p[1], p[2], p[3]]
+        p[0] = p[1] + [p[2]]
 
 def p_local_variable_declarator(p):
     """local_variable_declarator : identifier
     | identifier EQUALS local_variable_initializer
     """
+    p[0] = {}
     if len(p) == 2:
         #p[0] = ['local_variable_declarator', p[1]]
         p[0]['value'] = p[1]['value']
@@ -768,7 +776,6 @@ def p_assignment(p):
     """
     #p[0] = ['assignment', p[1], p[2], p[3]]
     curr_env = env.pres_env
-    print("nipples")
     p[0] = {}
     if curr_env.lookup(p[1]['value']) is not None:
         p[0]['value'] = p[1]['value']
@@ -808,7 +815,6 @@ def p_unary_expression(p):
     #     p[0] = ['unary_expression', p[1], p[2], p[3]]
     p[0] = {}
     if len(p) == 2:
-        print("gaand")
         p[0] = dp(p[1])
     else:
         if p[1] == '+':
@@ -849,7 +855,6 @@ def p_primary_no_array_creation_expression(p):
     # Done - post dec/inc
     # Not done - typeof
     # Not done - object creation
-    print("boobs")
     p[0] = dp(p[1])
 
 def p_parenthesized_expression(p):
@@ -1045,7 +1050,6 @@ def p_element_initializer(p):
     """element_initializer : non_assignment_expression
                             | LBRACE expression_list RBRACE
     """
-    print("tubes")
     if len(p) == 2:
         p[0] = ['element_initializer', p[1]]
     else:
@@ -1085,7 +1089,6 @@ def p_non_assignment_expression(p):
     """non_assignment_expression : conditional_expression
     """
     #p[0] = ['non_assignment_expression', p[1]]
-    print("poops")
     p[0] = dp(p[1])
 
 def p_conditional_expression(p):
@@ -1254,18 +1257,13 @@ def p_additive_expression(p):
         p[0] = dp(p[1])
     else:
         p[0] = {}
-        print("orgy------------")
         t = env.mktemp('int')
         p[0]['value'] = t
-        print(p[1])
-        print(p[3])
-        print("************")
         p[0]['code'] = p[1]['code'] + p[3]['code']
         if p[2] == '+':
             p[0]['code'] += ["+, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
         elif p[2] == '-':
             p[0]['code'] += ["-, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
-        print(p[0])
 
 def p_multiplicative_expression(p):
     """multiplicative_expression : unary_expression
@@ -1278,10 +1276,8 @@ def p_multiplicative_expression(p):
                                 | multiplicative_expression MOD identifier
     """
     if len(p) == 2:
-        print("lund")
         #p[0] = ['multiplicative_expression', p[1]]
         p[0] = dp(p[1])
-        # print("klopp")
     else:
         p[0] = {}
         t = env.mktemp('int')
