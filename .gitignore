@@ -20,3 +20,6 @@ asgn4/__pycache__/
 asgn4/parser.out
 asgn4/parsetab.py
 asgn4/*.pyc
+asgn3/dangling_if_else.html
+asgn3/src/parser.out
+asgn3/src/parsetab.py
