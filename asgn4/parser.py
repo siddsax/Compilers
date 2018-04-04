@@ -272,24 +272,26 @@ def p_variable_initializer(p):
 
 def p_array_initializer(p):
     """array_initializer : LBRACE variable_initializer_list RBRACE
-                                                    | LBRACE RBRACE
-                                                    | LBRACE variable_initializer_list COMMA RBRACE
+                        | LBRACE RBRACE
+                        | LBRACE variable_initializer_list COMMA RBRACE
     """
     if len(p) == 3:
-        p[0] = ['array_initializer', '{', '}']
-    elif len(p) == 4:
-        p[0] = ['array_initializer', '{', p[1], '}']
+        # p[0] = ['array_initializer', '{', '}']
+	p[0] = {'code':[], 'value':p[1]}
+    # elif len(p) == 4:
+    #     p[0] = ['array_initializer', '{', p[1], '}']
     else:
-        p[0] = ['array_initializer', '{', p[1], ',', '}']
+        # p[0] = ['array_initializer', '{', p[1], ',', '}']
+        p[0] = dp(p[2])
 
 def p_variable_initializer_list(p):
     """variable_initializer_list : variable_initializer
-                                                                    | variable_initializer_list COMMA variable_initializer
+                                | variable_initializer_list COMMA variable_initializer
     """
     if len(p) == 2:
-        p[0] = ['variable_initializer_list', p[1]]
+        # p[0] = ['variable_initializer_list', p[1]]
     else:
-        p[0] = ['variable_initializer_list', p[1], ',', p[3]]
+        # p[0] = ['variable_initializer_list', p[1], ',', p[3]]
 
 def p_method_declaration(p):
     """method_declaration : method_header method_body
@@ -338,7 +340,7 @@ def p_method_header(p):
         param_types = []
         # param_num = 0
         if params != None:
-            param_types = [param[0] for param in params]
+            param_types = [param['type'] for param in params]
         # param_num = len(params)
         env.pres_env.enter_function(p[3]['value'], p[2], param_types)
     elif len(p) == 5:
@@ -351,7 +353,7 @@ def p_method_header(p):
         param_types = []
         # param_num = 0
         if params != None:
-            param_types = [param[0] for param in params]
+            param_types = [param['type'] for param in params]
         # param_num = len(params)
         print(p[2])
         env.pres_env.enter_function(p[2]['value'], p[1], param_types)
@@ -365,7 +367,7 @@ def p_method_header(p):
         param_types = []
         # param_num = 0
         if params != None:
-            param_types = [param[0] for param in params]
+            param_types = [param['type'] for param in params]
         # param_num = len(params)
         env.pres_env.enter_function(p[2], p[1], param_types)
     else:
@@ -378,7 +380,7 @@ def p_method_header(p):
         param_types = []
         # param_num = 0
         if params != None:
-            param_types = [param[0] for param in params]
+            param_types = [param['type'] for param in params]
         # param_num = len(params)
         env.pres_env.enter_function(p[3], p[2], param_types)
 
@@ -429,18 +431,25 @@ def p_fixed_parameters(p):
                                             | fixed_parameters COMMA fixed_parameter
     """
     if len(p) == 2:
-        p[0] = ['fixed_parameters', p[1]]
+        #p[0] = ['fixed_parameters', p[1]]
+        p[0] = [p[1]]
     else:
-        p[0] = ['fixed_parameters', p[1], ',', p[3]]
+        #p[0] = ['fixed_parameters', p[1], ',', p[3]]
+        p[0] = p[1] + [p[3]]
 
 def p_fixed_parameter(p):
     """fixed_parameter : type identifier default_argument
                                             | type identifier
     """
+    # TODO: Default argument
     if len(p) == 3:
-        p[0] = ['fixed_parameter', p[1], p[2]]
+        #p[0] = ['fixed_parameter', p[1], p[2]]
+        p[0]['type'] = p[1]
+        p[0]['value'] = p[2]['value']
     else:
-        p[0] = ['fixed_parameter', p[1], p[2], p[3]]
+        #p[0] = ['fixed_parameter', p[1], p[2], p[3]]
+        p[0]['type'] = p[1]
+        p[0]['value'] = p[2]['value']
 
 def p_default_argument(p):
     """default_argument : EQUALS expression
@@ -490,7 +499,7 @@ def p_destructor_body(p):
 # STATEMENT #######################################################################
 def p_block(p):
     """block : LBRACE RBRACE
-            | LBRACE scope_marker statement_list RBRACE
+            | LBRACE statement_list RBRACE
     """
     # if len(p) == 3:
     #     p[0] = ['block', p[1], p[2]]
@@ -503,12 +512,6 @@ def p_block(p):
     else:
         p[0] = dp(p[3])
         env.close_scope()
-
-def p_scope_marker(p):
-    """scope_marker :
-    """
-    p[0] = None
-    env.new_scope()
 
 def p_statement_list(p):
     """statement_list : statement
@@ -558,7 +561,8 @@ def p_embedded_statement(p):
 def p_break_statement(p):
     """break_statement : BREAK TERMINATOR
     """
-    p[0] = ['break_statement', 'BREAK', p[2]]
+    # p[0] = ['break_statement', 'BREAK', p[2]]
+    
     #TODO: Implement
 
 def p_continue_statement(p):
@@ -617,18 +621,14 @@ def p_local_variable_declarators(p):
     | local_variable_declarators COMMA local_variable_declarator
     """
     if len(p) == 2:
-        #p[0] = ['local_variable_declarators', p[1]]
-        p[0] = [p[1]]
+        p[0] = ['local_variable_declarators', p[1]]
     else:
-        #p[0] = ['local_variable_declarators', p[1], p[2], p[3]]
-        p[0] = p[1] + [p[2]]
+        p[0] = ['local_variable_declarators', p[1], p[2], p[3]]
 
 def p_local_variable_declarator(p):
     """local_variable_declarator : identifier
     | identifier EQUALS local_variable_initializer
     """
-    # TODO: Have to deal with the initializer value
-    p[0] = {}
     if len(p) == 2:
         #p[0] = ['local_variable_declarator', p[1]]
         p[0]['value'] = p[1]['value']
@@ -643,7 +643,6 @@ def p_local_variable_declarator(p):
 def p_local_variable_initializer(p): # TODO: Can be removed to reduce conflicts
     """local_variable_initializer : expression
     """
-    print("boooooooba")
     #p[0] = ['local_variable_initializer', p[1]]
     p[0] = dp(p[1])
 

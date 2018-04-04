@@ -70,7 +70,6 @@ def print_symbol_table(self):
                 print(k, ': ', types)
             else:
                 print(k, ': ', self.entries[key][k])
-
 class environment:
     def __init__(self):
         self.global_env = table()
