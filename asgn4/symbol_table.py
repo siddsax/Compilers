@@ -45,7 +45,7 @@ class table:
 
     def lookup(self, name):
         if name in self.entries.keys():
-            return self.entries['name']
+            return self.entries[name]
         else:
             return None
 
