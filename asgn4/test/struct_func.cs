@@ -3,21 +3,21 @@ class T
   char a;
   int b;
   char c;
-  short d;
-  double e;
-  char name[10];
+  // short d;
+  // double e;
+  // char name[10];
   char f;
-};
+
 
 void f (T x)
 {
-  x.a = 'a';
-  x.b = 47114711;
-  x.c = 'c';
-  x.d = 1234;
-  x.e = 3.141592897932;
-  x.f = '*';
-  x.name = "abc";
+  a = 'a';
+  b = 47114711;
+  c = 'c';
+  d = 1234;
+  e = 3.141592897932;
+  f = '*';
+  // name = "abc";
 }
 
 int main (){
@@ -25,3 +25,5 @@ int main (){
     f(k);
     return 0;
 }
+
+};

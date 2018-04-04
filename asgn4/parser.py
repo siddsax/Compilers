@@ -368,7 +368,7 @@ def p_method_header(p):
         if params != None:
             param_types = [param['type'] for param in params]
         # param_num = len(params)
-        env.pres_env.enter_function(p[2], p[1], param_types)
+        env.pres_env.enter_function(p[2]['value'], p[1], param_types)
     else:
         # p[0] = ['method_header', p[1], p[2], p[3], '(', ')']
         p[0] = {}
@@ -381,7 +381,7 @@ def p_method_header(p):
         if params != None:
             param_types = [param['type'] for param in params]
         # param_num = len(params)
-        env.pres_env.enter_function(p[3], p[2], param_types)
+        env.pres_env.enter_function(p[3]['value'], p[2], param_types)
 
 def p_modifiers(p):
     """modifiers : modifier
@@ -441,6 +441,7 @@ def p_fixed_parameter(p):
                                             | type identifier
     """
     # TODO: Default argument
+    p[0] = {}
     if len(p) == 3:
         #p[0] = ['fixed_parameter', p[1], p[2]]
         p[0]['type'] = p[1]
