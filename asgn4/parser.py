@@ -308,7 +308,7 @@ def p_method_declaration(p):
         for param in method_params:
             # parameters would have been pushed to the stack, so we just pop them off
             p[0]['code'] += ['pop, ' + param[1]]
-    print(p[2])
+    # print(p[2])
     p[0]['code'] += p[2]['code']
 
 #def p_qualified_identifier(p):
@@ -630,7 +630,7 @@ def p_local_variable_declarators(p):
         p[0] = [p[1]]
     else:
         # p[0] = ['local_variable_declarators', p[1], p[2], p[3]]
-        p[0] = p[1] + [p[2]]
+        p[0] = p[1] + [p[3]]
 
 def p_local_variable_declarator(p):
     """local_variable_declarator : identifier
