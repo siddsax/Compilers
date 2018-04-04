@@ -1,6 +1,7 @@
 class Main{
-    void main(){
-    int a = 29;
-    int b = a + 44;
+    void main()
+    {
+        int a = 29;
+        int b = a + 44; 
     }
 }

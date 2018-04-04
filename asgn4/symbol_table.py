@@ -27,7 +27,6 @@ class table:
         # Add list of all keywords
 
     def enter_var(self, name, Dtype, arr=None, tmp=False):
-        print(name)
         self.entries[name] = {}
         self.entries[name]['type'] = Dtype
         self.entries[name]['category'] = 'var'
@@ -55,8 +54,7 @@ class table:
             self.entries[kw] = {}
             self.entries[kw]['category'] = 'keyword'
 
-    def print_symbol_table(self):
-    print("")
+def print_symbol_table(self):
     for key in self.entries:
         print("NAME: ", key)
         for k in self.entries[key]:
@@ -72,7 +70,6 @@ class table:
                 print(k, ': ', types)
             else:
                 print(k, ': ', self.entries[key][k])
-        print("")
 
 class environment:
     def __init__(self):

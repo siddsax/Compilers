@@ -77,7 +77,7 @@ def p_class_declarations(p):
 
 def p_class_declaration(p):
     """class_declaration : modifiers CLASS identifier class_body TERMINATOR
-    |p[2] CLASS identifier class_body TERMINATOR
+    | CLASS identifier class_body TERMINATOR
     | CLASS identifier class_body
     | modifiers CLASS identifier class_body
     """
@@ -298,11 +298,11 @@ def p_method_declaration(p):
     return_type = p[1]['type']
     method_name = p[1]['name']
     method_params = p[1]['params']
-    method_body = p[2]
     p[0] = {'code':[], 'value':None}
     #if return_type != 'void':
     # TODO: Add arguments x86 code
-    p[0]['code'] += ['fn_def, ' + method_name + ', ' + len(method_params) + ', ' + ', '.join(x for x in method_params)]
+    print(method_name)
+    p[0]['code'] += ['fn_def, ' + method_name + ', ' + str(len(method_params)) + ', '.join(x for x in method_params)]
     if method_params != None:
         for param in method_params:
             # parameters would have been pushed to the stack, so we just pop them off
@@ -332,7 +332,7 @@ def p_method_header(p):
         # p[0] = ['method_header', p[1], p[2], p[3], '(', p[5], ')']
         p[0] = {}
         p[0]['type'] = p[2]
-        p[0]['name'] = p[3]
+        p[0]['name'] = p[3]['value']
         p[0]['params'] = p[5]
         params = p[5]
         param_types = []
@@ -345,7 +345,7 @@ def p_method_header(p):
         # p[0] = ['method_header', p[1], p[2], '(', ')']
         p[0] = {}
         p[0]['type'] = p[1]
-        p[0]['name'] = p[2]
+        p[0]['name'] = p[2]['value']
         p[0]['params'] = []
         params = []
         param_types = []
@@ -359,7 +359,7 @@ def p_method_header(p):
         # p[0] = ['method_header', p[1], p[2], '(', p[4], ')']
         p[0] = {}
         p[0]['type'] = p[1]
-        p[0]['name'] = p[2]
+        p[0]['name'] = p[2]['value']
         p[0]['params'] = p[4]
         params = p[4]
         param_types = []
@@ -372,7 +372,7 @@ def p_method_header(p):
         # p[0] = ['method_header', p[1], p[2], p[3], '(', ')']
         p[0] = {}
         p[0]['type'] = p[2]
-        p[0]['name'] = p[3]
+        p[0]['name'] = p[3]['value']
         p[0]['params'] = []
         params = []
         param_types = []
@@ -416,7 +416,7 @@ def p_member_name(p):
 # TODO: May need to do scope changing here
 def p_method_body(p):
     """method_body : block
-                                    | TERMINATOR
+                    | TERMINATOR
     """
     # p[0] = ['method_body', p[1]]
     if p[1] == ';':
@@ -451,7 +451,7 @@ def p_constructor_declaration(p):
     """constructor_declaration : constructor_declarator constructor_body
     """
     # p[0] = ['constructor_declaration', p[1], p[2]]
-    p[0] = {'code': [""], value: None}
+    p[0] = {'code': [""], 'value': None}
 
 def p_constructor_declarator(p):
     """constructor_declarator : identifier LPAREN fixed_parameters RPAREN
@@ -461,7 +461,7 @@ def p_constructor_declarator(p):
     #     p[0] = ['constructor_declarator', p[1], '(', ')']
     # else:
     #     p[0] = ['constructor_declarator', p[1], '(', p[3], ')']
-    p[0] = {'code': [""], value: None}
+    p[0] = {'code': [""], 'value': None}
 
 def p_constructor_body(p):
     """constructor_body : block
@@ -471,20 +471,20 @@ def p_constructor_body(p):
     #     p[0] = ['constructor_body', ';']
     # else:
     #     p[0] = ['constructor_body', p[1]]
-    p[0] = {'code': [""], value: None}
+    p[0] = {'code': [""], 'value': None}
 
 def p_destructor_declaration(p):
     """destructor_declaration : TILDE identifier LPAREN RPAREN destructor_body
     """
     # p[0] = ['destructor_declaration', p[1], p[2], p[3], p[4], p[5]]
-    p[0] = {'code': [""], value: None}
+    p[0] = {'code': [""], 'value': None}
 
 def p_destructor_body(p):
     """destructor_body : block
                                             | TERMINATOR
     """
     # p[0] = ['destructor_body', p[1]]
-    p[0] = {'code': [""], value: None}
+    p[0] = {'code': [""], 'value': None}
 
 
 # STATEMENT #######################################################################
@@ -501,7 +501,7 @@ def p_block(p):
         p[0]['code'] = ['']
         p[0]['value'] = None
     else:
-        p[0] = dp(p[2])
+        p[0] = dp(p[3])
         env.close_scope()
 
 def p_scope_marker(p):
@@ -587,7 +587,8 @@ def p_literal(p):
     | STRCONST
     | CHARCONST
     """
-
+    print("koko")
+    print(p[1])
     p[0] = {}
     p[0]['code'] = [""]
     p[0]['value'] = p[1]
@@ -599,13 +600,14 @@ def p_local_variable_declaration(p):
     p[0] = {'code': [''], 'value': None}
     typ = p[1]
     for var in p[2]:
-        name, init = var['value'], var['init']
+        name, init, code = var['value'], var['init'], var['code']
         if env.pres_env.lookup(name) is None:
+            p[0]['code'] += code
             if not init:
                 env.pres_env.enter_var(name, typ)
             else:
                 env.pres_env.enter_var(name, typ)
-                p[0]['code'] += ['=, ' + name + ', ' + p[3]['value']]
+                p[0]['code'] += ['=, ' + name + ', ' + init['value']]
         else:
             print('Error in line 607')
             exit()
@@ -631,14 +633,17 @@ def p_local_variable_declarator(p):
         #p[0] = ['local_variable_declarator', p[1]]
         p[0]['value'] = p[1]['value']
         p[0]['init'] = None
+        p[0]['code'] = p[1]['code']
     else:
         #p[0] = ['local_variable_declarator', p[1], p[2], p[3]]
         p[0]['value'] = p[1]['value']
         p[0]['init'] = p[3]
+        p[0]['code'] = p[3]['code']
 
 def p_local_variable_initializer(p): # TODO: Can be removed to reduce conflicts
     """local_variable_initializer : expression
     """
+    print("boooooooba")
     #p[0] = ['local_variable_initializer', p[1]]
     p[0] = dp(p[1])
 
@@ -669,7 +674,7 @@ def p_invocation_expression(p):
     p[0] = {}
     p[0]['code'] = [""]
     p[0]['value'] = None
-    function = st.prev_lookup(p[1], st.pres_env)
+    function = env.prev_lookup(p[1], env.pres_env)
     if function is not None:
         if function['category'] == 'function':
             argc = 0
@@ -680,7 +685,7 @@ def p_invocation_expression(p):
                     for arg in p[3]:
                         p[0]['code'] += arg['code']
                 if function['type'] is not 'void':
-                    t = st.mktemp(function['type'])
+                    t = env.mktemp(function['type'])
                     p[0]['value'] = t
                     code = 'fn_call_2, ' + p[1] + ', ' + str(argc)
                     for arg in p[3]:
@@ -752,7 +757,7 @@ def p_iteration_statement(p):
 # EXPRESSION #####################################################################################
 def p_expression(p):
     """expression : non_assignment_expression
-                                    | assignment
+                    | assignment
     """
     # p[0] = ['expression', p[1]]
     p[0] = dp(p[1])
@@ -764,6 +769,7 @@ def p_assignment(p):
     """
     #p[0] = ['assignment', p[1], p[2], p[3]]
     curr_env = env.pres_env
+    print("nipples")
     p[0] = {}
     if curr_env.lookup(p[1]['value']) is not None:
         p[0]['value'] = p[1]['value']
@@ -803,6 +809,7 @@ def p_unary_expression(p):
     #     p[0] = ['unary_expression', p[1], p[2], p[3]]
     p[0] = {}
     if len(p) == 2:
+        print("gaand")
         p[0] = dp(p[1])
     else:
         if p[1] == '+':
@@ -843,6 +850,7 @@ def p_primary_no_array_creation_expression(p):
     # Done - post dec/inc
     # Not done - typeof
     # Not done - object creation
+    print("boobs")
     p[0] = dp(p[1])
 
 def p_parenthesized_expression(p):
@@ -875,15 +883,15 @@ def p_element_access(p):
     p[0] = {}
     p[0]['code'] = [""]
     p[0]['value'] = None
-    array = st.pre_lookup(p[1], st.pres_env)
+    array = env.pre_lookup(p[1], env.pres_env)
     if array is not None:
         if array['category'] == 'array':
             if(len(p[3]['value'].split(',')) > 1):
                 print("error in Line No. ", p.lineno(1), "array", p[1], "is not 1D")
             p[0]['code'] += p[3]['code']
-            t1 = st.mktemp('int')
-            t2 = st.mktemp('int')
-            t = st.mktemp(array['type'].dict['arr_elem_type'])
+            t1 = env.mktemp('int')
+            t2 = env.mktemp('int')
+            t = env.mktemp(array['type'].dict['arr_elem_type'])
             p[0]['code'] += ['=, ' + t1 + ', ' + p[3]['value']]
             # add width feature !!!!!!!!!!!!!!!!!!!!!!!!!!
             p[0]['code'] += ['*, ' + t2 + ', ' + t1 + ', ' + str(array['type'].dict['arr_elem_type'].dict['width'])]
@@ -1038,6 +1046,7 @@ def p_element_initializer(p):
     """element_initializer : non_assignment_expression
                             | LBRACE expression_list RBRACE
     """
+    print("tubes")
     if len(p) == 2:
         p[0] = ['element_initializer', p[1]]
     else:
@@ -1077,6 +1086,7 @@ def p_non_assignment_expression(p):
     """non_assignment_expression : conditional_expression
     """
     #p[0] = ['non_assignment_expression', p[1]]
+    print("poops")
     p[0] = dp(p[1])
 
 def p_conditional_expression(p):
@@ -1245,16 +1255,18 @@ def p_additive_expression(p):
         p[0] = dp(p[1])
     else:
         p[0] = {}
+        print("orgy------------")
         t = env.mktemp('int')
         p[0]['value'] = t
-        print(p[1]['code'])
-        print(p[3]['code'])
+        print(p[1])
+        print(p[3])
+        print("************")
         p[0]['code'] = p[1]['code'] + p[3]['code']
         if p[2] == '+':
             p[0]['code'] += ["+, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
         elif p[2] == '-':
             p[0]['code'] += ["-, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
-
+        print(p[0])
 
 def p_multiplicative_expression(p):
     """multiplicative_expression : unary_expression
@@ -1267,6 +1279,7 @@ def p_multiplicative_expression(p):
                                 | multiplicative_expression MOD identifier
     """
     if len(p) == 2:
+        print("lund")
         #p[0] = ['multiplicative_expression', p[1]]
         p[0] = dp(p[1])
         # print("klopp")
