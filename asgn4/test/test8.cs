@@ -10,7 +10,7 @@ public class goal
 
    goal(int a, int[] b){
        a = foo();
-       b = foo2(foo3(c, 'a'));
+       b = foo(foo(c, 'a'));
        while ((left <= left_end) && (mid <= right))
        {
            if (numbers[left] <= numbers[mid])
