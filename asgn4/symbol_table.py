@@ -54,22 +54,23 @@ class table:
             self.entries[kw] = {}
             self.entries[kw]['category'] = 'keyword'
 
-def print_symbol_table(self):
-    for key in self.entries:
-        print("NAME: ", key)
-        for k in self.entries[key]:
-            if k == 'type' and not isinstance(self.entries[key][k], str):
-                print(k, ': ', self.entries[key][k].type_name())
-            elif k == 'arg_types':
-                types = []
-                for t in self.entries[key][k]:
-                    if not isinstance(t, str):
-                        types.append(t.type_name())
-                    else:
-                        types.append(t)
-                print(k, ': ', types)
-            else:
-                print(k, ': ', self.entries[key][k])
+    def print_symbol_table(self):
+        for key in self.entries:
+            print("NAME: ", key)
+            for k in self.entries[key]:
+                if k == 'type' and not isinstance(self.entries[key][k], str):
+                    print(k, ': ', self.entries[key][k].type_name())
+                elif k == 'arg_types':
+                    types = []
+                    for t in self.entries[key][k]:
+                        if not isinstance(t, str):
+                            types.append(t.type_name())
+                        else:
+                            types.append(t)
+                    print(k, ': ', types)
+                else:
+                    print(k, ': ', self.entries[key][k])
+
 class environment:
     def __init__(self):
         self.global_env = table()
@@ -105,11 +106,14 @@ class environment:
         # return self.pres_env
 
     def prev_lookup(self, name, env):
+        # print(env)
         if env is None:
             return False
         else:
             var = env.lookup(name)
             if(var is None):
+                print('boo')
+                # print(env.parent.print_symbol_table())
                 return self.prev_lookup(name, env.parent)
             else:
                 return var
@@ -118,4 +122,5 @@ class environment:
         t.print_symbol_table()
         print("----------------")
         for c in t.children:
+            print('noooo')
             self.print_symbol_table(c)

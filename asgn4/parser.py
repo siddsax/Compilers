@@ -304,13 +304,13 @@ def p_method_declaration(p):
     p[0] = {'code':[], 'value':None}
     #if return_type != 'void':
     # TODO: Add arguments x86 code
-    print(method_name)
-    p[0]['code'] += ['fn_def, ' + method_name + ', ' + str(len(method_params)) + ', '.join(x for x in method_params)]
+    print('calling function', method_name)
+    p[0]['code'] += ['fn_def, ' + method_name + ', ' + str(len(method_params)) + ', '.join(x['value'] for x in method_params)]
     if method_params != None:
         for param in method_params:
             # parameters would have been pushed to the stack, so we just pop them off
-            p[0]['code'] += ['pop, ' + param[1]]
-    print(p[2])
+            p[0]['code'] += ['pop, ' + param['value']]
+    # print(p[2])
     p[0]['code'] += p[2]['code']
 
 #def p_qualified_identifier(p):
@@ -370,7 +370,7 @@ def p_method_header(p):
         if params != None:
             param_types = [param['type'] for param in params]
         # param_num = len(params)
-        env.pres_env.enter_function(p[2], p[1], param_types)
+        env.pres_env.enter_function(p[2]['value'], p[1], param_types)
     else:
         # p[0] = ['method_header', p[1], p[2], p[3], '(', ')']
         p[0] = {}
@@ -383,7 +383,7 @@ def p_method_header(p):
         if params != None:
             param_types = [param['type'] for param in params]
         # param_num = len(params)
-        env.pres_env.enter_function(p[3], p[2], param_types)
+        env.pres_env.enter_function(p[3]['value'], p[2], param_types)
 
 def p_modifiers(p):
     """modifiers : modifier
@@ -443,6 +443,7 @@ def p_fixed_parameter(p):
                                             | type identifier
     """
     # TODO: Default argument
+    p[0] = {}
     if len(p) == 3:
         #p[0] = ['fixed_parameter', p[1], p[2]]
         p[0]['type'] = p[1]
@@ -652,7 +653,7 @@ def p_local_variable_declarators(p):
         p[0] = [p[1]]
     else:
         # p[0] = ['local_variable_declarators', p[1], p[2], p[3]]
-        p[0] = p[1] + [p[2]]
+        p[0] = p[1] + [p[3]]
 
 def p_local_variable_declarator(p):
     """local_variable_declarator : identifier
@@ -706,8 +707,10 @@ def p_invocation_expression(p):
     p[0] = {}
     p[0]['code'] = [""]
     p[0]['value'] = None
-    function = env.prev_lookup(p[1], env.pres_env)
-    if function is not None:
+    function = env.prev_lookup(p[1]['value'], env.pres_env)
+    # print(env.print_symbol_table(env.pres_env.parent))
+    # print(env.pres_env.parent.print_symbol_table())
+    if function is not False:
         if function['category'] == 'function':
             argc = 0
             if indx is not -1:
@@ -719,25 +722,25 @@ def p_invocation_expression(p):
                 if function['type'] is not 'void':
                     t = env.mktemp(function['type'])
                     p[0]['value'] = t
-                    code = 'fn_call_2, ' + p[1] + ', ' + str(argc)
+                    code = 'fn_call_2, ' + p[1]['value'] + ', ' + str(argc)
                     for arg in p[3]:
                         code += ',' + arg['value']
                     p[0]['code'] += [code + ', ' + t]
                 else:
-                    code = 'fn_call_1, ' + p[1] + ', ' + str(argc)
+                    code = 'fn_call_1, ' + p[1]['value'] + ', ' + str(argc)
                     for arg in p[3]:
                         code += ',' + arg['value']
                     p[0]['code'] += [code]
             else:
-                print("error in Line No. ", p.lineno(1), "Function",p[1], "needs exactly", st.pres_env.entries['arg_num'], "parameters, given", len(p[3]))
+                print("error in Line No. ", p.lineno(1), "Function",p[1]['value'], "needs exactly", st.pres_env.entries['arg_num'], "parameters, given", len(p[3]))
                 print("Compilation Terminated")
                 exit()
         else:
-            print("error in Line No. ", p.lineno(1), "Function", p[1], "This is not defined as a function")
+            print("error in Line No. ", p.lineno(1), "Function", p[1]['value'], "This is not defined as a function")
             print("Compilation Terminated")
             exit()
     else:
-        print("error in Line No. ", p.lineno(1), "Function", p[1], "This is not a function")
+        print("error in Line No. ", p.lineno(1), "Function", p[1]['value'], "This is not a function")
         print("Compilation Terminated")
         exit()
     print(p[0])
