@@ -23,7 +23,8 @@ reserved = {
     'using'  :  'USING',
     'break' : 'BREAK',
     # 'goto'  : 'GOTO',
-    'typeof' : 'TYPEOF'
+    'typeof' : 'TYPEOF',
+    'print' : 'PRINT'
 }
 
 tokens = [
