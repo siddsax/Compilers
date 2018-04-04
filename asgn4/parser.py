@@ -887,7 +887,7 @@ def p_element_access(p):
     p[0] = {}
     p[0]['code'] = [""]
     p[0]['value'] = None
-    array = env.pre_lookup(p[1], env.pres_env)
+    array = env.prev_lookup(p[1], env.pres_env)
     if array is not None:
         if array['category'] == 'array':
             if(len(p[3]['value'].split(',')) > 1):
@@ -1311,14 +1311,14 @@ result = parser.parse(data, debug=0)
 
 def print_tac(pclass):
     print("")
-    print("1, call, Main")
-    print("2, exit")
+    print("1, fn_call_1, Main")
     c = 3
     for member in [pclass]:
         for line in member['code']:
             if line != "":
                 print(str(c) + ", " + line)
                 c = c + 1
+    print(str(c) + ", exit")
 print_tac(result)
 # output = ""
 # def printf(p, prev, nxt):
