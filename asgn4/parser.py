@@ -723,16 +723,19 @@ def p_invocation_expression(p):
                     t = env.mktemp(function['type'])
                     p[0]['value'] = t
                     code = 'fn_call_2, ' + p[1]['value'] + ', ' + str(argc)
-                    for arg in p[3]:
-                        code += ',' + arg['value']
+                    if indx is not -1:
+                        for arg in p[3]:
+                            print(p[3])
+                            code += ',' + arg['value']
                     p[0]['code'] += [code + ', ' + t]
                 else:
                     code = 'fn_call_1, ' + p[1]['value'] + ', ' + str(argc)
-                    for arg in p[3]:
-                        code += ',' + arg['value']
+                    if indx is not -1:
+                        for arg in p[3]:
+                            code += ',' + arg['value']
                     p[0]['code'] += [code]
             else:
-                print("error in Line No. ", p.lineno(1), "Function",p[1]['value'], "needs exactly", st.pres_env.entries['arg_num'], "parameters, given", len(p[3]))
+                print("error in Line No. ", p.lineno(1), "Function",p[1]['value'], "needs exactly", env.pres_env.entries[p[1]['value']]['arg_num'], "parameters, given", len(p[3]))
                 print("Compilation Terminated")
                 exit()
         else:
