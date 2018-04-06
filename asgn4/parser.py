@@ -809,7 +809,11 @@ def p_assignment(p):
     if env.prev_lookup(p[1]['value'] , env.pres_env) is not None:
         p[0]['value'] = p[1]['value']
         p[0]['code'] = dp(p[3]['code'])
+        p[0]['code'] += p[1]['code']
         p[0]['code'] += ['=, ' + p[0]['value'] + ', ' + p[3]['value']]
+        if(p[1]['array_el'] is True):
+            p[0]['code'] += ["array_asgn, " + p[1]['par_arr'] + ", " + p[1]['index'] + ", " + p[1]['value']]
+
     else:
         # print('Error in line 598')
         print("ERROR: symbol '"+ p[1]['value'] +"' used without declaration")
@@ -927,11 +931,26 @@ def p_element_access(p):
             t1 = env.mktemp('int')
             t2 = env.mktemp('int')
             t = env.mktemp(array['type'].dict['arr_elem_type'])
+            # check for p[3][1]['value']
+
+            try:
+                val = int(p[3][1]['value'])
+                print(p[3][1]['value'])
+                print(val)
+            except ValueError:
+                flag = env.prev_lookup(p[3][1]['value'],env.pres_env)
+                if(flag is False):
+                    print("Error: the index is not declared")
+                    exit()
+
             p[0]['code'] += ['=, ' + t1 + ', ' + p[3][1]['value']]
             # add width feature !!!!!!!!!!!!!!!!!!!!!!!!!!
             p[0]['code'] += ['*, ' + t2 + ', ' + t1 + ', ' + str(array['type'].dict['arr_elem_type'].dict['data_width'])]
             p[0]['code'] += ['array_access, ' + t + ', ' + p[1]['value'] + ', ' + t2]
             p[0]['value'] = t
+            p[0]['array_el'] = True
+            p[0]['par_arr'] = p[1]['value']
+            p[0]['index'] = t2
         else:
             print("error in Line No. ", p.lineno(1), "Function", p[1], "not defined as an array")
             print("Compilation Terminated")
@@ -957,6 +976,8 @@ def p_post_increment_expression(p):
     # p[0] = ['post_increment_expression', p[1], p[2]]
     p[0] = dp(p[1])
     p[0]['code'] += ["+, " + p[0]['value'] + ", 1, " + p[0]['value']]
+    if(p[1]['array_el'] is True):
+        p[0]['code'] += ["array_asgn, " + p[0]['par_arr'] + ", " + p[0]['index'] + ", " + p[0]['value']]
 
 
 def p_post_decrement_expression(p):
@@ -967,6 +988,9 @@ def p_post_decrement_expression(p):
     # t = symbol_table.maketemp('int', symbol_table.curr_table)
     p[0] = dp(p[1])
     p[0]['code'] += ["-, " + p[0]['value'] + ", 1, " + p[0]['value']]
+    if(p[1]['array_el'] is True):
+        p[0]['code'] += ["array_asgn, " + p[0]['par_arr'] +
+                         ", " + p[0]['index'] + ", " + p[0]['value']]
 
 def p_object_creation_expression(p):
     """object_creation_expression : NEW type LPAREN argument_list RPAREN object_or_collection_initializer
