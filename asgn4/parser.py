@@ -243,7 +243,6 @@ def p_type_parameter(p):
         p[0] = st.type(p[1], True, False, None, 1, None)
     else:
         p[0] = st.type(p[1], False, False, None, 1, None)
-    p[0]['code'] = ['']
 
 def p_variable_declarators(p):
     """variable_declarators : variable_declarator
