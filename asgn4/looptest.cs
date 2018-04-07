@@ -10,7 +10,7 @@ class Bleckh
 		while(j < 10){
             k = 0;
 			while(k < 10){
-				res += 1;
+				res++;
                 k++;
 			}
             j++;

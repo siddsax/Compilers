@@ -923,7 +923,7 @@ def p_element_access(p):
     print("--")
     if array is not False:
         if array['category'] == 'arr':
-            print p[3][1]
+            print(p[3][1])
             if(len(p[3][1]['value'].split(',')) > 1):
                 print("error in Line No. ", p.lineno(1), "array", p[1], "is not 1D")
             p[0]['code'] += p[3][1]['code']
