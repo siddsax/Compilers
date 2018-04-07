@@ -1,13 +1,15 @@
 using System;
 
-foo ()
+
+
+class Test{
+void foo ()
 {
     int i = 1;
 }
-
-class Test{
 void Main(){
-    foo();
+    int a;
+    a= foo();
     return 0;
 }
 }

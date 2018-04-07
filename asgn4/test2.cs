@@ -7,7 +7,7 @@ class Main{
         int c=0;
         if(a<b)
         {
-            a = a +9;
+            a = a + 9;
         }
         else
         {   
