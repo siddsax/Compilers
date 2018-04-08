@@ -1,5 +1,6 @@
-using System;
+//using System;
 
+class test{
 int main(){
 	
 	int i,j,k,res;
@@ -10,7 +11,7 @@ int main(){
 		while(j < 10){
             k = 0;
 			while(k < 10){
-				res += 1;
+				res++;
                 k++;
 			}
             j++;
@@ -18,5 +19,5 @@ int main(){
         i++;
 	}
 
-	System.print("res = %d\n", res);
+}
 }

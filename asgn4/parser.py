@@ -157,9 +157,11 @@ def p_field_declaration(p):
                 if not p[1].dict['isarray']:
                     env.pres_env.enter_var(var['name'], p[1])
                 else:
-                    env.pres_env.enter_var(var['name'], p[1])
+                    env.pres_env.enter_var(var['name'], p[1], 'arr')
             else:
                 print('Error, var declared again')
+        print('---------------------')
+        print(p[0])
     else:
         p[0]['code'] = ['']
         p[0]['value'] = None
@@ -291,7 +293,6 @@ def p_variable_initializer(p):
 #         # p[0] = ['array_initializer', '{', p[1], ',', '}']
 #         p[0] = dp(p[2])
 
-# TODO:
 def p_variable_initializer_list(p):
     """variable_initializer_list : variable_initializer
                                 | variable_initializer_list COMMA variable_initializer
@@ -313,6 +314,14 @@ def p_method_declaration(p):
     # TODO: Add arguments x86 code
     print('calling function', method_name)
     p[0]['code'] += ['fn_def, ' + method_name + ', ' + str(len(method_params)) + ', '.join(x['value'] for x in method_params)]
+    for x in method_params:
+        print('==-=-=-=-=-')
+        print(x['type'].dict)
+        if x['type'].dict['isarray']:
+            env.pres_env.enter_var(x['value'], x['type'].dict['arr_elem_type'], 'arr')
+        else:
+            env.pres_env.enter_var(x['value'], x['type'].dict['name'][1])
+        print(x)
     if method_params != None:
         for param in method_params:
             # parameters would have been pushed to the stack, so we just pop them off
@@ -577,6 +586,7 @@ def p_embedded_statement(p):
 def p_print_statement(p):
     """ print_statement : PRINT LPAREN expression RPAREN TERMINATOR
     """
+    # print("asdadas")
     p[0] = {}
     p[0]['code'] = p[3]['code']
     p[0]['code'] += ['print, ' + p[3]['value']]
@@ -584,7 +594,9 @@ def p_print_statement(p):
 def p_break_statement(p):
     """break_statement : BREAK TERMINATOR
     """
-    
+    print("------------------")
+    print ("in break")
+    print (p[-3])
     sys.exit()
     # p[0] = ['break_statement', 'BREAK', p[2]]
     
@@ -1177,10 +1189,10 @@ def p_conditional_or_expression(p):
         p[0] = {}
         t = env.mktemp('int')
         if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
-            print("error")
+            print("error in 1190")
             exit()
         if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
-            print("error")
+            print("error in 1193")
             exit()
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
@@ -1198,10 +1210,10 @@ def p_conditional_and_expression(p):
         p[0] = {}
         t = env.mktemp('int')
         if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
-            print("error")
+            print("error in 1211")
             exit()
         if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
-            print("error")
+            print("error in 1214")
             exit()
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
@@ -1219,10 +1231,10 @@ def p_inclusive_or_expression(p):
         p[0] = {}
         t = env.mktemp('int')
         if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
-            print("error")
+            print("error in 1232")
             exit()
         if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
-            print("error")
+            print("error in 1235")
             exit()
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
@@ -1240,10 +1252,10 @@ def p_exclusive_or_expression(p):
         p[0] = {}
         t = env.mktemp('int')
         if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
-            print("error")
+            print("error in 1253")
             exit()
         if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
-            print("error")
+            print("error in 1256")
             exit()
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
