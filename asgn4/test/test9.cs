@@ -1,6 +1,7 @@
 using System;
 public class Program
 {
+    int x = 0;
     int GCD(int num1, int num2)
     {
         int Remainder;
@@ -15,16 +16,11 @@ public class Program
         return num1;
     }
  
-     int Main(string[] args)
+     int Main()
     {
+        x = 10;
         int x, y;
-        Console.Write("Enter the First Number : ");
-        x = Parse(Console.ReadLine());
-        Console.Write("Enter the Second Number : ");
-        y = Parse(Console.ReadLine());
-        Console.Write("\nThe Greatest Common Divisor of ");
-        Console.WriteLine("{0} and {1} is {2}", x, y, GCD(x, y));
-        Console.ReadLine();
-        return 0;
+        x = 9;
+        print(GCD(x, y));
     }
 }

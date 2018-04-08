@@ -154,9 +154,11 @@ def p_field_declaration(p):
     if len(p) == 4:
         p[0]['code'] = ['']
         p[0]['value'] = None
+        print(p[1])
+        print(p[2])
         for var in p[2]:
             p[0]['code'] += var['code']
-            if env.prev_lookup(var['name'], env.pres_env) is None:
+            if env.pres_env.lookup(var['name']) is None:
                 if not p[1].dict['isarray']:
                     env.pres_env.enter_var(var['name'], p[1])
                 else:
@@ -170,7 +172,7 @@ def p_field_declaration(p):
         p[0]['value'] = None
         for var in p[3]:
             p[0]['code'] += var['code']
-            if env.prev_lookup(var['name'], env.pres_env) is None:
+            if env.pres_env.lookup(var['name']) is None:
                 env.pres_env.enter_var(var['name'], p[2])
             else:
                 print('Error, var declared again')
