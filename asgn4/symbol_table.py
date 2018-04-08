@@ -14,7 +14,7 @@ class type:
         if self.dict['isbasic']:
             return self.dict['name']
         elif self.dict['isarray']:
-            return "array of " + self.dict['elem_type'].type_name() + ", length " + str(self.dict['length'])
+            return "array of " + self.dict['arr_elem_type'].type_name() + ", length " + str(self.dict['length'])
 
 class table:
     def __init__(self, previous = None):
@@ -24,6 +24,7 @@ class table:
         self.labels = {}
         self.keywords_list = ['print', 'scan', 'int', 'abstract']
         self.keywords()
+        self.is_func_table = False
         # Add list of all keywords
 
     def enter_var(self, name, Dtype, arr=None, tmp=False):
@@ -99,7 +100,7 @@ class environment:
         new_env = table(self.pres_env)
         self.pres_env.children.append(new_env)
         self.pres_env = new_env
-        # return self.pres_env
+        return self.pres_env
 
     def close_scope(self):
         self.pres_env = self.pres_env.parent
@@ -111,6 +112,11 @@ class environment:
             return False
         else:
             var = env.lookup(name)
+            if env.is_func_table:
+                if var is None:
+                    return False
+                else:
+                    return var
             if(var is None):
                 # print('boo')
                 # print(env.parent.print_symbol_table())
