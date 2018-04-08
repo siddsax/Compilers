@@ -594,10 +594,27 @@ def p_print_statement(p):
 def p_break_statement(p):
     """break_statement : BREAK TERMINATOR
     """
-    print("------------------")
-    print ("in break")
-    print (p[-3])
-    sys.exit()
+    
+    p[0] = {'code': [""], 'value': None}
+    if(p[-1] == None):
+        # print "a"
+        indx = -6
+    elif(p[-2] == None):
+        # print "b"
+        indx = -7
+    else:
+        # print "c"
+        indx = -4
+    if 'category' not in p[indx]:
+        print "error, break not allowed"
+        exit()
+    if p[indx]['category'] == 'while':
+        p[0]['code'] += ['goto, ' + p[indx]['next']]
+    elif p[indx]['category'] == 'if':
+        p[0]['code'] += ['goto, ' + p[indx]['next']]
+        
+    p[0]['break'] = True
+    # sys.exit()
     # p[0] = ['break_statement', 'BREAK', p[2]]
     
     #TODO: Implement
@@ -760,23 +777,28 @@ def p_invocation_expression(p):
 
 def p_if_statement(p):
     """if_statement : if LPAREN expression RPAREN embedded_statement
-    | if LPAREN expression RPAREN embedded_statement ELSE embedded_statement
+    | if LPAREN expression RPAREN embedded_statement else embedded_statement
     """
     p[0] = {'code':[''], 'value':None}    
     if len(p) == 6:
         # p[0] = ['if_statement', p[1], p[2], p[3], p[4], p[5]]
-        p[3]['True'] = env.mklabel()
-        p[3]['False'] = env.mklabel()
+        p[3]['True'] = p[1]['True']#env.mklabel()
+        p[3]['False'] = p[1]['False']#env.mklabel()
+        p[0]['code'] += p[1]['code']
         p[0]['code'] += p[3]['code']
         p[0]['code'] += ['conditional_goto, ==, 1, ' + p[3]['value'] + ", " + p[3]['True']]
         p[0]['code'] += ['goto, ' + p[3]['False']]
         p[0]['code'] += ['label, ' + p[3]['True']]
         p[0]['code'] += p[5]['code']
         p[0]['code'] += ['label, ' + p[3]['False']]
+        if('break' in p[5]):
+            print "Error, break allowed only in if part of if-else"
+            exit()
     else:
         # p[0] = ['if_statement', p[1], p[2], p[3], p[4], p[5], p[6], p[7]]
-        p[3]['True'] = env.mklabel()
-        p[0]['next'] = env.mklabel()
+        p[3]['True'] = p[1]['True']#env.mklabel()
+        p[0]['next'] = p[1]['next']#env.mklabel()
+        p[0]['code'] += p[1]['code']
         p[0]['code'] += p[3]['code']
         p[0]['code'] += ['conditional_goto, ==, 1, ' + p[3]['value'] + ", " + p[3]['True']]
         p[0]['code'] += p[7]['code']
@@ -790,15 +812,27 @@ def p_if(p):
     """
     p[0] = {'code': [''], 'value': None}
     p[0]['category'] = 'if'
+    p[0]['True'] = env.mklabel()
+    p[0]['False'] = env.mklabel()
+    p[0]['begin'] = env.mklabel()
+    p[0]['True'] = env.mklabel()
+    p[0]['next'] = env.mklabel()
+
+def p_else(p):
+    """else : ELSE
+    """
+    p[0] = {'code': [''], 'value': None}
+    # p[0]['category'] = 'if'
+
 
 def p_iteration_statement(p):
     """iteration_statement : while LPAREN expression RPAREN embedded_statement
     """
     # p[0] = ['iteration_statement', p[1], p[2], p[3], p[4], p[5]]
     p[0] = {'code':[''], 'value':None}
-    p[0]['begin'] = env.mklabel()
-    p[0]['next'] = env.mklabel()
-    p[3]['True'] = env.mklabel()
+    p[0]['begin'] = p[1]['begin']
+    p[0]['next'] = p[1]['next']
+    p[3]['True'] = p[1]['True']
     p[0]['code'] += ['label, ' + p[0]['begin']]
     p[0]['code'] += p[3]['code']
     p[0]['code'] += ['conditional_goto, ==, 1, ' + p[3]['value'] + ", " + p[3]['True']]
@@ -807,12 +841,17 @@ def p_iteration_statement(p):
     p[0]['code'] += p[5]['code']
     p[0]['code'] += ['goto, ' + p[0]['begin']]
     p[0]['code'] += ['label, ' + p[0]['next']]
+    # print "----"
+    # print p[0]['next']
 
 def p_while(p):
     """while : WHILE
     """
     p[0] = {'code': [''], 'value': None}
     p[0]['category'] = 'while'
+    p[0]['next'] = env.mklabel()
+    p[0]['True'] = env.mklabel()
+    p[0]['begin'] = env.mklabel()
 
 # EXPRESSION #####################################################################################
 def p_expression(p):
