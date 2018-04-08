@@ -1,23 +1,19 @@
-using System;
-
-
-
 class Test{
-void bar(){
-    int i = 1;
+void bar (int x, int y, int z){
+    int i = x+y;
 }
-void foo (int[] a, int x, int y)
+
+void foo ( int x, int y)
 {
-    i = 3;
     x = y;
-    bar();
+    bar(x, y, x);
 }
 
 void Main(){
     int x, y, a;
     int[] b;
     b[1] = 2;
-    a= foo(b, x, y);
+    a= foo( x, y);
     return 0;
 }
 }

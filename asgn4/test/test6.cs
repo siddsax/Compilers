@@ -45,16 +45,14 @@ class Program
     void Main(string[] args)
     {
 
-        int[] numbers = new int[10];
+        int[] numbers;
         int len = 9;
-        Console.WriteLine("MergeSort :");
         sortmethod(numbers, 0, len - 1);
         int i = 0;
         while(i<9)
         {
-            Console.WriteLine(numbers[i]);                
+            print(numbers[i]);
         }
         
-        Console.Read();
      }
 }
