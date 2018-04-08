@@ -11,7 +11,7 @@ class Program
     void Main()
     {
         int num, sum = 0, r;
-        print("Enter a Number : ");
+        print(num);
         num = 0;
         while (num != 0)
         {
