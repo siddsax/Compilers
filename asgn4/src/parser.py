@@ -661,7 +661,7 @@ def p_return_statement(p):
         p[0]['code'] = ['return']
     else:
         # p[0] = ['return_statement', 'RETURN', p[2], p[3]]
-        if not env.prev_lookup(p[2]['value'], env.pres_env) and not p[2]['value'].isdigit():
+        if not env.prev_lookup(p[2]['value'], env.pres_env):
             print("No var declared. Error in return")
             exit()
         p[0] = {'code':[], 'value':None}
@@ -783,7 +783,7 @@ def p_invocation_expression(p):
                     code = 'fn_call_2, ' + p[1]['value'] + ', ' + str(argc)
                     if indx is not -1:
                         for arg in p[3]:
-                            if not env.prev_lookup(arg['value'], env.pres_env) and not arg['value'].isdigit():
+                            if not env.prev_lookup(arg['value'], env.pres_env):
                                 print("Undeclared vars in fn call")
                                 exit()
                             code += ',' + arg['value']
@@ -792,7 +792,7 @@ def p_invocation_expression(p):
                     code = 'fn_call_1, ' + p[1]['value'] + ', ' + str(argc)
                     if indx is not -1:
                         for arg in p[3]:
-                            if not env.prev_lookup(arg['value'], env.pres_env) and not arg['value'].isdigit():
+                            if not env.prev_lookup(arg['value'], env.pres_env):
                                 print("Undeclared vars in fn call")
                                 exit()
                             code += ',' + arg['value']
@@ -827,7 +827,7 @@ def p_if_statement(p):
         p[0]['code'] += p[5]['code']
         p[0]['code'] += ['label, ' + p[3]['False']]
         if('break' in p[5]):
-            print("Error, break allowed only in if part of if-else")
+            print "Error, break allowed only in if part of if-else"
             exit()
     else:
         # p[0] = ['if_statement', p[1], p[2], p[3], p[4], p[5], p[6], p[7]]
