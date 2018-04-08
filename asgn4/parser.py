@@ -46,6 +46,7 @@ def p_compilation_unit(p):
     else:
         # p[0] = ['compilation_unit', p[1], p[2]]
         p[0]['code'] = p[1]['code'] + p[2]['code']
+
 # USING #############################################################################
 def p_using_directives(p):
     """using_directives : using_directive
@@ -58,12 +59,14 @@ def p_using_directives(p):
     else:
         # p[0] = ['using_directives', p[1], p[2]]
         p[0]['code'] = p[1]['code'] + p[2]['code']
+
 def p_using_directive(p):
     """using_directive : USING identifier TERMINATOR
     """
     p[0] = {}
     # p[0] = ['using_directive', 'USING', p[2], ';']
     p[0]['code'] = [""]
+
 # CLASS #############################################################################
 def p_class_declarations(p):
     """class_declarations : class_declarations class_declaration
@@ -151,7 +154,10 @@ def p_field_declaration(p):
         for var in p[2]:
             p[0]['code'] += var['code']
             if env.prev_lookup(var['name'], env.pres_env) is None:
-                env.pres_env.enter_var(var['name'], p[1])
+                if not p[1].dict['isarray']:
+                    env.pres_env.enter_var(var['name'], p[1])
+                else:
+                    env.pres_env.enter_var(var['name'], p[1])
             else:
                 print('Error, var declared again')
     else:
@@ -198,6 +204,7 @@ def p_proper_identifier(p):
     # p[0] = ['proper_identifier', p[1], p[2]]
     p[0] = {}
     p[0]['value'] = p[1]['value'] + p[2]['value']
+    p[0]['code'] = ['']
 
 def p_prefix(p):
     """prefix : identifier MEMBERACCESS
@@ -211,6 +218,7 @@ def p_prefix(p):
         # p[0] = ['prefix', p[1], p[2], '.']
         p[0] = {}
         p[0]['value'] = p[1]['value'] + p[2]['value'] + str(p[3])
+    p[0]['code'] = ['']
 
 def p_array_type(p):
     """array_type : non_array_type LBRACKET RBRACKET
@@ -235,8 +243,6 @@ def p_type_parameter(p):
         p[0] = st.type(p[1], True, False, None, 1, None)
     else:
         p[0] = st.type(p[1], False, False, None, 1, None)
-
-
 
 def p_variable_declarators(p):
     """variable_declarators : variable_declarator
@@ -285,6 +291,7 @@ def p_variable_initializer(p):
 #         # p[0] = ['array_initializer', '{', p[1], ',', '}']
 #         p[0] = dp(p[2])
 
+# TODO:
 def p_variable_initializer_list(p):
     """variable_initializer_list : variable_initializer
                                 | variable_initializer_list COMMA variable_initializer
@@ -452,6 +459,7 @@ def p_fixed_parameter(p):
         p[0]['type'] = p[1]
         p[0]['value'] = p[2]['value']
 
+# TODO 
 def p_default_argument(p):
     """default_argument : EQUALS expression
     """
@@ -596,7 +604,7 @@ def p_return_statement(p):
     """
     if len(p) == 3:
         # p[0] = ['return_statement', 'RETURN', p[2]]
-        p[0] = {'code':[], 'value':None}        
+        p[0] = {'code':[], 'value':None}
         p[0]['code'] = ['return']
     else:
         # p[0] = ['return_statement', 'RETURN', p[2], p[3]]
@@ -804,7 +812,7 @@ def p_assignment(p):
         p[0]['code'] = dp(p[3]['code'])
         p[0]['code'] += p[1]['code']
         p[0]['code'] += ['=, ' + p[0]['value'] + ', ' + p[3]['value']]
-        if(p[1]['array_el'] is True):
+        if('array_el' in p[1] and p[1]['array_el'] is True):
             p[0]['code'] += ["array_asgn, " + p[1]['par_arr'] + ", " + p[1]['index'] + ", " + p[1]['value']]
 
     else:
@@ -818,6 +826,7 @@ def p_assignment_operator(p):
     #p[0] = ['assignment_operator', p[1]]
     p[0] = {}
     p[0]['value'] = p[1]
+    p[0]['code'] = ['']
 
 def p_unary_expression(p):
     """unary_expression : primary_expression
@@ -830,12 +839,6 @@ def p_unary_expression(p):
                         | TILDE unary_expression
                         | TILDE identifier
     """
-    # if len(p) == 2:
-    #     p[0] = ['unary_expression', p[1]]
-    # elif len(p) == 3:
-    #     p[0] = ['unary_expression', p[1], p[2]]
-    # else:
-    #     p[0] = ['unary_expression', p[1], p[2], p[3]]
     p[0] = {}
     if len(p) == 2:
         p[0] = dp(p[1])
@@ -901,6 +904,7 @@ def p_predefined_type(p):
                                             | CHAR
     """
     p[0] = ['predefined_type', p[1]]
+    # TODO : add support for types using the DS
 
 def p_element_access(p):
     """element_access : primary_no_array_creation_expression LBRACKET expression_list RBRACKET
@@ -912,7 +916,7 @@ def p_element_access(p):
     p[0]['value'] = None
     array = env.prev_lookup(p[1]['value'], env.pres_env)
     if array is not False:
-        if array['category'] == 'arr':
+        if array['category'] == 'arr' or array['type'].dict['isarray'] is True:
             if(len(p[3][1]['value'].split(',')) > 1):
                 print("error in Line No. ", p.lineno(1), "array", p[1], "is not 1D")
             p[0]['code'] += p[3][1]['code']
@@ -946,6 +950,7 @@ def p_element_access(p):
         print("Compilation Terminated")
         exit()
 
+# TODO : 
 def p_expression_list(p):
     """expression_list : expression
                                             | expression_list COMMA expression
@@ -962,7 +967,7 @@ def p_post_increment_expression(p):
     # p[0] = ['post_increment_expression', p[1], p[2]]
     p[0] = dp(p[1])
     p[0]['code'] += ["+, " + p[0]['value'] + ", 1, " + p[0]['value']]
-    if(p[1]['array_el'] is True):
+    if('array_el' in p[1] and p[1]['array_el'] is True):
         p[0]['code'] += ["array_asgn, " + p[0]['par_arr'] + ", " + p[0]['index'] + ", " + p[0]['value']]
 
 
@@ -974,7 +979,7 @@ def p_post_decrement_expression(p):
     # t = symbol_table.maketemp('int', symbol_table.curr_table)
     p[0] = dp(p[1])
     p[0]['code'] += ["-, " + p[0]['value'] + ", 1, " + p[0]['value']]
-    if(p[1]['array_el'] is True):
+    if('array_el' in p[1] and p[1]['array_el'] is True):
         p[0]['code'] += ["array_asgn, " + p[0]['par_arr'] +
                          ", " + p[0]['index'] + ", " + p[0]['value']]
 
@@ -1112,8 +1117,10 @@ def p_array_creation_expression(p):
             p[0]['code'] = p[4]['code']
             p[0]['value'] = 'arr_init, ' + p[4]['value']
             p[0]['length'] =  p[4]['value']
+            p[0]['array_el'] = True
         # p[0] = ['array_creation_expression', p[1], p[2], p[3], p[4], p[5]]
 
+# TODO:
 def p_typeof_expression(p):
     """typeof_expression : TYPEOF LPAREN type RPAREN
                         | TYPEOF LPAREN unbound_type_name RPAREN
@@ -1159,6 +1166,12 @@ def p_conditional_or_expression(p):
         # p[0] = ['conditional_or_expression', p[1], p[2], p[3]]
         p[0] = {}
         t = env.mktemp('int')
+        if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
+            print("error")
+            exit()
+        if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
+            print("error")
+            exit()
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
         p[0]['code'] += ["||, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
@@ -1174,6 +1187,12 @@ def p_conditional_and_expression(p):
         # p[0] = ['conditional_and_expression', p[1], p[2], p[3]]
         p[0] = {}
         t = env.mktemp('int')
+        if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
+            print("error")
+            exit()
+        if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
+            print("error")
+            exit()
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
         p[0]['code'] += ["&&, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
@@ -1189,6 +1208,12 @@ def p_inclusive_or_expression(p):
         # p[0] = ['inclusive_or_expression', p[1], p[2], p[3]]
         p[0] = {}
         t = env.mktemp('int')
+        if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
+            print("error")
+            exit()
+        if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
+            print("error")
+            exit()
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
         p[0]['code'] += ["||, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
@@ -1204,6 +1229,12 @@ def p_exclusive_or_expression(p):
         # p[0] = ['exclusive_or_expression', p[1], p[2], p[3]]
         p[0] = {}
         t = env.mktemp('int')
+        if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
+            print("error")
+            exit()
+        if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
+            print("error")
+            exit()
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
         p[0]['code'] += ["^, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
@@ -1219,6 +1250,12 @@ def p_and_expression(p):
         # p[0] = ['and_expression', p[1], p[2], p[3]]
         p[0] = {}
         t = env.mktemp('int')
+        if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
+            print("error")
+            exit()
+        if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
+            print("error")
+            exit()
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
         p[0]['code'] += ["&, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
@@ -1241,10 +1278,23 @@ def p_equality_expression(p):
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
         if p[2] == '==':
+            if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+            if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+
             p[0]['code'] += ["==, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
         elif p[2] == '!=':
-            p[0]['code'] += ["~=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+            if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+            if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
+                print("error")
+                exit()
 
+            p[0]['code'] += ["~=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
 
 def p_relational_expression(p):
     """ relational_expression : shift_expression
@@ -1265,12 +1315,40 @@ def p_relational_expression(p):
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
         if p[2] == '<':
+            if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+            if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+
             p[0]['code'] += ["<, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
         elif p[2] == '>':
+            if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+            if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+
             p[0]['code'] += [">, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
         elif p[2] == '<=':
+            if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+            if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+
             p[0]['code'] += ["<=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
         elif p[2] == '>=':
+            if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+            if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+
             p[0]['code'] += [">=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
 
 def p_shift_expression(p):
@@ -1290,10 +1368,23 @@ def p_shift_expression(p):
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
         if p[2] == '<<':
+            if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+            if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+
             p[0]['code'] += ["<<, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
         elif p[2] == '>>':
-            p[0]['code'] += [">>, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
+            if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+            if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
+                print("error")
+                exit()
 
+            p[0]['code'] += [">>, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
 
 def p_additive_expression(p):
     """additive_expression : multiplicative_expression
@@ -1312,8 +1403,20 @@ def p_additive_expression(p):
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
         if p[2] == '+':
+            if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+            if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
+                print("error")
+                exit()
             p[0]['code'] += ["+, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
         elif p[2] == '-':
+            if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+            if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
+                print("error")
+                exit()
             p[0]['code'] += ["-, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
 
 def p_multiplicative_expression(p):
@@ -1333,14 +1436,32 @@ def p_multiplicative_expression(p):
         p[0] = {}
         t = env.mktemp('int')
         if p[2] == '*':
+            if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+            if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
+                print("error")
+                exit()
             p[0]['value'] = t
             p[0]['code'] = p[1]['code'] + p[3]['code']
             p[0]['code'] += ["*, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
         elif p[2] == '/':
+            if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+            if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
+                print("error")
+                exit()
             p[0]['value'] = t
             p[0]['code'] = p[1]['code'] + p[3]['code']
             p[0]['code'] += ["/, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
         elif p[2] == '%':
+            if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
+                print("error")
+                exit()
+            if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
+                print("error")
+                exit()
             p[0]['value'] = t
             p[0]['code'] = p[1]['code'] + p[3]['code']
             p[0]['code'] += ["%, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
@@ -1361,6 +1482,9 @@ result = parser.parse(data, debug=0)
 # print(result)
 
 def print_tac(pclass):
+    if pclass is None:
+        print('Not parsable')
+        exit(1)
     print("")
     print("1, fn_call_1, Main")
     c = 2
@@ -1371,46 +1495,3 @@ def print_tac(pclass):
                 c = c + 1
     print(str(c) + ", exit")
 print_tac(result)
-# output = ""
-# def printf(p, prev, nxt):
-
-#     parse = ""
-#     if type(p) is list:
-#         for i in p[1:]:
-#             if type(i) is list:
-#                 parse += " " + i[0]
-#             else:
-#                 if i is None:
-#                    print('fuck')
-#                 parse += " " + str(i)
-
-#         print(prev + " <b style='color:blue'>" + parse + "</b> " + nxt + "<br>")
-#         global output
-#         output += prev + " <b style='color:blue'>" + parse + "</b> " + nxt + "<br>\n"
-
-#         for i in range(len(p)-1, 0, -1):
-#             newp = prev
-
-#             for j in range(1, i):
-#                 if type(p[j]) is list:
-#                     newp += " " + p[j][0]
-#                 else:
-#                    newp += " " + str(p[j])
-
-#             nnxt = printf(p[i], newp, nxt)
-#             nxt = nnxt
-
-#         return nxt
-#     else:
-#         return str(p) + " " + nxt
-
-# print("<html>\n<head></head>\n<body>\n")
-# print("<b style='color:blue'>start</b><br>")
-# result = printf(result, "", "")
-# print("</body>\n</html>")
-
-# output = "<html>\n<head></head>\n<body>\n" + "<b style='color:blue'>start</b><br>\n" + output + "</body>\n</html>"
-# new_file = filename[5:-3]
-# op = open(new_file + '.html', 'w+')
-# op.write(output)
-# op.close()

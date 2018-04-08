@@ -112,7 +112,7 @@ class environment:
         else:
             var = env.lookup(name)
             if(var is None):
-                print('boo')
+                # print('boo')
                 # print(env.parent.print_symbol_table())
                 return self.prev_lookup(name, env.parent)
             else:
