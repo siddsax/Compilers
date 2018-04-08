@@ -30,7 +30,7 @@ precedence = (
 )
 
 """
-TODO: Arrays in method headers
+TODO: Arrays in method headers, check for var existance in return and function call
 """
 def p_start(p):
     """start : compilation_unit
@@ -661,6 +661,9 @@ def p_return_statement(p):
         p[0]['code'] = ['return']
     else:
         # p[0] = ['return_statement', 'RETURN', p[2], p[3]]
+        if not env.prev_lookup(p[2]['value'], env.pres_env):
+            print("No var declared. Error in return")
+            exit()
         p[0] = {'code':[], 'value':None}
         p[0]['code'] += p[2]['code']
         p[0]['value'] = p[2]['value']
@@ -780,12 +783,18 @@ def p_invocation_expression(p):
                     code = 'fn_call_2, ' + p[1]['value'] + ', ' + str(argc)
                     if indx is not -1:
                         for arg in p[3]:
+                            if not env.prev_lookup(arg['value'], env.pres_env):
+                                print("Undeclared vars in fn call")
+                                exit()
                             code += ',' + arg['value']
                     p[0]['code'] += [code + ', ' + t]
                 else:
                     code = 'fn_call_1, ' + p[1]['value'] + ', ' + str(argc)
                     if indx is not -1:
                         for arg in p[3]:
+                            if not env.prev_lookup(arg['value'], env.pres_env):
+                                print("Undeclared vars in fn call")
+                                exit()
                             code += ',' + arg['value']
                     p[0]['code'] += [code]
             else:

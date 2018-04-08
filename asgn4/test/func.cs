@@ -14,7 +14,7 @@ void Main(){
     int[] b;
     b[1] = 2;
     a= foo( x, y);
-    return 0;
+    return x;
 }
 }
 
