@@ -1,58 +1,17 @@
-using System;
-// using System.Collections.Generic;
-// using System.Text;
-// namespace prog
-class Program
-{
-    public void mergemethod(int [] numbers, int left, int mid, int right)
-    {
-        int [] temp = new int[25];
-        int i, left_end, num_elements, tmp_pos;
-        left_end = (mid - 1);
-        tmp_pos = left;
-        num_elements = (right - left + 1);
-        while ((left <= left_end) && (mid <= right))
-        {
-            if (numbers[left] <= numbers[mid])
-                temp[tmp_pos++] = numbers[left++];
-            else
-                temp[tmp_pos++] = numbers[mid++];
+class Program {
+    int d = 2;
+    int l = 6, m = d, p;
+    int fact(int y) {
+        if (y == 1) {
+            return 1;
         }
-        while (left <= left_end)
-            temp[tmp_pos++] = numbers[left++];
-        while (mid <= right)
-            temp[tmp_pos++] = numbers[mid++];
-        i = 0;
-        while (i < num_elements ){
-            numbers[right] = temp[right];
-            right--;
-            i++;
-        }
+        return y*fact(y-1) ;
     }
-     public void sortmethod(int [] numbers, int left, int right)
-    {
-      int mid;
-      if (right > left)
-      {
-        mid = (right + left) / 2;
-        sortmethod(numbers, left, mid);
-        sortmethod(numbers, (mid + 1), right);
-        mergemethod(numbers, left, (mid+1), right);
-
-      }
+    int doublefact(int x) {
+        return d*fact(x);
     }
-
-    void Main(string[] args)
-    {
-
-        int[] numbers;
-        int len = 9;
-        sortmethod(numbers, 0, len - 1);
-        int i = 0;
-        while(i<9)
-        {
-            print(numbers[i]);
-        }
-        
-     }
+    int Main() {
+        int y = 10;
+        int x = fact(y);
+    }
 }

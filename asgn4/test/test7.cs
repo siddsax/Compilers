@@ -13,11 +13,11 @@ public class goal
                 //    print('done'); 
                    a = a/4;
                }
-    return d;
+    return a;
     }
     void main(){
         int c;
-        fn(c,a);
+        fn(c,fn(c, fn(c, c)));
         int j = fn(c,c);
     }
 }
