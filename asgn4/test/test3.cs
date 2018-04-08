@@ -11,16 +11,15 @@ class Program
     void Main()
     {
         int num, sum = 0, r;
-        System.WriteLine("Enter a Number : ");
-        num = Parse(Console.ReadLine());
+        print("Enter a Number : ");
+        num = 0;
         while (num != 0)
         {
             r = num % 10;
             num = num / 10;
             sum = sum + r;
         }
-        System.WriteLine("Sum of Digits of the Number : "+sum);
-        System.ReadLine();
+        print(sum);
 
     }
 }

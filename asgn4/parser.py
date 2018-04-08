@@ -29,6 +29,9 @@ precedence = (
     ('left', 'MEMBERACCESS', 'INCREMENT', 'DECREMENT')
 )
 
+"""
+TODO: Arrays in method headers
+"""
 def p_start(p):
     """start : compilation_unit
     """
@@ -239,9 +242,9 @@ def p_type_parameter(p):
     | predefined_type
     """
     # p[0] = ['type_parameter', p[1]]
-    if p[1][1] == 'int':
+    if p[1] == 'int':
         p[0] = st.type(p[1], True, False, None, 4, None)
-    elif p[1][1] == 'char':
+    elif p[1] == 'char':
         p[0] = st.type(p[1], True, False, None, 1, None)
     else:
         p[0] = st.type(p[1], False, False, None, 1, None)
@@ -314,7 +317,7 @@ def p_method_declaration(p):
     #if return_type != 'void':
     # TODO: Add arguments x86 code
     print('calling function', method_name)
-    p[0]['code'] += ['fn_def, ' + method_name + ', ' + str(len(method_params)) + ', '.join(x['value'] for x in method_params)]
+    p[0]['code'] += ['fn_def, ' + method_name + ', ' + str(len(method_params)) + ', ' + ', '.join(x['value'] for x in method_params)]
     print(method_params)
     for x in method_params:
         print('==-=-=-=-=-')
@@ -323,7 +326,7 @@ def p_method_declaration(p):
             symtab.enter_var(x['value'], x['type'].dict['arr_elem_type'], 'arr')
         else:
             symtab.enter_var(x['value'], x['type'].dict['name'][1])
-        symtab.print_symbol_table()
+        #symtab.print_symbol_table()
     if method_params != None:
         for param in method_params:
             # parameters would have been pushed to the stack, so we just pop them off
@@ -1293,10 +1296,10 @@ def p_and_expression(p):
         p[0] = {}
         t = env.mktemp('int')
         if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
-            print("error")
+            print("error in line 1296")
             exit()
         if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
-            print("error")
+            print("error in line 1299")
             exit()
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
@@ -1321,19 +1324,19 @@ def p_equality_expression(p):
         p[0]['code'] = p[1]['code'] + p[3]['code']
         if p[2] == '==':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
-                print("error")
+                print("error in line 1324")
                 exit()
             if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
-                print("error")
+                print("error in 1327")
                 exit()
 
             p[0]['code'] += ["==, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
         elif p[2] == '!=':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
-                print("error")
+                print("error in 1333")
                 exit()
             if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
-                print("error")
+                print("error in 1336")
                 exit()
 
             p[0]['code'] += ["~=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
@@ -1358,37 +1361,37 @@ def p_relational_expression(p):
         p[0]['code'] = p[1]['code'] + p[3]['code']
         if p[2] == '<':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
-                print("error")
+                print("error 1361")
                 exit()
             if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
-                print("error")
+                print("error in 1364")
                 exit()
 
             p[0]['code'] += ["<, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
         elif p[2] == '>':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
-                print("error")
+                print("error in 1370")
                 exit()
             if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
-                print("error")
+                print("error in 1373")
                 exit()
 
             p[0]['code'] += [">, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
         elif p[2] == '<=':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
-                print("error")
+                print("error in 1379")
                 exit()
             if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
-                print("error")
+                print("error in 1382")
                 exit()
 
             p[0]['code'] += ["<=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
         elif p[2] == '>=':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
-                print("error")
+                print("error in 1388")
                 exit()
             if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
-                print("error")
+                print("error in 1391")
                 exit()
 
             p[0]['code'] += [">=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
