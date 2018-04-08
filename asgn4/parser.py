@@ -584,9 +584,7 @@ def p_print_statement(p):
 def p_break_statement(p):
     """break_statement : BREAK TERMINATOR
     """
-    print("------------------")
-    print "in break"
-    print p[-3]
+    
     sys.exit()
     # p[0] = ['break_statement', 'BREAK', p[2]]
     
@@ -749,8 +747,8 @@ def p_invocation_expression(p):
         exit()
 
 def p_if_statement(p):
-    """if_statement : IF LPAREN expression RPAREN block
-    | IF LPAREN expression RPAREN block ELSE block
+    """if_statement : if LPAREN expression RPAREN embedded_statement
+    | if LPAREN expression RPAREN embedded_statement ELSE embedded_statement
     """
     p[0] = {'code':[''], 'value':None}    
     if len(p) == 6:
@@ -775,8 +773,14 @@ def p_if_statement(p):
         p[0]['code'] += p[5]['code']
         p[0]['code'] += ['label, ' + p[0]['next']]    
 
+def p_if(p):
+    """if : IF
+    """
+    p[0] = {'code': [''], 'value': None}
+    p[0]['category'] = 'if'
+
 def p_iteration_statement(p):
-    """iteration_statement : WHILE LPAREN expression RPAREN block
+    """iteration_statement : while LPAREN expression RPAREN embedded_statement
     """
     # p[0] = ['iteration_statement', p[1], p[2], p[3], p[4], p[5]]
     p[0] = {'code':[''], 'value':None}
@@ -791,6 +795,12 @@ def p_iteration_statement(p):
     p[0]['code'] += p[5]['code']
     p[0]['code'] += ['goto, ' + p[0]['begin']]
     p[0]['code'] += ['label, ' + p[0]['next']]
+
+def p_while(p):
+    """while : WHILE
+    """
+    p[0] = {'code': [''], 'value': None}
+    p[0]['category'] = 'while'
 
 # EXPRESSION #####################################################################################
 def p_expression(p):
