@@ -610,7 +610,12 @@ def p_print_statement(p):
     # print("asdadas")
     p[0] = {}
     p[0]['code'] = p[3]['code']
-    p[0]['code'] += ['print, ' + p[3]['value']]
+    # print(p[3]['value'], '^^^^^^^^^^^^^^^^^^^^^^^^^')
+    if env.prev_lookup(p[3]['value'], env.pres_env):
+        p[0]['code'] += ['print, ' + p[3]['value']]
+    else:
+        print(" variable to print not defined")
+        exit()
 
 def p_break_statement(p):
     """break_statement : BREAK TERMINATOR
