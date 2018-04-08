@@ -17,9 +17,9 @@ class Rectangle
   
   void Display()
   {
-     Console.WriteLine("Length: {0}", length);
-     Console.WriteLine("Width: {0}", width);
-     Console.WriteLine("Area: {0}", GetArea());
+      print(length);
+      print(width);
+      print(GetArea());
   }
 }
 
@@ -30,6 +30,6 @@ class ExecuteRectangle
      Rectangle r = new Rectangle();
      r.Acceptdetails();
      r.Display();
-     Console.ReadLine(); 
+     scan();
   }
 }
