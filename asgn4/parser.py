@@ -88,6 +88,7 @@ def p_class_declaration(p):
     | modifiers CLASS identifier class_body
     """
     p[0] = {}
+    p[0]['category'] = 'function'    
     if len(p) == 6:
         # p[0] = ['class_declaration', p[1], 'CLASS', p[3], p[4], ';']
         p[0]['code'] = p[4]['code']
@@ -407,6 +408,7 @@ def p_method_header(p):
         # param_num = len(params)
         env.pres_env.enter_function(p[3]['value'], p[2], param_types)
 
+    p[0]['category'] = 'function'
 def p_modifiers(p):
     """modifiers : modifier
                                             | modifiers modifier
@@ -496,6 +498,8 @@ def p_constructor_declarator(p):
     # else:
     #     p[0] = ['constructor_declarator', p[1], '(', p[3], ')']
     p[0] = {'code': [""], 'value': None}
+    p[0]['category'] = 'function'
+
 
 def p_constructor_body(p):
     """constructor_body : block
@@ -512,6 +516,8 @@ def p_destructor_declaration(p):
     """
     # p[0] = ['destructor_declaration', p[1], p[2], p[3], p[4], p[5]]
     p[0] = {'code': [""], 'value': None}
+    p[0]['category'] = 'function'
+
 
 def p_destructor_body(p):
     """destructor_body : block
@@ -592,9 +598,9 @@ def p_embedded_statement(p):
     | iteration_statement
     | print_statement
     | break_statement
-    | continue_statement
     | return_statement
     """
+    # | continue_statement
 
     if p[1] == ';':
         p[0] = {}
@@ -622,22 +628,38 @@ def p_break_statement(p):
     """
     
     p[0] = {'code': [""], 'value': None}
-    if(p[-1] == None):
-        # print "a"
-        indx = -6
-    elif(p[-2] == None):
-        # print "b"
-        indx = -7
+    indx = 0
+    # if(p[-1] == None):
+    #     # print "a"
+    #     indx = -6
+    # elif(p[-2] == None):
+    #     # print "b"
+    #     indx = -7
+    # else:
+    #     # print "c"
+    #     indx = -4
+    while(1):
+        try:
+            a = p[indx].keys()
+        except:
+            indx -= 1
+            continue
+        if 'category' in a:
+            break 
+        indx-=1
+    
+    if p[indx]['category'] == 'while':
+        # break
+        p[0]['code'] += ['goto, ' + p[indx]['next']]
     else:
-        # print "c"
-        indx = -4
-    if 'category' not in p[indx]:
         print "error, break not allowed"
         exit()
-    if p[indx]['category'] == 'while':
-        p[0]['code'] += ['goto, ' + p[indx]['next']]
-    elif p[indx]['category'] == 'if':
-        p[0]['code'] += ['goto, ' + p[indx]['next']]
+
+    # if 
+    # else:
+    # if p[indx]['category'] == 'while':
+    # elif p[indx]['category'] == 'if':
+        # p[0]['code'] += ['goto, ' + p[indx]['next']]
         
     p[0]['break'] = True
     # sys.exit()
@@ -826,9 +848,9 @@ def p_if_statement(p):
         p[0]['code'] += ['label, ' + p[3]['True']]
         p[0]['code'] += p[5]['code']
         p[0]['code'] += ['label, ' + p[3]['False']]
-        if('break' in p[5]):
-            print "Error, break allowed only in if part of if-else"
-            exit()
+        # if('break' in p[5]):
+        #     print "Error, break allowed only in if part of if-else"
+        #     exit()
     else:
         # p[0] = ['if_statement', p[1], p[2], p[3], p[4], p[5], p[6], p[7]]
         p[3]['True'] = p[1]['True']#env.mklabel()
@@ -846,7 +868,7 @@ def p_if(p):
     """if : IF
     """
     p[0] = {'code': [''], 'value': None}
-    p[0]['category'] = 'if'
+    # p[0]['category'] = 'if'
     p[0]['True'] = env.mklabel()
     p[0]['False'] = env.mklabel()
     p[0]['begin'] = env.mklabel()
