@@ -694,7 +694,7 @@ def p_statement_expression(p):
     | post_increment_expression
     | post_decrement_expression
     """
-    print("boobies")
+    print("statement_exp")
     # p[0] = ['statement_expression' , p[1]]
     p[0] = dp(p[1])
 
@@ -807,7 +807,6 @@ def p_expression(p):
                     | assignment
     """
     # p[0] = ['expression', p[1]]
-    #print("pussy")
     p[0] = dp(p[1])
 
 
@@ -851,7 +850,7 @@ def p_unary_expression(p):
                         | TILDE identifier
     """
     p[0] = {}
-    print("vibrator")
+    print("Unary Expression")
     if len(p) == 2:
         p[0] = dp(p[1])
     else:
@@ -1169,7 +1168,7 @@ def p_non_assignment_expression(p):
     """
     #p[0] = ['non_assignment_expression', p[1]]
 
-    print("vagina")
+    print("non-assgn-exp")
     p[0] = dp(p[1])
 
 def p_conditional_expression(p):
@@ -1453,7 +1452,7 @@ def p_multiplicative_expression(p):
                                 | multiplicative_expression MOD identifier
     """
     if len(p) == 2:
-        print("dildo")
+        print("In multiplicative with unary or identifier")
         #p[0] = ['multiplicative_expression', p[1]]
         p[0] = dp(p[1])
     else:

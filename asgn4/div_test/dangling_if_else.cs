@@ -1,19 +1,17 @@
-namespace test
+class test 
 {
-	class test 
+	int Main() 
 	{
-		int Main() 
-		{
-			int i = 0;
-			char j="charvar";
-			int[] a = {1,2,3};
-			if (i < 4)
-				++a[i];
-			if (i > 1)
-				--a[i];
-			else 
-				a[i] = 1;
-			Writeline(a[i]);
-		}
+		int i = 0;
+		// char j="charvar";
+		int[] a;
+		a[1] = 3;
+		if (i < 4)
+			a[i]++;
+		if (i > 1)
+			a[i]--;
+		else 
+			a[i] = 1;
+		print(a[i]);
 	}
 }
