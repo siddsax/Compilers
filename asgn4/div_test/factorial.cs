@@ -18,7 +18,7 @@ class Hello
 				int k;
 				b[4] = k < 20;
 			}
-			// k = 3;
+			
 		}
 		foo(ans);
 		return ans;

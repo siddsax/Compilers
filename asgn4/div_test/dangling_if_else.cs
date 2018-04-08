@@ -12,6 +12,6 @@ class test
 			a[i]--;
 		else 
 			a[i] = 1;
-		print(a[i]);
+		print(a[2]);
 	}
 }

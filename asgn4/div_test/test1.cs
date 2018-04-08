@@ -8,9 +8,10 @@ class Program {
         else {
             return y-x;
         }
-
+        // print(max);
     }
     int Main() {
+        int max;
         int num =1;
         int[] numbers ;
         int i = 1;
@@ -19,7 +20,7 @@ class Program {
             numbers[i] = i;
             i++;
         }
-        int y = mul(2,3);
+        int y = mul(2,mul(3,6));
         max = 5;
         numbers[2] = 3 + numbers[1];
         while ( max > num && num < 3) {
