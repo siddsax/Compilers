@@ -310,7 +310,6 @@ def p_method_declaration(p):
         for param in method_params:
             # parameters would have been pushed to the stack, so we just pop them off
             p[0]['code'] += ['pop, ' + param['value']]
-    # print(p[2])
     p[0]['code'] += p[2]['code']
 
 #def p_qualified_identifier(p):
@@ -558,10 +557,7 @@ def p_embedded_statement(p):
     | continue_statement
     | return_statement
     """
-    # if len(p) == 2:
-    #     p[0] = ['embedded_statement', p[1]]
-    # else:
-    #     p[0] = ['embedded_statement', p[1], p[2]]
+
     if p[1] == ';':
         p[0] = {}
         p[0]['code'] = ['']
@@ -573,7 +569,6 @@ def p_embedded_statement(p):
 def p_print_statement(p):
     """ print_statement : PRINT LPAREN expression RPAREN TERMINATOR
     """
-    print("asdadas")
     p[0] = {}
     p[0]['code'] = p[3]['code']
     p[0]['code'] += ['print, ' + p[3]['value']]
@@ -581,6 +576,10 @@ def p_print_statement(p):
 def p_break_statement(p):
     """break_statement : BREAK TERMINATOR
     """
+    print("------------------")
+    print "in break"
+    print p[-3]
+    sys.exit()
     # p[0] = ['break_statement', 'BREAK', p[2]]
     
     #TODO: Implement
@@ -622,7 +621,6 @@ def p_local_variable_declaration(p):
     p[0] = {'code': [''], 'value': None}
     typ = p[1]
     for var in p[2]:
-        # print(var)
         name, init, code = var['value'], var['init'], var['code']
         if env.pres_env.lookup(name) is None:
             p[0]['code'] += code
@@ -670,7 +668,6 @@ def p_local_variable_declarator(p):
         p[0]['value'] = p[1]['value']
         p[0]['init'] = p[3]
         print(p[3])
-        print("111111111")
         p[0]['code'] = p[3]['code']
 
 def p_local_variable_initializer(p): # TODO: Can be removed to reduce conflicts
@@ -686,7 +683,6 @@ def p_statement_expression(p):
     | post_increment_expression
     | post_decrement_expression
     """
-    print("boobies")
     # p[0] = ['statement_expression' , p[1]]
     p[0] = dp(p[1])
 
@@ -708,8 +704,6 @@ def p_invocation_expression(p):
     p[0]['code'] = [""]
     p[0]['value'] = None
     function = env.prev_lookup(p[1]['value'], env.pres_env)
-    # print(env.print_symbol_table(env.pres_env.parent))
-    # print(env.pres_env.parent.print_symbol_table())
     if function is not False:
         if function['category'] == 'function':
             argc = 0
@@ -725,7 +719,6 @@ def p_invocation_expression(p):
                     code = 'fn_call_2, ' + p[1]['value'] + ', ' + str(argc)
                     if indx is not -1:
                         for arg in p[3]:
-                            print(p[3])
                             code += ',' + arg['value']
                     p[0]['code'] += [code + ', ' + t]
                 else:
@@ -746,12 +739,10 @@ def p_invocation_expression(p):
         print("error in Line No. ", p.lineno(1), "Function", p[1]['value'], "This is not a function")
         print("Compilation Terminated")
         exit()
-    print(p[0])
-    print("~~~~~~~~~~~~~")
 
 def p_if_statement(p):
-    """if_statement : IF LPAREN expression RPAREN embedded_statement
-    | IF LPAREN expression RPAREN embedded_statement ELSE embedded_statement
+    """if_statement : IF LPAREN expression RPAREN block
+    | IF LPAREN expression RPAREN block ELSE block
     """
     p[0] = {'code':[''], 'value':None}    
     if len(p) == 6:
@@ -777,7 +768,7 @@ def p_if_statement(p):
         p[0]['code'] += ['label, ' + p[0]['next']]    
 
 def p_iteration_statement(p):
-    """iteration_statement : WHILE LPAREN expression RPAREN embedded_statement
+    """iteration_statement : WHILE LPAREN expression RPAREN block
     """
     # p[0] = ['iteration_statement', p[1], p[2], p[3], p[4], p[5]]
     p[0] = {'code':[''], 'value':None}
@@ -799,7 +790,6 @@ def p_expression(p):
                     | assignment
     """
     # p[0] = ['expression', p[1]]
-    print("pussy")
     p[0] = dp(p[1])
 
 
@@ -818,7 +808,6 @@ def p_assignment(p):
             p[0]['code'] += ["array_asgn, " + p[1]['par_arr'] + ", " + p[1]['index'] + ", " + p[1]['value']]
 
     else:
-        # print('Error in line 598')
         print("ERROR: symbol '"+ p[1]['value'] +"' used without declaration")
         print("Compilation Terminated")
         exit()
@@ -848,7 +837,6 @@ def p_unary_expression(p):
     # else:
     #     p[0] = ['unary_expression', p[1], p[2], p[3]]
     p[0] = {}
-    print("vibrator")
     if len(p) == 2:
         p[0] = dp(p[1])
     else:
@@ -923,11 +911,8 @@ def p_element_access(p):
     p[0]['code'] = [""]
     p[0]['value'] = None
     array = env.prev_lookup(p[1]['value'], env.pres_env)
-    print(array)
-    print("--")
     if array is not False:
         if array['category'] == 'arr':
-            print p[3][1]
             if(len(p[3][1]['value'].split(',')) > 1):
                 print("error in Line No. ", p.lineno(1), "array", p[1], "is not 1D")
             p[0]['code'] += p[3][1]['code']
@@ -938,8 +923,6 @@ def p_element_access(p):
 
             try:
                 val = int(p[3][1]['value'])
-                print(p[3][1]['value'])
-                print(val)
             except ValueError:
                 flag = env.prev_lookup(p[3][1]['value'],env.pres_env)
                 if(flag is False):
@@ -1129,7 +1112,6 @@ def p_array_creation_expression(p):
             p[0]['code'] = p[4]['code']
             p[0]['value'] = 'arr_init, ' + p[4]['value']
             p[0]['length'] =  p[4]['value']
-            print("lund")
         # p[0] = ['array_creation_expression', p[1], p[2], p[3], p[4], p[5]]
 
 def p_typeof_expression(p):
@@ -1158,7 +1140,6 @@ def p_non_assignment_expression(p):
     """
     #p[0] = ['non_assignment_expression', p[1]]
 
-    print("vagina")
     p[0] = dp(p[1])
 
 def p_conditional_expression(p):
@@ -1346,7 +1327,6 @@ def p_multiplicative_expression(p):
                                 | multiplicative_expression MOD identifier
     """
     if len(p) == 2:
-        print("dildo")
         #p[0] = ['multiplicative_expression', p[1]]
         p[0] = dp(p[1])
     else:
