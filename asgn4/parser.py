@@ -628,7 +628,8 @@ def p_break_statement(p):
     """
     
     p[0] = {'code': [""], 'value': None}
-    if(p[-1] == None):
+    indx = 0
+    '''   if(p[-1] == None):
         # print "a"
         indx = -6
     elif(p[-2] == None):
@@ -641,6 +642,18 @@ def p_break_statement(p):
         print("error, break not allowed")
         exit()
     if p[indx]['category'] == 'while':
+        p[0]['code'] += ['goto, ' + p[indx]['next']]'''
+    while(1):
+        try:
+            a = p[indx].keys()
+        except:
+            indx -= 1
+            continue
+        if 'category' in a:
+            break 
+        indx-=1
+    if p[indx]['category'] == 'while':
+         # break
         p[0]['code'] += ['goto, ' + p[indx]['next']]
     elif p[indx]['category'] == 'if':
         p[0]['code'] += ['goto, ' + p[indx]['next']]
