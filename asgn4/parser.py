@@ -544,14 +544,15 @@ def p_scope_marker(p):
     p[0] = t
     #p[0]['params'] = p[-2]['params']
     print(t)
-    for x in p[-2]['params']:
-        print('==-=-=-=-=-')
-        print(x['type'].dict)
-        if x['type'].dict['isarray']:
-            t.enter_var(x['value'], x['type'].dict['arr_elem_type'], 'arr')
-        else:
-            t.enter_var(x['value'], x['type'].dict['name'][1])
-        #t.print_symbol_table()
+    if 'params' in p[-2]:
+        for x in p[-2]['params']:
+            print('==-=-=-=-=-')
+            print(x['type'].dict)
+            if x['type'].dict['isarray']:
+                t.enter_var(x['value'], x['type'].dict['arr_elem_type'], 'arr')
+            else:
+                t.enter_var(x['value'], x['type'].dict['name'][1])
+            #t.print_symbol_table()
 
 
 def p_statement_list(p):
