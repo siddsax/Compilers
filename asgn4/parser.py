@@ -291,6 +291,7 @@ def p_variable_initializer(p):
 #         # p[0] = ['array_initializer', '{', p[1], ',', '}']
 #         p[0] = dp(p[2])
 
+# TODO:
 def p_variable_initializer_list(p):
     """variable_initializer_list : variable_initializer
                                 | variable_initializer_list COMMA variable_initializer
@@ -459,6 +460,7 @@ def p_fixed_parameter(p):
         p[0]['type'] = p[1]
         p[0]['value'] = p[2]['value']
 
+# TODO 
 def p_default_argument(p):
     """default_argument : EQUALS expression
     """
@@ -914,6 +916,7 @@ def p_predefined_type(p):
                                             | CHAR
     """
     p[0] = ['predefined_type', p[1]]
+    # TODO : add support for types using the DS
 
 def p_element_access(p):
     """element_access : primary_no_array_creation_expression LBRACKET expression_list RBRACKET
@@ -968,6 +971,7 @@ def p_element_access(p):
         print("Compilation Terminated")
         exit()
 
+# TODO : 
 def p_expression_list(p):
     """expression_list : expression
                                             | expression_list COMMA expression
@@ -1138,6 +1142,7 @@ def p_array_creation_expression(p):
             # print("lund")
         # p[0] = ['array_creation_expression', p[1], p[2], p[3], p[4], p[5]]
 
+# TODO:
 def p_typeof_expression(p):
     """typeof_expression : TYPEOF LPAREN type RPAREN
                         | TYPEOF LPAREN unbound_type_name RPAREN
