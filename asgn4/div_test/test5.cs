@@ -12,6 +12,6 @@ class Program {
     }
     int Main() {
         int y = 10;
-        int x = fact(y, c);
+        int x = fact(y);
     }
 }
