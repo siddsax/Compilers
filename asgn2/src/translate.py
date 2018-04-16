@@ -259,18 +259,45 @@ def translate(instruction, leader, ir,register):
 		generated_code += instruction[-1] + '\n'
 
 	elif instruction[1] == 'fn_call_1':
+		arg_num = instruction[3]
+		# iterate over the parameters
+		for i in range(int(arg_num)):
+			param = instruction[4+i]
+			if isNumeric(param):
+				param = "$" + param
+			else:
+				param = isMem(ir.address_descriptor[param],register.regdict.keys())
+			generated_code += '\t'+ 'pushl ' + param + '\n'
+		
 		generated_code += '\t' + 'call ' + instruction[2] + '\n'
 
 	elif instruction[1] == 'fn_call_2':
+		arg_num = instruction[3]
+		# iterate over the parameters
+		for i in range(int(arg_num)):
+			param = instruction[4+i]
+			if isNumeric(param):
+				param = "$" + param
+			else:
+				param = isMem(ir.address_descriptor[param],register.regdict.keys())
+			generated_code += '\t'+ 'pushl ' + param + '\n'
+		
 		generated_code += '\t' + 'call ' + instruction[2] + '\n'
 		generated_code += 'movl %eax, ' + instruction[-1] + '\n'
 		ir.address_descriptor[instruction[-1]] = '%eax'
 		register.regdict['%eax'] = instruction[-1]
 
 	elif instruction[1] == 'fn_def':
-		generated_code += instruction[-1] + ':\n'
+		generated_code += instruction[2] + ':\n'
 		generated_code += '\t' + 'pushl %ebp\n'
 		generated_code += '\t' + 'movl %esp, %ebp\n'
+
+		arg_num = instruction[3]
+		# iterate over the parameters
+		for i in range(int(arg_num)):
+			param = instruction[4+i]
+			displacement = 4*i + 4
+			generated_code += '\t' + 'movl '+ str(displacement) + '(%ebp)' + ', ' + isMem(ir.address_descriptor[param], register.regdict.keys()) + '\n'
 
 	elif instruction[1] == 'return':
 		if(leader==1):
