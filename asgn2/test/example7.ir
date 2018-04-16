@@ -4,15 +4,15 @@
 4, +, a, a, b
 5, print, a
 6, conditional_goto, leq, a, 50, kshit
-7, fn_call_1, blue
-8, fn_call_2, foo, dst
+7, fn_call_1, blue, 3, a, b, a
+8, fn_call_2, foo, 0, dst
 9, print, dst
 10, =, dst, 0
 11, exit
-12, fn_def, foo
+12, fn_def, foo, 0
 13, =, chutiya, b
 14, +, a, a, b
 15, return, a
-16, fn_def, blue
+16, fn_def, blue, 3, p1, p2, p3
 17, print, 100
 18, return
