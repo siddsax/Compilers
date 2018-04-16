@@ -25,3 +25,5 @@ asgn3/src/parser.out
 asgn3/src/parsetab.py
 asgn2/src/*.pyc
 asgn2/src/__pycache__
+*.out
+*.s

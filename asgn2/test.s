@@ -1,17 +1,17 @@
 .section .data
+c:
+	.int 0
 f:
 	.int 0
-e:
-	.int 0
 b:
+	.int 0
+e:
 	.int 0
 d:
 	.int 0
 dm:
 	.int 0
 a:
-	.int 0
-c:
 	.int 0
 format:
 	.ascii "%d\0"
@@ -23,30 +23,30 @@ format1:
 main:
 
 	#1, =, a, 2, 
-	movl (a), %edx
-movl $2, %edx
+	movl (a), %ecx
+movl $2, %ecx
 
 	#2, =, b, 7, 
-	movl (b), %eax
-movl $7, %eax
+	movl (b), %ebx
+movl $7, %ebx
 
 	#3, =, c, 4, 
-	movl (c), %ebx
-movl $4, %ebx
+	movl (c), %edx
+movl $4, %edx
 
 	#4, =, d, 6, 
-	movl (d), %ecx
-movl $6, %ecx
+	movl (d), %eax
+movl $6, %eax
 
 	#5, +, a, a, 0, 
-		movl %edx, a
-	movl $0, %edx
-add (a) , %edx
+		movl %ecx, a
+	movl $0, %ecx
+add (a) , %ecx
 ### Flushing -----------
-	movl %edx, a
-	movl %eax, b
-	movl %ebx, c
-	movl %ecx, d
+	movl %ecx, a
+	movl %ebx, b
+	movl %edx, c
+	movl %eax, d
 ### Flushed ------------
 ### Flushing -----------
 ### Flushed ------------
@@ -57,11 +57,11 @@ add (a) , %edx
 	call foo
 movl %eax, c
 ## loading
-movl (c), %edx
+movl (c), %ecx
 
 	#7, print, c, 
 ### Flushing -----------
-	movl %edx, c
+	movl %ecx, c
 	movl %eax, c
 ### Flushed ------------
 	pushl c
@@ -75,20 +75,22 @@ movl (c), %edx
 foo:
 	pushl %ebp
 	movl %esp, %ebp
-	movl 4(%ebp), e
-	movl 8(%ebp), f
-## loading
-movl (dm), %edx
-movl (e), %eax
+movl (e), %ecx
+	movl 4(%ebp), %ecx
 movl (f), %ebx
+	movl 8(%ebp), %ebx
+## loading
+movl (dm), %ecx
+movl (f), %ebx
+movl (e), %edx
 
 	#10, +, dm, e, f, 
-	movl %ebx, %edx
-add %eax, %edx
+	movl %ebx, %ecx
+add %edx, %ecx
 ### Flushing -----------
-	movl %edx, dm
-	movl %eax, e
+	movl %ecx, dm
 	movl %ebx, f
+	movl %edx, e
 ### Flushed ------------
 
 	#11, return, dm, 

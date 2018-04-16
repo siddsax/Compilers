@@ -2,7 +2,7 @@
 2, =, b, 7
 3, =, c, 4
 4, =, d, 6
-5, +, a, a, 0
+5, +, a, a, 10
 6, fn_call_2, foo, 2, a, b, c
 7, print, c
 8, exit

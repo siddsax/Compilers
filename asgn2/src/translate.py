@@ -341,14 +341,21 @@ def translate(instruction, leader, ir,register):
 		# iterate over the parameters
 		for i in range(int(arg_num)):
 			param = instruction[4+i]
-			displacement = 4*i + 4
+			displacement = 4*(int(arg_num) - i) + 4
 			if ir.address_descriptor[param] not in register.regdict.keys():
 				ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list, param)
 			generated_code += asm
 			temp = ir.address_descriptor[param]
 			# generated_code += '\t' + 'movl '+ str(displacement) + '(%ebp)' + ', ' + isMem(ir.address_descriptor[param], register.regdict.keys()) + '\n'
 			generated_code += '\t' + 'movl '+ str(displacement) + '(%ebp)' + ', ' + temp + '\n'
-			
+		
+		generated_code += "### Flushing -----------\n"
+		for reg,var in register.regdict.items():
+			if var is not "":
+				generated_code += '\t' + "movl " + reg + ", " + var + "\n"
+				register.regdict[reg] = ""
+				ir.address_descriptor[var] = var
+		generated_code+= "### Flushed ------------\n"
 
 	elif instruction[1] == 'return':
 		if(leader==1):
