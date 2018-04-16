@@ -53,9 +53,16 @@ class IR:
 				var = instr[2]
 				if(var not in varz):
 					varz.append(var)
-
-			elif instr[1] == 'fn_call_2':
-				varz.append(instr[-1])
+			
+			if instr[1] == 'fn_call_1' or instr[1] == 'fn_call_2' or instr[1] == 'fn_def':
+				for i in range(int(instr[3])):
+					if (instr[4+i] not in varz):
+						varz.append(instr[4+i])
+			
+			if instr[1] == 'fn_call_2':
+				if (instr[1] not in varz):
+					varz.append(instr[-1])
+		
 		for x in varz:
 			self.address_descriptor[x] = x
 		return varz

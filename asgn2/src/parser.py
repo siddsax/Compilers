@@ -50,8 +50,12 @@ def parser(instr, variable_list):
 	if instr[1] == 'fn_call_1':
 		varz["op"].append('fn_call')
 	if instr[1] == 'fn_call_2':
+		varz["op"].append('fn_call')
 		varz["killed"].append(instr[-1])
 	if instr[1] == 'fn_def':
 		varz["op"].append('fn_def')
-		
+	if instr[1] == 'fn_call_1' or instr[1] == 'fn_call_2' or instr[1] == 'fn_def':
+		for i in range(int(instr[3])):
+			varz["used"].append(instr[4+i])
+	
 	return varz
