@@ -103,21 +103,26 @@ class Reg:
 
         return address_descriptor, asm
 
-    def getReg(self,blockNextUseTable, instr, address_descriptor, variable_list):
+    def getReg(self,blockNextUseTable, instr, address_descriptor, variable_list, var=None):
         asm = ''
         self.asm = ''
         parsed = parser(instr, variable_list)
-        if parsed['killed']:
+        if(var):
+            v = var
+        else:
+            v = parsed['killed'][0]
+        if v:
             if not parsed['used']:
-                if not self.condition_1_2(parsed["killed"][0],address_descriptor,blockNextUseTable[int(instr[0])]):
-                    asm = self.condition_3(parsed["killed"][0], int(instr[0]), blockNextUseTable, address_descriptor)
+                if not self.condition_1_2(v,address_descriptor,blockNextUseTable[int(instr[0])]):
+                    asm = self.condition_3(v, int(instr[0]), blockNextUseTable, address_descriptor)
                     if not (asm):
-                        self.condition_4(parsed["killed"][0],address_descriptor)
+                        self.condition_4(v,address_descriptor)
             else:
-                if not self.condition_1_2(parsed["killed"][0], address_descriptor, blockNextUseTable[int(instr[0])], parsed["used"][0]):
-                    asm = self.condition_3(parsed["killed"][0], int(instr[0]), blockNextUseTable, address_descriptor)
+                if not self.condition_1_2(v, address_descriptor, blockNextUseTable[int(instr[0])], parsed["used"][0]):
+                    asm = self.condition_3(v, int(instr[0]), blockNextUseTable, address_descriptor)
                     if not (asm):
-                        self.condition_4(parsed["killed"][0],address_descriptor)
+                        self.condition_4(v,address_descriptor)
+
 
         if self.asm:
             asm = self.asm
