@@ -3,3 +3,5 @@ function call args
 array manipulation
 type checking
 classes = struct + function
+chars
+Add '||' and '&&' and '^'(XOR) and '&' and '==' and '~=' and '<=' and '>=' and '<' and '>'

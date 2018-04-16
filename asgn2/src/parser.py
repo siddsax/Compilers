@@ -7,12 +7,13 @@ def parser(instr, variable_list):
 		"used"   : [],
 		"op"     : []
 	}
-
+		
 	if instr[1] == '=':
-		varz["op"].append('=')
-		varz["killed"].append(instr[-2])
-		if instr[-1] in variable_list:
-			varz["used"].append(instr[-1])
+		if instr[3] != 'arr_init':
+			varz["op"].append('=')
+			varz["killed"].append(instr[-2])
+			if instr[-1] in variable_list:
+				varz["used"].append(instr[-1])
 
 	if instr[1] == '+' or instr[1] == '-' or instr[1] == '*' or instr[1] == '/' or instr[1] == '%' \
 		or instr[1] =='<<' or instr[1] == '>>':
@@ -53,5 +54,11 @@ def parser(instr, variable_list):
 		varz["killed"].append(instr[-1])
 	if instr[1] == 'fn_def':
 		varz["op"].append('fn_def')
-		
+	if instr[1] == 'array_asgn':
+		if instr[-1] in variable_list:
+			varz["used"].append(instr[-1])
+
+	if instr[1] == 'array_access':
+		varz["killed"].append(instr[2])
+
 	return varz

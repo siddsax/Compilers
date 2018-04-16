@@ -12,14 +12,15 @@ class IR:
 		# Consruct the instruction list
 		self.instrlist = []
 		self.instrlist = ircode.split('\n')
-		self.operators = ['=', '+', '-', '<<', '>>', '/', '*', 'scan']
+		self.operators = ['=', '+', '-', '<<', '>>', '/', '*', 'scan', 'array_access']
 
 		self.instrtype = ['=', '+', '-', '<<','>>','<','>' ,'/', '*', '%', '&&', 'conditional_goto', 'goto', 'fn_call', 'fn_def', 'print', 'scan', 'return', 'exit',]
 		self.Blocks = self.Build_Blocks() #  dict { leader_no. : last_line_no }
 		self.address_descriptor = {}
-		self.variable_list = self.Build_varlist()
+		self.variable_list, self.arr_varz = self.Build_varlist()
 		# list of dicts(blocks) where each key(variables) is a list pf list (use lines of that var in that live range)
 		self.next_use_table, self.lineVars = self.Build_next_use_table() 
+		
 
 	def Build_Blocks(self):
 		Blocks = {}
@@ -47,18 +48,30 @@ class IR:
 
 	def Build_varlist(self):
 		varz = []
+		arr_varz = {}
 		for instr in self.instrlist:
 			instr = instr.split(', ')
 			if(instr[1] in self.operators):
-				var = instr[2]
-				if(var not in varz):
-					varz.append(var)
+				if instr[3] == 'arr_init':
 
-			elif instr[1] == 'fn_call_2':
+					var = instr[2]
+					if(var not in arr_varz.keys()):
+						arr_varz[var] = int(instr[4])
+
+				else:
+					var = instr[2]
+					if(var not in varz):
+						varz.append(var)
+
+			elif instr[1] == 'fn_call_2' or instr[1] == 'array_asgn':
 				varz.append(instr[-1])
+
 		for x in varz:
 			self.address_descriptor[x] = x
-		return varz
+		for x in arr_varz.keys():
+			self.address_descriptor[x] = x
+
+		return varz,arr_varz
 
 	def Build_next_use_table(self):
 		table = {} # dict of dicts of dicts

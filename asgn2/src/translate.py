@@ -191,25 +191,70 @@ def translate(instruction, leader, ir,register):
 # ---------------------------------------------------------------------------------------
 
 	elif instruction[1] == "~" or instruction[1] == "=" :
-		if isNumeric(instruction[3]):
-			ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list)
-			generated_code += '\t' + asm
-			new_place = ir.address_descriptor[instruction[2]]
-			if(instruction[1] == '~'):
-				generated_code += "movl $" + str(not int(instruction[3])) + ", " + new_place + "\n"
-			else :
-				generated_code += "movl $" + str(int(instruction[3])) + ", " + new_place + "\n"
+
+		if instruction[3] ==  'arr_init':
+			print("############################33333")
+			# pass
 		else:
-			ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list)
+			if isNumeric(instruction[3]):
+				ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list)
+				generated_code += '\t' + asm
+				new_place = ir.address_descriptor[instruction[2]]
+				if(instruction[1] == '~'):
+					generated_code += "movl $" + str(not int(instruction[3])) + ", " + new_place + "\n"
+				else :
+					generated_code += "movl $" + str(int(instruction[3])) + ", " + new_place + "\n"
+			else:
+				ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list)
+				generated_code += '\t' + asm
+				new_place = ir.address_descriptor[instruction[2]]
+				# generated_code += "movl " + ir.address_descriptor[instruction[4]] + ", " + new_place + "\n"
+				if(ir.address_descriptor[instruction[3]] is not new_place):
+					generated_code += "movl " + isMem(ir.address_descriptor[instruction[3]],register.regdict.keys()) + ", " + new_place + "\n"
+				# else:
+					# generated_code += "movl " + ir.address_descriptor[instruction[3]] + ", " + new_place + "\n"
+				if(instruction[1] == '~'):
+					generated_code += "notl " + new_place + "\n"
+
+			# register.regdict["%edx"] = ""
+			# ir.address_descriptor[instruction[2]] = ""
+	elif instruction[1] == 'array_asgn':
+		# ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list,var=instruction[2])
+		# idx = asm.find(instruction[2])
+		# asm = list(asm)
+		# asm[idx-1] = '$'
+		# asm[idx+len(instruction[2])] = ''
+		# asm = "".join(asm)
+		# generated_code += '\t' + asm
+
+		# # print(ir.address_descriptor)
+		# # print(register.regdict)
+		# new_place = ir.address_descriptor[instruction[2]]
+		# generated_code += "add $" + instruction[3] + " ," + new_place + '\n'
+		# if isNumeric(instruction[4]):
+		# 	generated_code += "movl $" + instruction[4] + ", (" + new_place + ')' + "\n"
+		# else:
+		# 	# reg = 
+		# 	# if reg[0]=='%':
+		# 	# else:
+		# 	ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list,var=instruction[4])
+		# 	generated_code += '\t' + asm
+		# 	generated_code += "movl " + ir.address_descriptor[instruction[4]] + ", (" + new_place + ')' + "\n"
+		# 	# if(ir.address_descriptor[instruction[3]] is not new_place):
+		# 		# generated_code += "movl " + isMem(ir.address_descriptor[instruction[3]],register.regdict.keys()) + ", " + new_place + "\n"
+		if isNumeric(instruction[4]):
+			generated_code += "movl $" + instruction[4] + ", (" + instruction[2] + '+' + instruction[3] + ')' + "\n"
+		else:
+
+			ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list,var=instruction[4])
 			generated_code += '\t' + asm
-			new_place = ir.address_descriptor[instruction[2]]
-			# generated_code += "movl " + ir.address_descriptor[instruction[4]] + ", " + new_place + "\n"
-			if(ir.address_descriptor[instruction[3]] is not new_place):
-				generated_code += "movl " + isMem(ir.address_descriptor[instruction[3]],register.regdict.keys()) + ", " + new_place + "\n"
-			# else:
-				# generated_code += "movl " + ir.address_descriptor[instruction[3]] + ", " + new_place + "\n"
-			if(instruction[1] == '~'):
-				generated_code += "notl " + new_place + "\n"
+			generated_code += "movl " + ir.address_descriptor[instruction[4]] + ", (" + instruction[2] + '+' + instruction[3] + ')' + "\n"
+
+	elif instruction[1] == 'array_access':
+		ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list,var=instruction[2])
+		generated_code += '\t' + asm
+		generated_code += "movl " + "(" + instruction[3] + '+' + instruction[4] + '), ' + ir.address_descriptor[instruction[2]] + "\n"
+
 
 # ------------------------------------------------------------------------------------------------------------
 	elif instruction[1] == 'label':
@@ -287,6 +332,7 @@ def translate(instruction, leader, ir,register):
 			generated_code += '\t' + 'leave\n'
 			generated_code += '\t' + 'ret\n'
 
+	# elif instruction[1] == 'return':
 
 	elif instruction[1] == 'print':
 
@@ -339,4 +385,4 @@ def translate(instruction, leader, ir,register):
 
 
 
-	return generated_code,ir,register;
+	return generated_code,ir,register

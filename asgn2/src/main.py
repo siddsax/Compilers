@@ -17,6 +17,12 @@ for var in list(set(example.variable_list)):
 data_section += 'format:\n'+'\t' + '.ascii \"%d\\0\"\n'
 data_section += 'format1:\n'+'\t' + '.ascii \"%d\\n\\0\"\n'
 
+for var, num in zip(example.arr_varz.keys(), example.arr_varz.values()):
+	# data_section += var + ":  .fill " + str(int((num+1)/2)) + '\n'
+	data_section += var + ":  .fill " + str(num) + ', 4, 0 \n'
+
+	#data_section += var + ":\n" + '\t'+".int 0\n"
+
 bss_section = ".section .bss\n"
 text_section = ".section .text\n" + ".globl main\n" + "main:\n"
 for key,val in example.Blocks.items():
@@ -56,9 +62,13 @@ for key,val in example.Blocks.items():
 			text_section += "### Flushing -----------\n"
 			for reg,var in registers.regdict.items():
 				if var is not "":
-					text_section += '\t' + "movl " + reg + ", " + var + "\n"
-					registers.regdict[reg] = ""
-					example.address_descriptor[var] = var
+					if var in example.arr_varz.keys():
+						registers.regdict[reg] = ""
+						example.address_descriptor[var] = var
+					else:
+						text_section += '\t' + "movl " + reg + ", " + var + "\n"
+						registers.regdict[reg] = ""
+						example.address_descriptor[var] = var
 			text_section+= "### Flushed ------------\n"
 
 FinalCode = data_section + bss_section + text_section
