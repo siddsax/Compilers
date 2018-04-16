@@ -342,8 +342,12 @@ def translate(instruction, leader, ir,register):
 		for i in range(int(arg_num)):
 			param = instruction[4+i]
 			displacement = 4*i + 4
+			if ir.address_descriptor[param] not in register.regdict.keys():
+				ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list, param)
+			generated_code += asm
+			temp = ir.address_descriptor[param]
 			# generated_code += '\t' + 'movl '+ str(displacement) + '(%ebp)' + ', ' + isMem(ir.address_descriptor[param], register.regdict.keys()) + '\n'
-			generated_code += '\t' + 'movl '+ str(displacement) + '(%ebp)' + ', ' + param + '\n'
+			generated_code += '\t' + 'movl '+ str(displacement) + '(%ebp)' + ', ' + temp + '\n'
 			
 
 	elif instruction[1] == 'return':
