@@ -12,12 +12,14 @@ class IR:
 		# Consruct the instruction list
 		self.instrlist = []
 		self.instrlist = ircode.split('\n')
-		self.operators = ['=', '+', '-', '<<', '>>', '/', '*', 'scan','array_access']
+		self.operators = ['=', '+', '-', '<<', '>>', '/', '*', 'scan', 'array_access','||', '&&',\
+						  '==', '<=', '>=', '<', '>'
+						 ]
 
 		self.instrtype = ['=', '+', '-', '<<','>>','<','>' ,'/', '*', '%', '&&', 'conditional_goto', 'goto', 'fn_call', 'fn_def', 'print', 'print_char', 'scan', 'return', 'exit',]
 		self.Blocks = self.Build_Blocks() #  dict { leader_no. : last_line_no }
 		self.address_descriptor = {}
-		self.variable_list, self.arr_varz = self.Build_varlist()
+		self.variable_list, self.arr_varz, self.var_dict = self.Build_varlist()
 		# list of dicts(blocks) where each key(variables) is a list pf list (use lines of that var in that live range)
 		self.next_use_table, self.lineVars = self.Build_next_use_table() 
 		
@@ -49,39 +51,90 @@ class IR:
 	def Build_varlist(self):
 		varz = []
 		arr_varz = {}
+		var_dict = {}
+		cur_func = ''
 		for instr in self.instrlist:
 			instr = instr.split(', ')
-			if(instr[1] in self.operators):
-				if (len(instr) > 3):
-					if instr[3] == 'arr_init':
+
+			# For Locals
+			if(len(cur_func)):
+				if(instr[1] in self.operators):
+					# Arrays are always global
+					if len(instr) > 3:
+						if instr[3] == 'arr_init':
+							var = instr[2]
+							if(var not in arr_varz.keys()):
+								arr_varz[var] = int(instr[4])
+						else:
+							var = instr[2]
+							if(var not in var_dict.keys()):
+								var_dict[var] = cur_func
+
+					else:
 						var = instr[2]
-						if(var not in arr_varz.keys()):
-							arr_varz[var] = int(instr[4])
+						if(var not in var_dict.keys()):
+							var_dict[var] = cur_func
+							# varz.append(var)
+
+				# elif instr[1] == 'fn_call_1' or instr[1] == 'fn_call_2':
+				# 	for i in range(int(instr[3])):
+				# 		if (instr[4+i] not in varz):
+				# 			varz.append(instr[4+i])
+
+				elif instr[1] == 'fn_call_2' or instr[1] == 'array_asgn':
+					if (instr[1] not in var_dict.keys()):
+						var_dict[instr[-1]] = cur_func
+				
+				elif instr[1] == 'return':
+					cur_func = ''
+
+			else:
+				if(instr[1] == 'fn_def'):
+					num_args = int(instr[3])
+					cur_func = instr[2]
+					for i in range(num_args):
+						if(var in var_dict.keys()):
+							print("Error, variable used twice in same funcion defination")
+							exit()
+						var_dict[instr[4+i]] = cur_func
+
+			# For Globals
+				elif(instr[1] in self.operators):
+					if len(instr) > 3:
+						if instr[3] == 'arr_init':
+							var = instr[2]
+							if(var not in arr_varz.keys()):
+								arr_varz[var] = int(instr[4])
+						else:
+							var = instr[2]
+							if(var not in varz):
+								varz.append(var)
+					
 					else:
 						var = instr[2]
 						if(var not in varz):
 							varz.append(var)
 				
-				else:
-					var = instr[2]
-					if(var not in varz):
-						varz.append(var)
-			
-			if instr[1] == 'fn_call_1' or instr[1] == 'fn_call_2' or instr[1] == 'fn_def':
-				for i in range(int(instr[3])):
-					if (instr[4+i] not in varz):
-						varz.append(instr[4+i])
-			
-			if instr[1] == 'fn_call_2' or instr[1] == 'array_asgn':
-				if (instr[1] not in varz):
-					varz.append(instr[-1])
+				# elif instr[1] == 'fn_call_1' or instr[1] == 'fn_call_2':
+				# 	for i in range(int(instr[3])):
+				# 		if (instr[4+i] not in varz):
+				# 			varz.append(instr[4+i])
+				
+				elif instr[1] == 'fn_call_2' or instr[1] == 'array_asgn':
+					if (instr[-1] not in varz):
+						varz.append(instr[-1])
 		
 		for x in varz:
 			self.address_descriptor[x] = x
 		for x in arr_varz.keys():
 			self.address_descriptor[x] = x
 
-		return varz,arr_varz
+		print(varz)
+		print(arr_varz)
+		print(var_dict)
+		exit()
+		return varz,arr_varz,var_dict
+
 
 	def Build_next_use_table(self):
 		table = {} # dict of dicts of dicts

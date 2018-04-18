@@ -1,4 +1,6 @@
 bin/
+asgn4/src/parser.out
+asgn4/src/parsetab.py
 asgn4/dparser.py
 asgn3/__pycache__/
 asgn3/parsetab.py

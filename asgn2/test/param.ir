@@ -2,15 +2,17 @@
 2, =, b, 7
 3, =, c, 4
 4, =, d, 6
-5, =, s, 4
-6, fn_call_2, fact, 1, a, c
+5, +, a, a, 10
+6, fn_call_2, foo, 2, a, c
 7, print, c
-8, exit
-9, fn_def, fact, 1, e
-10, =, dm, 1
-11, conditional_goto, leq, e, 1, ret
-12, -, f, 1, e
-13, fn_call_2, fact, 1, f, g
-14, *, dm, e, g
-15, label, ret
-16, return, dm
+8, fn_call_2, doob, d, a, 44, beam
+9, fn_def, foo, 2, e, f
+10, +, dm, e, f
+11, return, dm
+12, +, a, 4, a
+12, fn_def, doob, 3, m, t, k
+13, =, r, k 
+14, fn_call_2, foo, r, t, z
+15, return, z
+16, =, team, 3, beam
+17, exit 
