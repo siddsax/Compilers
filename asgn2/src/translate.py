@@ -320,6 +320,14 @@ def translate(instruction, leader, ir,register):
 		generated_code += instruction[-1] + '\n'
 
 	elif instruction[1] == 'fn_call_1':
+		# Push the local variables on the stack
+		local_list = []
+		for var, fun in ir.var_dict.items():
+			if (fun == instruction[2]):
+				local_list = local_list.append(var)
+				param = isMem(ir.address_descriptor[var],register.regdict.keys())
+				generated_code += '\t'+ 'pushl ' + param + '\n'
+
 		arg_num = instruction[3]
 		# iterate over the parameters
 		for i in range(int(arg_num)):
@@ -331,8 +339,26 @@ def translate(instruction, leader, ir,register):
 			generated_code += '\t'+ 'pushl ' + param + '\n'
 		
 		generated_code += '\t' + 'call ' + instruction[2] + '\n'
+		generated_code += '\t' + 'add ' + str(4*int(arg_num))+ ', %esp' + '\n'
+
+		# Load back the local variables
+		for i in range(len(local_list)):
+			var = local_list[-(i+1)]
+			param = isMem(ir.address_descriptor[param],register.regdict.keys())
+			generated_code += '\t' + 'popl ' + param + '\n'
 
 	elif instruction[1] == 'fn_call_2':
+		# Push the local variables on the stack
+		# print(instruction)
+		# print(ir.var_dict)
+		# print(ir.address_descriptor)
+		
+		local_list = []
+		for var, fun in ir.var_dict.items():
+			if (fun == instruction[2]):
+				local_list.append(var)
+				param = isMem(ir.address_descriptor[var],register.regdict.keys())
+				generated_code += '\t'+ 'pushl ' + param + '\n'
 		arg_num = instruction[3]
 		# iterate over the parameters
 		for i in range(int(arg_num)):
@@ -344,9 +370,20 @@ def translate(instruction, leader, ir,register):
 			generated_code += '\t'+ 'pushl ' + param + '\n'
 		
 		generated_code += '\t' + 'call ' + instruction[2] + '\n'
+		generated_code += '\t' + 'add $' + str(4*int(arg_num)) + ', %esp' + '\n'
+		
+		# Load back the local variables
+		for i in range(len(local_list)):
+			var = local_list[-(i+1)]
+			param = isMem(ir.address_descriptor[var],register.regdict.keys())
+			generated_code += '\t' + 'popl ' + param + '\n'
+		
 		generated_code += 'movl %eax, ' + instruction[-1] + '\n'
 		ir.address_descriptor[instruction[-1]] = '%eax'
 		register.regdict['%eax'] = instruction[-1]
+
+
+
 
 	elif instruction[1] == 'fn_def':
 		generated_code += instruction[2] + ':\n'
