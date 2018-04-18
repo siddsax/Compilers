@@ -35,6 +35,11 @@ def parser(instr, variable_list):
 		varz["op"].append('print')
 		if instr[-1] in variable_list:
 			varz["used"].append(instr[-1])
+	
+	if instr[1] == 'print_char':
+		varz["op"].append('print_char')
+		if instr[-1] in variable_list:
+			varz["used"].append(instr[-1])
 
 	if instr[1] == 'scan':
 		varz["op"].append('scan')

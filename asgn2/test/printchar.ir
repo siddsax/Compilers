@@ -1,0 +1,5 @@
+1, scan, a
+2, =, b, 72
+3, -, b, a, 1
+4, print_char, a
+5, exit

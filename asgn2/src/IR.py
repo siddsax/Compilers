@@ -12,9 +12,9 @@ class IR:
 		# Consruct the instruction list
 		self.instrlist = []
 		self.instrlist = ircode.split('\n')
-		self.operators = ['=', '+', '-', '<<', '>>', '/', '*', 'scan', 'array_access']
+		self.operators = ['=', '+', '-', '<<', '>>', '/', '*', 'scan','array_access']
 
-		self.instrtype = ['=', '+', '-', '<<','>>','<','>' ,'/', '*', '%', '&&', 'conditional_goto', 'goto', 'fn_call', 'fn_def', 'print', 'scan', 'return', 'exit',]
+		self.instrtype = ['=', '+', '-', '<<','>>','<','>' ,'/', '*', '%', '&&', 'conditional_goto', 'goto', 'fn_call', 'fn_def', 'print', 'print_char', 'scan', 'return', 'exit',]
 		self.Blocks = self.Build_Blocks() #  dict { leader_no. : last_line_no }
 		self.address_descriptor = {}
 		self.variable_list, self.arr_varz = self.Build_varlist()
@@ -52,10 +52,15 @@ class IR:
 		for instr in self.instrlist:
 			instr = instr.split(', ')
 			if(instr[1] in self.operators):
-				if instr[3] == 'arr_init':
-					var = instr[2]
-					if(var not in arr_varz.keys()):
-						arr_varz[var] = int(instr[4])
+				if (len(instr) > 3):
+					if instr[3] == 'arr_init':
+						var = instr[2]
+						if(var not in arr_varz.keys()):
+							arr_varz[var] = int(instr[4])
+					else:
+						var = instr[2]
+						if(var not in varz):
+							varz.append(var)
 				
 				else:
 					var = instr[2]

@@ -404,6 +404,36 @@ def translate(instruction, leader, ir,register):
 				generated_code+= '\t'+ "pushl " + ir.address_descriptor[instruction[2]] + "\n"
 				generated_code += '\t'+ "pushl $format1\n"
 				generated_code += '\t'+ "call printf\n"
+	
+	elif instruction[1] == 'print_char':
+
+# -------------- Flushing
+		generated_code += "### Flushing -----------\n"
+		for reg,var in register.regdict.items():
+			if var is not "":
+				generated_code += '\t' + "movl " + reg + ", " + var + "\n"
+				register.regdict[reg] = ""
+				ir.address_descriptor[var] = var
+		generated_code+= "### Flushed ------------\n"
+
+		if isNumeric(instruction[2]):
+
+			generated_code+= '\t'+ "pushl $" + str(instruction[2]) + "\n"
+			generated_code += '\t'+ "pushl $format2\n"
+			generated_code += '\t'+ "call printf\n"
+
+		else:
+			if( isMem(ir.address_descriptor[instruction[2]],register.regdict.keys())[0] is not '('):
+				generated_code+= '\t'+ "movl " + ir.address_descriptor[instruction[2]] + "," + instruction[2] + "\n"
+				generated_code+= '\t'+ "pushl " + ir.address_descriptor[instruction[2]] + "\n"
+				generated_code += '\t'+ "pushl $format2\n"
+				generated_code += '\t'+ "call printf\n"
+				generated_code+= '\t'+ "movl " + '(' + instruction[2] + ")," + ir.address_descriptor[instruction[2]] + "\n"
+				register.regdict[ir.address_descriptor[instruction[2]]] = instruction[2]
+			else:
+				generated_code+= '\t'+ "pushl " + ir.address_descriptor[instruction[2]] + "\n"
+				generated_code += '\t'+ "pushl $format2\n"
+				generated_code += '\t'+ "call printf\n"
 
 	elif instruction[1] == 'scan':
 
