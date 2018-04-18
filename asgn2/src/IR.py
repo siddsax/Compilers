@@ -55,37 +55,74 @@ class IR:
 		cur_func = ''
 		for instr in self.instrlist:
 			instr = instr.split(', ')
-			if(instr[1] == 'fn_def'):
-				num_args = instr[3]
-				cur_func = instr[2]
-				for i in range(num_args):
-					var_dict[instr[3+i]] = cur_func
 
-			elif(instr[1] in self.operators):
-				if instr[3] == 'arr_init':
-					var = instr[2]
-					if(var not in arr_varz.keys()):
-						arr_varz[var] = int(instr[4])
+			# For Locals
+			if(len(cur_func)):
+				if(instr[1] in self.operators):
+					# Arrays are always global
+					if instr[3] == 'arr_init':
+						var = instr[2]
+						if(var not in arr_varz.keys()):
+							arr_varz[var] = int(instr[4])
+
+					else:
+						var = instr[2]
+						if(var not in var_dict.keys()):
+							var_dict[var] = cur_func
+							# varz.append(var)
+
+				# elif instr[1] == 'fn_call_1' or instr[1] == 'fn_call_2':
+				# 	for i in range(int(instr[3])):
+				# 		if (instr[4+i] not in varz):
+				# 			varz.append(instr[4+i])
+
+				elif instr[1] == 'fn_call_2' or instr[1] == 'array_asgn':
+					if (instr[1] not in var_dict.keys()):
+						var_dict[instr[-1]] = cur_func
 				
-				else:
-					var = instr[2]
-					if(var not in varz):
-						varz.append(var)
-			
-			if instr[1] == 'fn_call_1' or instr[1] == 'fn_call_2' or instr[1] == 'fn_def':
-				for i in range(int(instr[3])):
-					if (instr[4+i] not in varz):
-						varz.append(instr[4+i])
-			
-			if instr[1] == 'fn_call_2' or instr[1] == 'array_asgn':
-				if (instr[1] not in varz):
-					varz.append(instr[-1])
+				elif instr[1] == 'return':
+					cur_func = ''
+
+			else:
+				if(instr[1] == 'fn_def'):
+					num_args = int(instr[3])
+					cur_func = instr[2]
+					for i in range(num_args):
+						if(var in var_dict.keys()):
+							print("Error, variable used twice in same funcion defination")
+							exit()
+						var_dict[instr[4+i]] = cur_func
+
+			# For Globals
+				elif(instr[1] in self.operators):
+					if instr[3] == 'arr_init':
+						var = instr[2]
+						if(var not in arr_varz.keys()):
+							arr_varz[var] = int(instr[4])
+					
+					else:
+						var = instr[2]
+						if(var not in varz):
+							varz.append(var)
+				
+				# elif instr[1] == 'fn_call_1' or instr[1] == 'fn_call_2':
+				# 	for i in range(int(instr[3])):
+				# 		if (instr[4+i] not in varz):
+				# 			varz.append(instr[4+i])
+				
+				elif instr[1] == 'fn_call_2' or instr[1] == 'array_asgn':
+					if (instr[-1] not in varz):
+						varz.append(instr[-1])
 		
 		for x in varz:
 			self.address_descriptor[x] = x
 		for x in arr_varz.keys():
 			self.address_descriptor[x] = x
 
+		print(varz)
+		print(arr_varz)
+		print(var_dict)
+		exit()
 		return varz,arr_varz,var_dict
 
 
