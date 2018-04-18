@@ -1,8 +1,22 @@
 class A{
 
     int x;
-    void func(){
+    int func(){
+        return x;
+    }
+    void func2(){
+        x = 1;
+    }
+}
 
+class C{
+
+    int x;
+    int func(){
+        return x;
+    }
+    void func2(){
+        x = 1;
     }
 }
 
@@ -10,9 +24,13 @@ class B{
     int b;
     void Main(){
         int a;
-        A x;
-        a = x.b;
-        x.func();
+        A x, y;
+        C z;
+        x = y+z;
+        a = x.func();
+        x.func2();
+        y.func2();
+        z.func2();
     }
 
 }

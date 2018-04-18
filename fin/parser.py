@@ -216,6 +216,8 @@ def p_proper_identifier(p):
     p[0]['code'] = ['']
     p[0]['fn_name'] = p[2]['value']
     prev_member = p[1]['prev_member']['value']
+    p[0]['prev_member'] = prev_member
+    #print('chitlksjdflkjsdlfjsldfjldfj')
     print(prev_member)
     test = env.prev_lookup(prev_member, env.pres_env)
     if test is not None:
@@ -402,9 +404,11 @@ def p_method_header(p):
         env.pres_env.enter_function(p[2]['value'], p[1], param_types)
         # TODO: check here whether to use p[-2] or p[-3]
         print('============================================-------------')
-        print(p[-3])
-        print(p[0]['name'])
-        print(p[-2])
+        if(p[-3] is dict):
+            print(p[-3])
+            print(p[0]['name'])
+        elif p[-2] is dict:
+            print(p[-2])
         print('fuck shit fuck')
         print('============================================-------------')
         env.global_env.enter_function(p[-3]['value'] + '_' + p[2]['value'], p[1], param_types)
@@ -829,7 +833,7 @@ def p_invocation_expression(p):
     #print(p[1]['value'])
     #env.print_symbol_table(env.pres_env)
     if function is not False:
-        if function['category'] == 'function':
+        if function is not None and function['category'] == 'function':
             argc = 0
             if indx is not -1:
                 argc = len(p[indx])
@@ -840,14 +844,22 @@ def p_invocation_expression(p):
                 if function['type'] is not 'void':
                     t = env.mktemp(function['type'])
                     p[0]['value'] = t
-                    code = 'fn_call_2, ' + p[1]['value'] + ', ' + str(argc)
+                    if 'fn_name' not in p[1]:
+                        code = 'fn_call_2, ' + p[1]['value'] + ', ' + str(argc)
+                    else:
+                        prev = p[1]['prev_member']
+                        type_prev = env.prev_lookup(prev, env.pres_env)
+                        print('------------------------------------------------')
+                        print(type_prev)
+                        code = 'fn_call_2, ' + type_prev['type'].dict['name'] + '_' + p[1]['fn_name'] + ', ' + str(argc)
                     if indx is not -1:
                         for arg in p[3]:
                             if not env.prev_lookup(arg['value'], env.pres_env) and not arg['value'].isdigit():
                                 print("Undeclared vars in fn call")
                                 exit()
                             code += ',' + arg['value']
-                    p[0]['code'] += [code + ', ' + t]
+                    tmp = env.prev_lookup(t, env.pres_env)
+                    p[0]['code'] += [code + ', ' + t + '_' + str(tmp['tab_no'])]
                 else:
                     code = 'fn_call_1, ' + p[1]['value'] + ', ' + str(argc)
                     if indx is not -1:
@@ -965,15 +977,25 @@ def p_assignment(p):
     print('========================')
     print(p[1]['value'])
     print(env.prev_lookup(p[1]['value'] , env.pres_env))
-   # env.print_symbol_table(env.pres_env)
+    # env.print_symbol_table(env.pres_env)
+    t = env.prev_lookup(p[1]['value'], env.pres_env)
     print('========================')
     if env.prev_lookup(p[1]['value'] , env.pres_env):
         p[0]['value'] = p[1]['value']
         p[0]['code'] = dp(p[3]['code'])
         p[0]['code'] += p[1]['code']
-        p[0]['code'] += ['=, ' + p[0]['value'] + ', ' + p[3]['value']]
+        t2 = env.prev_lookup(p[3]['value'], env.pres_env)
+        if t2 or p[3]['value'].isdigit():
+            if not p[3]['value'].isdigit():
+                p[0]['code'] += ['=, ' + p[0]['value'] + '_' + str(t['tab_no']) + ', ' + p[3]['value'] + '_' + str(t2['tab_no'])]
+            else:
+                p[0]['code'] += ['=, ' + p[0]['value'] + '_' + str(t['tab_no']) + ', ' + p[3]['value']]
+        else:
+            print("ERROR: symbol " + p[3]['value'] + " used without declaration")
+            print("Compilation Terminated")
+            exit(1)
         if('array_el' in p[1] and p[1]['array_el'] is True):
-            p[0]['code'] += ["array_asgn, " + p[1]['par_arr'] + ", " + p[1]['index'] + ", " + p[1]['value']]
+            p[0]['code'] += ["array_asgn, " + p[1]['par_arr'] + '_' + str(t['tab_no']) + ", " + p[1]['index'] + ", " + p[1]['value']]
 
     else:
         print("ERROR: symbol '"+ p[1]['value'] +"' used without declaration")
@@ -1355,9 +1377,20 @@ def p_conditional_or_expression(p):
         if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
             print("error in 1193")
             exit()
+        tmp = env.prev_lookup(t, env.pres_env)
+        tmp1 = env.prev_lookup(p[1]['value'], env.pres_env)
+        tmp2 = env.prev_lookup(p[3]['value'], env.pres_env)
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
-        p[0]['code'] += ["||, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+        t = t + '_' + str(tmp['tab_no'])
+        if p[1]['value'].isdigit() and p[3]['value'].isdigit():
+            p[0]['code'] += ["||, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+        elif p[1]['value'].isdigit():
+            p[0]['code'] += ["||, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+        elif p[3]['value'].isdigit():
+            p[0]['code'] += ["||, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+        else:
+            p[0]['code'] += ["||, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
 
 def p_conditional_and_expression(p):
     """conditional_and_expression : inclusive_or_expression
@@ -1376,9 +1409,22 @@ def p_conditional_and_expression(p):
         if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
             print("error in 1214")
             exit()
+        tmp = env.prev_lookup(t, env.pres_env)
+        tmp1 = env.prev_lookup(p[1]['value'], env.pres_env)
+        tmp2 = env.prev_lookup(p[3]['value'], env.pres_env)
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
-        p[0]['code'] += ["&&, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+        t = t + '_' + str(tmp['tab_no'])
+        if p[1]['value'].isdigit() and p[3]['value'].isdigit():
+            p[0]['code'] += ["&&, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+        elif p[1]['value'].isdigit():
+            p[0]['code'] += ["&&, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+        elif p[3]['value'].isdigit():
+            p[0]['code'] += ["&&, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+        else:
+            p[0]['code'] += ["&&, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+
+        #p[0]['code'] += ["&&, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
 
 def p_inclusive_or_expression(p):
     """inclusive_or_expression : exclusive_or_expression
@@ -1397,9 +1443,20 @@ def p_inclusive_or_expression(p):
         if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
             print("error in 1235")
             exit()
+        tmp = env.prev_lookup(t, env.pres_env)
+        tmp1 = env.prev_lookup(p[1]['value'], env.pres_env)
+        tmp2 = env.prev_lookup(p[3]['value'], env.pres_env)
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
-        p[0]['code'] += ["||, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+        t = t + '_' + str(tmp['tab_no'])
+        if p[1]['value'].isdigit() and p[3]['value'].isdigit():
+            p[0]['code'] += ["||, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+        elif p[1]['value'].isdigit():
+            p[0]['code'] += ["||, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+        elif p[3]['value'].isdigit():
+            p[0]['code'] += ["||, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+        else:
+            p[0]['code'] += ["||, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
 
 def p_exclusive_or_expression(p):
     """exclusive_or_expression : and_expression
@@ -1418,9 +1475,20 @@ def p_exclusive_or_expression(p):
         if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
             print("error in 1256")
             exit()
+        tmp = env.prev_lookup(t, env.pres_env)
+        tmp1 = env.prev_lookup(p[1]['value'], env.pres_env)
+        tmp2 = env.prev_lookup(p[3]['value'], env.pres_env)
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
-        p[0]['code'] += ["^, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+        t = t + '_' + str(tmp['tab_no'])
+        if p[1]['value'].isdigit() and p[3]['value'].isdigit():
+            p[0]['code'] += ["^, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+        elif p[1]['value'].isdigit():
+            p[0]['code'] += ["^, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+        elif p[3]['value'].isdigit():
+            p[0]['code'] += ["^, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+        else:
+            p[0]['code'] += ["^, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
 
 def p_and_expression(p):
     """and_expression : equality_expression
@@ -1439,9 +1507,20 @@ def p_and_expression(p):
         if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
             print("error in line 1299")
             exit()
+        tmp = env.prev_lookup(t, env.pres_env)
+        tmp1 = env.prev_lookup(p[1]['value'], env.pres_env)
+        tmp2 = env.prev_lookup(p[3]['value'], env.pres_env)
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
-        p[0]['code'] += ["&, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+        t = t + '_' + str(tmp['tab_no'])
+        if p[1]['value'].isdigit() and p[3]['value'].isdigit():
+            p[0]['code'] += ["&, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+        elif p[1]['value'].isdigit():
+            p[0]['code'] += ["&, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+        elif p[3]['value'].isdigit():
+            p[0]['code'] += ["&, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+        else:
+            p[0]['code'] += ["&, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
 
 
 def p_equality_expression(p):
@@ -1458,8 +1537,6 @@ def p_equality_expression(p):
     else:
         p[0] = {}
         t = env.mktemp('int')
-        p[0]['value'] = t
-        p[0]['code'] = p[1]['code'] + p[3]['code']
         if p[2] == '==':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
                 print("error in line 1324")
@@ -1467,8 +1544,21 @@ def p_equality_expression(p):
             if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
                 print("error in 1327")
                 exit()
+            tmp = env.prev_lookup(t, env.pres_env)
+            tmp1 = env.prev_lookup(p[1]['value'], env.pres_env)
+            tmp2 = env.prev_lookup(p[3]['value'], env.pres_env)
+            p[0]['value'] = t
+            p[0]['code'] = p[1]['code'] + p[3]['code']
+            t = t + '_' + str(tmp['tab_no'])
+            if p[1]['value'].isdigit() and p[3]['value'].isdigit():
+                p[0]['code'] += ["==, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+            elif p[1]['value'].isdigit():
+                p[0]['code'] += ["==, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+            elif p[3]['value'].isdigit():
+                p[0]['code'] += ["==, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+            else:
+                p[0]['code'] += ["==, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
 
-            p[0]['code'] += ["==, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
         elif p[2] == '!=':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
                 print("error in 1333")
@@ -1476,8 +1566,20 @@ def p_equality_expression(p):
             if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
                 print("error in 1336")
                 exit()
-
-            p[0]['code'] += ["~=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+            tmp = env.prev_lookup(t, env.pres_env)
+            tmp1 = env.prev_lookup(p[1]['value'], env.pres_env)
+            tmp2 = env.prev_lookup(p[3]['value'], env.pres_env)
+            p[0]['value'] = t
+            p[0]['code'] = p[1]['code'] + p[3]['code']
+            t = t + '_' + str(tmp['tab_no'])
+            if p[1]['value'].isdigit() and p[3]['value'].isdigit():
+                p[0]['code'] += ["~=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+            elif p[1]['value'].isdigit():
+                p[0]['code'] += ["~=, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+            elif p[3]['value'].isdigit():
+                p[0]['code'] += ["~=, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+            else:
+                p[0]['code'] += ["~=, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
 
 def p_relational_expression(p):
     """ relational_expression : shift_expression
@@ -1495,8 +1597,6 @@ def p_relational_expression(p):
     else:
         p[0] = {}
         t = env.mktemp('int')
-        p[0]['value'] = t
-        p[0]['code'] = p[1]['code'] + p[3]['code']
         if p[2] == '<':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
                 print("error 1361")
@@ -1504,8 +1604,21 @@ def p_relational_expression(p):
             if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
                 print("error in 1364")
                 exit()
+            tmp = env.prev_lookup(t, env.pres_env)
+            tmp1 = env.prev_lookup(p[1]['value'], env.pres_env)
+            tmp2 = env.prev_lookup(p[3]['value'], env.pres_env)
+            p[0]['value'] = t
+            p[0]['code'] = p[1]['code'] + p[3]['code']
+            t = t + '_' + str(tmp['tab_no'])
+            if p[1]['value'].isdigit() and p[3]['value'].isdigit():
+                p[0]['code'] += ["<, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+            elif p[1]['value'].isdigit():
+                p[0]['code'] += ["<, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+            elif p[3]['value'].isdigit():
+                p[0]['code'] += ["<, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+            else:
+                p[0]['code'] += ["<, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
 
-            p[0]['code'] += ["<, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
         elif p[2] == '>':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
                 print("error in 1370")
@@ -1513,8 +1626,21 @@ def p_relational_expression(p):
             if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
                 print("error in 1373")
                 exit()
+            tmp = env.prev_lookup(t, env.pres_env)
+            tmp1 = env.prev_lookup(p[1]['value'], env.pres_env)
+            tmp2 = env.prev_lookup(p[3]['value'], env.pres_env)
+            p[0]['value'] = t
+            p[0]['code'] = p[1]['code'] + p[3]['code']
+            t = t + '_' + str(tmp['tab_no'])
+            if p[1]['value'].isdigit() and p[3]['value'].isdigit():
+                p[0]['code'] += [">, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+            elif p[1]['value'].isdigit():
+                p[0]['code'] += [">, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+            elif p[3]['value'].isdigit():
+                p[0]['code'] += [">, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+            else:
+                p[0]['code'] += [">, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
 
-            p[0]['code'] += [">, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
         elif p[2] == '<=':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
                 print("error in 1379")
@@ -1522,8 +1648,21 @@ def p_relational_expression(p):
             if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
                 print("error in 1382")
                 exit()
+            tmp = env.prev_lookup(t, env.pres_env)
+            tmp1 = env.prev_lookup(p[1]['value'], env.pres_env)
+            tmp2 = env.prev_lookup(p[3]['value'], env.pres_env)
+            p[0]['value'] = t
+            p[0]['code'] = p[1]['code'] + p[3]['code']
+            t = t + '_' + str(tmp['tab_no'])
+            if p[1]['value'].isdigit() and p[3]['value'].isdigit():
+                p[0]['code'] += ["<=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+            elif p[1]['value'].isdigit():
+                p[0]['code'] += ["<= , " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+            elif p[3]['value'].isdigit():
+                p[0]['code'] += ["<= , " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+            else:
+                p[0]['code'] += ["<=, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
 
-            p[0]['code'] += ["<=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
         elif p[2] == '>=':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
                 print("error in 1388")
@@ -1531,9 +1670,22 @@ def p_relational_expression(p):
             if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
                 print("error in 1391")
                 exit()
+            tmp = env.prev_lookup(t, env.pres_env)
+            tmp1 = env.prev_lookup(p[1]['value'], env.pres_env)
+            tmp2 = env.prev_lookup(p[3]['value'], env.pres_env)
+            p[0]['value'] = t
+            p[0]['code'] = p[1]['code'] + p[3]['code']
+            t = t + '_' + str(tmp['tab_no'])
+            if p[1]['value'].isdigit() and p[3]['value'].isdigit():
+                p[0]['code'] += [">=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+            elif p[1]['value'].isdigit():
+                p[0]['code'] += [">= , " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+            elif p[3]['value'].isdigit():
+                p[0]['code'] += [">= , " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+            else:
+                p[0]['code'] += [">=, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
 
-            p[0]['code'] += [">=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
-
+# TODO: Shift expression table number appending
 def p_shift_expression(p):
     """shift_expression : additive_expression
                         | shift_expression LSHIFT additive_expression
@@ -1583,8 +1735,6 @@ def p_additive_expression(p):
     else:
         p[0] = {}
         t = env.mktemp('int')
-        p[0]['value'] = t
-        p[0]['code'] = p[1]['code'] + p[3]['code']
         if p[2] == '+':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
                 print("error")
@@ -1592,7 +1742,21 @@ def p_additive_expression(p):
             if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
                 print("error")
                 exit()
-            p[0]['code'] += ["+, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+            tmp = env.prev_lookup(t, env.pres_env)
+            tmp1 = env.prev_lookup(p[1]['value'], env.pres_env)
+            tmp2 = env.prev_lookup(p[3]['value'], env.pres_env)
+            p[0]['value'] = t
+            p[0]['code'] = p[1]['code'] + p[3]['code']
+            t = t + '_' + str(tmp['tab_no'])
+            if p[1]['value'].isdigit() and p[3]['value'].isdigit():
+                p[0]['code'] += ["+, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+            elif p[1]['value'].isdigit():
+                p[0]['code'] += ["+, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+            elif p[3]['value'].isdigit():
+                p[0]['code'] += ["+, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+            else:
+                p[0]['code'] += ["+, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+
         elif p[2] == '-':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
                 print("error")
@@ -1600,7 +1764,22 @@ def p_additive_expression(p):
             if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
                 print("error")
                 exit()
-            p[0]['code'] += ["-, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
+            tmp = env.prev_lookup(t, env.pres_env)
+            tmp1 = env.prev_lookup(p[1]['value'], env.pres_env)
+            tmp2 = env.prev_lookup(p[3]['value'], env.pres_env)
+            p[0]['value'] = t
+            p[0]['code'] = p[1]['code'] + p[3]['code']
+            t = t + '_' + str(tmp['tab_no'])
+            if p[1]['value'].isdigit() and p[3]['value'].isdigit():
+                p[0]['code'] += ["-, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+            elif p[1]['value'].isdigit():
+                p[0]['code'] += ["-, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+            elif p[3]['value'].isdigit():
+                p[0]['code'] += ["-, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+            else:
+                p[0]['code'] += ["-, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+
+            #p[0]['code'] += ["-, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
 
 def p_multiplicative_expression(p):
     """multiplicative_expression : unary_expression
@@ -1625,9 +1804,21 @@ def p_multiplicative_expression(p):
             if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
                 print("error")
                 exit()
+            tmp = env.prev_lookup(t, env.pres_env)
+            tmp1 = env.prev_lookup(p[1]['value'], env.pres_env)
+            tmp2 = env.prev_lookup(p[3]['value'], env.pres_env)
             p[0]['value'] = t
             p[0]['code'] = p[1]['code'] + p[3]['code']
-            p[0]['code'] += ["*, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+            t = t + '_' + str(tmp['tab_no'])
+            if p[1]['value'].isdigit() and p[3]['value'].isdigit():
+                p[0]['code'] += ["*, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+            elif p[1]['value'].isdigit():
+                p[0]['code'] += ["*, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+            elif p[3]['value'].isdigit():
+                p[0]['code'] += ["*, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+            else:
+                p[0]['code'] += ["*, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+
         elif p[2] == '/':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
                 print("error")
@@ -1635,9 +1826,24 @@ def p_multiplicative_expression(p):
             if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
                 print("error")
                 exit()
+#            p[0]['value'] = t
+#            p[0]['code'] = p[1]['code'] + p[3]['code']
+#            p[0]['code'] += ["/, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
+            tmp = env.prev_lookup(t, env.pres_env)
+            tmp1 = env.prev_lookup(p[1]['value'], env.pres_env)
+            tmp2 = env.prev_lookup(p[3]['value'], env.pres_env)
             p[0]['value'] = t
             p[0]['code'] = p[1]['code'] + p[3]['code']
-            p[0]['code'] += ["/, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
+            t = t + '_' + str(tmp['tab_no'])
+            if p[1]['value'].isdigit() and p[3]['value'].isdigit():
+                p[0]['code'] += ["/, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+            elif p[1]['value'].isdigit():
+                p[0]['code'] += ["/, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+            elif p[3]['value'].isdigit():
+                p[0]['code'] += ["/, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+            else:
+                p[0]['code'] += ["/, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+
         elif p[2] == '%':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
                 print("error")
@@ -1645,9 +1851,24 @@ def p_multiplicative_expression(p):
             if not p[3]['value'].isdigit() and env.prev_lookup(p[3]['value'], env.pres_env) is False:
                 print("error")
                 exit()
+#            p[0]['value'] = t
+#            p[0]['code'] = p[1]['code'] + p[3]['code']
+#            p[0]['code'] += ["%, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
+            tmp = env.prev_lookup(t, env.pres_env)
+            tmp1 = env.prev_lookup(p[1]['value'], env.pres_env)
+            tmp2 = env.prev_lookup(p[3]['value'], env.pres_env)
             p[0]['value'] = t
             p[0]['code'] = p[1]['code'] + p[3]['code']
-            p[0]['code'] += ["%, " + t + ", " + p[3]['value'] + ", " + p[1]['value']]
+            t = t + '_' + str(tmp['tab_no'])
+            if p[1]['value'].isdigit() and p[3]['value'].isdigit():
+                p[0]['code'] += ["%, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+            elif p[1]['value'].isdigit():
+                p[0]['code'] += ["%, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+            elif p[3]['value'].isdigit():
+                p[0]['code'] += ["%, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+            else:
+                p[0]['code'] += ["%, " + t + ", " + p[1]['value'] + '_' + str(tmp1['tab_no']) + ", " + p[3]['value'] + '_' + str(tmp2['tab_no'])]
+
         #p[0] = ['multiplicative_expression', p[1], p[2], p[3]]
 
 # Error rule for syntax errors

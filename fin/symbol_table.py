@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from copy import deepcopy
+
 class type:
     def __init__(self, name, isbasic, isarray, length, data_width, arr_elem_type):
         self.dict = {}
@@ -25,12 +27,14 @@ class table:
         self.keywords_list = ['print', 'scan', 'int', 'abstract']
         self.keywords()
         self.is_func_table = False
+        self.number = 0
         # Add list of all keywords
 
     def enter_var(self, name, Dtype, arr=None, tmp=False):
         self.entries[name] = {}
         self.entries[name]['type'] = Dtype
         self.entries[name]['category'] = 'var'
+        self.entries[name]['tab_no'] = deepcopy(self.number)
         if(arr):
             self.entries[name]['category'] = 'arr'
         elif tmp:
@@ -78,6 +82,8 @@ class environment:
         self.pres_env = self.global_env
         self.label_count = 0
         self.temp_count = 0
+        self.table_count = 1
+        self.global_env.number = self.table_count
 
     def mklabel(self):
         label_name = 'l' + str(self.label_count)
@@ -100,6 +106,8 @@ class environment:
         new_env = table(self.pres_env)
         self.pres_env.children.append(new_env)
         self.pres_env = new_env
+        self.table_count += 1
+        self.pres_env.number = deepcopy(self.table_count)
         return self.pres_env
 
     def close_scope(self):
