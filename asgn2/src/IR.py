@@ -129,10 +129,6 @@ class IR:
 		for x in arr_varz.keys():
 			self.address_descriptor[x] = x
 
-		print(varz)
-		print(arr_varz)
-		print(var_dict)
-		exit()
 		return varz,arr_varz,var_dict
 
 
