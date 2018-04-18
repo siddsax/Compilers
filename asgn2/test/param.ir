@@ -1,11 +1,16 @@
-1, =, a, 2
+1, =, a, 5
 2, =, b, 7
 3, =, c, 4
 4, =, d, 6
-5, +, a, a, 10
-6, fn_call_2, foo, 2, a, b, c
+5, =, s, 4
+6, fn_call_2, fact, 1, a, c
 7, print, c
 8, exit
-9, fn_def, foo, 2, e, f
-10, +, dm, e, f
-11, return, dm
+9, fn_def, fact, 1, e
+10, =, dm, 1
+11, conditional_goto, leq, e, 1, ret
+12, -, f, 1, e
+13, fn_call_2, fact, 1, f, g
+14, *, dm, e, g
+15, label, ret
+16, return, dm
