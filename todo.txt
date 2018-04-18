@@ -1,6 +1,5 @@
 scope name append
 function call args
-array manipulation
 type checking
 classes = struct + function
 chars

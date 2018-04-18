@@ -33,6 +33,9 @@ line_no, fn_call_2, fn_name, num_args, .......(all the args) .... , dst
 # Print
 line_number, print, arg
 
+# Print_char
+line_number, print_char, arg
+
 # Scan
 line_number, scan, targ_var
 

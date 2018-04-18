@@ -16,6 +16,8 @@ for var in list(set(example.variable_list)):
 	data_section += var + ":\n" + '\t'+".int 0\n"
 data_section += 'format:\n'+'\t' + '.ascii \"%d\\0\"\n'
 data_section += 'format1:\n'+'\t' + '.ascii \"%d\\n\\0\"\n'
+data_section += 'format2:\n'+'\t' + '.ascii \"%c\\n\\0\"\n'
+
 
 for var, num in zip(example.arr_varz.keys(), example.arr_varz.values()):
 	# data_section += var + ":  .fill " + str(int((num+1)/2)) + '\n'
