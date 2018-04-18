@@ -18,7 +18,7 @@ line_no, goto, label_name
 line_number, label, label_name
 
 # function def
-line_number, fn_def, fn_name
+line_number, fn_def, fn_name, num_args, .......(all the args)....
 
 # function return
 line_number, return, variable_name
@@ -47,4 +47,4 @@ line_number, array_access, dst, src_array_pt, index
 line_number, =, variable, arr_init, size 
 
 # Array assignment
-array_asgn, arr_name, memory location(like 4*index for int), src
+line_number, array_asgn, arr_name, memory location(like 4*index for int), src
