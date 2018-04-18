@@ -1,0 +1,11 @@
+1, =, a, 2
+2, =, b, 7
+3, =, c, 4
+4, =, d, 6
+5, +, a, a, 10
+6, fn_call_2, foo, 2, a, b, c
+7, print, c
+8, exit
+9, fn_def, foo, 2, e, f
+10, +, dm, e, f
+11, return, dm

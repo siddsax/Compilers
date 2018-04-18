@@ -320,18 +320,58 @@ def translate(instruction, leader, ir,register):
 		generated_code += instruction[-1] + '\n'
 
 	elif instruction[1] == 'fn_call_1':
+		arg_num = instruction[3]
+		# iterate over the parameters
+		for i in range(int(arg_num)):
+			param = instruction[4+i]
+			if isNumeric(param):
+				param = "$" + param
+			else:
+				param = isMem(ir.address_descriptor[param],register.regdict.keys())
+			generated_code += '\t'+ 'pushl ' + param + '\n'
+		
 		generated_code += '\t' + 'call ' + instruction[2] + '\n'
 
 	elif instruction[1] == 'fn_call_2':
+		arg_num = instruction[3]
+		# iterate over the parameters
+		for i in range(int(arg_num)):
+			param = instruction[4+i]
+			if isNumeric(param):
+				param = "$" + param
+			else:
+				param = isMem(ir.address_descriptor[param],register.regdict.keys())
+			generated_code += '\t'+ 'pushl ' + param + '\n'
+		
 		generated_code += '\t' + 'call ' + instruction[2] + '\n'
 		generated_code += 'movl %eax, ' + instruction[-1] + '\n'
 		ir.address_descriptor[instruction[-1]] = '%eax'
 		register.regdict['%eax'] = instruction[-1]
 
 	elif instruction[1] == 'fn_def':
-		generated_code += instruction[-1] + ':\n'
+		generated_code += instruction[2] + ':\n'
 		generated_code += '\t' + 'pushl %ebp\n'
 		generated_code += '\t' + 'movl %esp, %ebp\n'
+
+		arg_num = instruction[3]
+		# iterate over the parameters
+		for i in range(int(arg_num)):
+			param = instruction[4+i]
+			displacement = 4*(int(arg_num) - i) + 4
+			if ir.address_descriptor[param] not in register.regdict.keys():
+				ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list, param)
+			generated_code += asm
+			temp = ir.address_descriptor[param]
+			# generated_code += '\t' + 'movl '+ str(displacement) + '(%ebp)' + ', ' + isMem(ir.address_descriptor[param], register.regdict.keys()) + '\n'
+			generated_code += '\t' + 'movl '+ str(displacement) + '(%ebp)' + ', ' + temp + '\n'
+		
+		generated_code += "### Flushing -----------\n"
+		for reg,var in register.regdict.items():
+			if var is not "":
+				generated_code += '\t' + "movl " + reg + ", " + var + "\n"
+				register.regdict[reg] = ""
+				ir.address_descriptor[var] = var
+		generated_code+= "### Flushed ------------\n"
 
 	elif instruction[1] == 'return':
 		if(leader==1):

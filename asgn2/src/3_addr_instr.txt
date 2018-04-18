@@ -18,7 +18,7 @@ line_no, goto, label_name
 line_number, label, label_name
 
 # function def
-line_number, fn_def, fn_name, num_args, .......(all the args) ....
+line_number, fn_def, fn_name, num_args, .......(all the args)....
 
 # function return
 line_number, return, variable_name
