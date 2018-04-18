@@ -94,10 +94,10 @@ class environment:
 
     def mktemp(self, Dtype):
         self.temp_count += 1
-        temp_name = '_t' + str(self.temp_count)
+        temp_name = 't' + str(self.temp_count)
         while self.prev_lookup(temp_name, self.pres_env):
             self.temp_count += 1
-            temp_name = '_t' + str(self.temp_count)
+            temp_name = 't' + str(self.temp_count)
 
         self.pres_env.enter_var(temp_name, Dtype, tmp=True)
         return temp_name
