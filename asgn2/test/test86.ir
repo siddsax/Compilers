@@ -14,10 +14,10 @@
 14, =, arr, arr_init, 10
 15, array_asgn, arr, 0, D1737
 16, +, D1738, D1737, a2
-17, array_asgn, arr, 1, D1738
+17, array_asgn, arr, 4, D1738
 18, array_access, d, arr, 0
 19, print, d
-20, array_access, d, arr, 1
+20, array_access, d, arr, 4
 21, print, d
 22, +, D1739, D1738, a3
 23, +, D1740, D1739, a4
@@ -39,6 +39,6 @@
 39, print, b
 40, array_access, d, arr, 0
 41, print, d
-42, array_access, d, arr, 1
+42, array_access, d, arr, 4
 43, print, d
 44, exit

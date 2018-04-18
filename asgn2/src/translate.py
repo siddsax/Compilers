@@ -99,6 +99,22 @@ def translate(instruction, leader, ir,register):
 
 
 # # ---------------------------------------------------------------------------------------
+	elif instruction[1] == '==':
+		if isNumeric(instruction[3]) and isNumeric(instruction[4]):
+			ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor)
+			generated_code += '\t' + asm
+			new_place = ir.address_descriptor[instruction[2]]
+			generated_code +=  "movl $" + str(int(instruction[4]) == int(instruction[3])) + ", " + new_place + "\n"
+			
+		elif isNumeric(instruction[3]) and not isNumeric(instruction[4]):
+			ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list)
+			generated_code += '\t' + asm
+			new_place = ir.address_descriptor[instruction[2]]
+			if instruction[2] != instruction[4]:
+				generated_code +="movl " + isMem(ir.address_descriptor[instruction[4]],register.regdict.keys()) + ", " + new_place + "\n"
+			generated_code += ops[instruction[1]] + " $" + str(int(instruction[3])) + ", " + new_place + "\n"
+
+
 	elif instruction[1] == '*':
 		#<line number,operator,destination, arg1, arg2>
 
