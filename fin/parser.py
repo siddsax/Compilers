@@ -516,12 +516,12 @@ def p_method_header(p):
             p[0]['class_name'] = p[-3]['value']
             env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[3]['value'], p[2], param_types)
         elif type(p[-2]) is dict:
-            env.pres_env.enter_function(p[3]['value'], p[2], param_types, p[-3]['value'])
+            env.pres_env.enter_function(p[3]['value'], p[2], param_types, p[-2]['value'])
             print('============================================-------------')
             print('slkdjflkasjfl;ajsdflkjaslkfjlksdjflksjfljaslfjlsdjflsdflsjdlfkjchititya')
-            print(p[-3])
-            p[0]['class_name'] = p[-3]['value']
-            env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[3]['value'], p[2], param_types)
+            print(p[-2])
+            p[0]['class_name'] = p[-2]['value']
+            env.global_env.enter_function(p[-2]['value'] + 'ooo' + p[3]['value'], p[2], param_types)
 
     p[0]['category'] = 'function'
 
@@ -846,7 +846,10 @@ def p_local_variable_declaration(p):
                     p[0]['code'] += ['=, ' + name + 'ooo' + str(t['tab_no']) + ', ' + init['value']]
                 else:
                     t2 = env.prev_lookup(init['value'], env.pres_env)
-                    p[0]['code'] += ['=, ' + name + 'ooo' + str(t['tab_no']) + ', ' + init['value'] + 'ooo' + str(t2['tab_no'])]
+                    if t2:
+                        p[0]['code'] += ['=, ' + name + 'ooo' + str(t['tab_no']) + ', ' + init['value'] + 'ooo' + str(t2['tab_no'])]
+                    else:
+                        p[0]['code'] += ['=, ' + name + 'ooo' + str(t['tab_no']) + ', ' + init['value']]
         else:
             print('Double declaration')
             exit()
@@ -1109,7 +1112,10 @@ def p_assignment(p):
             print("Compilation Terminated")
             exit(1)
         if('array_el' in p[1] and p[1]['array_el'] is True):
-            p[0]['code'] += ["array_asgn, " + p[1]['par_arr'] + 'ooo' + str(t['tab_no']) + ", " + p[1]['index'] + ", " + p[1]['value']]
+            t3 = env.prev_lookup(p[1]['index'], env.pres_env)
+            t4 = env.prev_lookup(p[1]['value'], env.pres_env)
+            t5 = env.prev_lookup(p[1]['par_arr'], env.pres_env)
+            p[0]['code'] += ["array_asgn, " + p[1]['par_arr'] + 'ooo' + str(t5['tab_no']) + ", " + p[1]['index'] + 'ooo' + str(t3['tab_no']) + ", " + p[1]['value'] + 'ooo' + str(t4['tab_no'])]
 
     else:
         print("ERROR: symbol '"+ p[1]['value'] +"' used without declaration")
@@ -1241,10 +1247,20 @@ def p_element_access(p):
                     print("Error: the index is not declared")
                     exit()
 
-            p[0]['code'] += ['=, ' + t1 + ', ' + p[3][1]['value']]
+            tmp1 = env.prev_lookup(t1, env.pres_env)
+            tmp2 = env.prev_lookup(t2, env.pres_env)
+            tmp3 = env.prev_lookup(t, env.pres_env)
+            tmp4 = env.prev_lookup(p[3][1]['value'], env.pres_env)
+            if tmp4:
+                p[0]['code'] += ['=, ' + t1 + 'ooo' + str(tmp1['tab_no']) + ', ' + p[3][1]['value'] + 'ooo' + str(tmp4['tab_no'])]
+            else:
+                p[0]['code'] += ['=, ' + t1 + 'ooo' + str(tmp1['tab_no']) + ', ' + p[3][1]['value']]
             # add width feature !!!!!!!!!!!!!!!!!!!!!!!!!!
-            p[0]['code'] += ['*, ' + t2 + ', ' + t1 + ', ' + str(array['type'].dict['arr_elem_type'].dict['data_width'])]
-            p[0]['code'] += ['array_access, ' + t + ', ' + p[1]['value'] + ', ' + t2]
+            #print(array['type'].dict['arr_elem_type'].dict['arr_elem_type'].dict)
+            #exit()
+            tmp5 = env.prev_lookup(p[1]['value'], env.pres_env)
+            p[0]['code'] += ['*, ' + t2 + 'ooo' + str(tmp2['tab_no']) + ', ' + t1 + 'ooo' + str(tmp1['tab_no']) + ', ' + str(array['type'].dict['arr_elem_type'].dict['arr_elem_type'].dict['data_width'])]
+            p[0]['code'] += ['array_access, ' + t + 'ooo' + str(tmp3['tab_no']) + ', ' + p[1]['value'] + 'ooo' + str(tmp5['tab_no']) + ', ' + t2 + 'ooo' + str(tmp2['tab_no'])]
             p[0]['value'] = t
             p[0]['array_el'] = True
             p[0]['par_arr'] = p[1]['value']
@@ -1277,7 +1293,10 @@ def p_post_increment_expression(p):
     t1 = env.prev_lookup(p[0]['value'], env.pres_env)
     p[0]['code'] += ["+, " + p[0]['value'] + 'ooo' + str(t1['tab_no']) + ", 1, " + p[0]['value'] + 'ooo' + str(t1['tab_no'])]
     if('array_el' in p[1] and p[1]['array_el'] is True):
-        p[0]['code'] += ["array_asgn, " + p[0]['par_arr'] + 'ooo' + str(t1['tab_no']) + ", " + p[0]['index'] + ", " + p[0]['value']]
+        t2 = env.prev_lookup(p[0]['par_arr'], env.pres_env)
+        t3 = env.prev_lookup(p[0]['index'], env.pres_env)
+        t4 = env.prev_lookup(p[0]['value'], env.pres_env)
+        p[0]['code'] += ["array_asgn, " + p[0]['par_arr'] + 'ooo' + str(t1['tab_no']) + ", " + p[0]['index'] + 'ooo' + str(t3['tab_no']) + ", " + p[0]['value'] + 'ooo' + str(t4['tab_no'])]
 
 
 def p_post_decrement_expression(p):
@@ -1290,8 +1309,13 @@ def p_post_decrement_expression(p):
     t1 = env.prev_lookup(p[0]['value'], env.pres_env)
     p[0]['code'] += ["-, " + p[0]['value'] + 'ooo' + str(t1['tab_no']) + ", 1, " + p[0]['value'] + 'ooo' + str(t1['tab_no'])]
     if('array_el' in p[1] and p[1]['array_el'] is True):
-        p[0]['code'] += ["array_asgn, " + p[0]['par_arr'] + 'ooo' + str(t1['tab_no']) +
-                         ", " + p[0]['index'] + ", " + p[0]['value']]
+        t2 = env.prev_lookup(p[0]['par_arr'], env.pres_env)
+        t3 = env.prev_lookup(p[0]['index'], env.pres_env)
+        t4 = env.prev_lookup(p[0]['value'], env.pres_env)
+
+        p[0]['code'] += ["array_asgn, " + p[0]['par_arr'] + 'ooo' + str(t1['tab_no']) + ", " + p[0]['index'] + 'ooo' + str(t3['tab_no']) + ", " + p[0]['value'] + 'ooo' + str(t4['tab_no'])]
+       # p[0]['code'] += ["array_asgn, " + p[0]['par_arr'] + 'ooo' + str(t1['tab_no']) +
+       #                  ", " + p[0]['index'] + ", " + p[0]['value']]
 
 def p_object_creation_expression(p):
     """object_creation_expression : NEW type LPAREN argument_list RPAREN object_or_collection_initializer
@@ -1420,7 +1444,8 @@ def p_array_creation_expression(p):
     if len(p) == 4:
         p[0] = ['array_creation_expression', p[1], p[2], p[3]]
     else:
-        if(p[2].dict['name'][1] != 'int'):
+        if(p[2].dict['name'] != 'int'):
+            print(p[2].dict['name'])
             print("error, only array of type int are allowed")
             exit()
         else:
