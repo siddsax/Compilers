@@ -39,3 +39,5 @@ fin/ir
 asgn2/ir
 fin/a.out
 fin/out.s
+asgn3/src/__pycache__/
+fin/.gdb_history
