@@ -325,7 +325,7 @@ def p_variable_initializer(p):
 #     """
 #     if len(p) == 3:
 #         # p[0] = ['array_initializer', '{', '}']
-# 	p[0] = {'code':[], 'value':p[1]}
+#     p[0] = {'code':[], 'value':p[1]}
 #     # elif len(p) == 4:
 #     #     p[0] = ['array_initializer', '{', p[1], '}']
 #     else:
@@ -417,10 +417,16 @@ def p_method_header(p):
         if params != None:
             param_types = [param['type'] for param in params]
         # param_num = len(params)
-        env.pres_env.enter_function(p[3]['value'], p[2], param_types, p[-3]['value'])
-        print('============================================-------------')
-        print(p[-3])
-        env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[3]['value'], p[2], param_types)
+        if type(p[-3]) is dict:
+            env.pres_env.enter_function(p[3]['value'], p[2], param_types, p[-3]['value'])
+            print('============================================-------------')
+            print(p[-3])
+            env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[3]['value'], p[2], param_types)
+        elif type(p[-2]) is dict:
+            env.pres_env.enter_function(p[3]['value'], p[2], param_types, p[-2]['value'])
+            print('============================================-------------')
+            print(p[-3])
+            env.global_env.enter_function(p[-2]['value'] + 'ooo' + p[3]['value'], p[2], param_types)
     elif len(p) == 5:
         # p[0] = ['method_header', p[1], p[2], '(', ')']
         p[0] = {}
@@ -469,15 +475,27 @@ def p_method_header(p):
         if params != None:
             param_types = [param['type'] for param in params]
         # param_num = len(params)
-        env.pres_env.enter_function(p[2]['value'], p[1], param_types, p[-3]['value'])
-        print('============================================-------------')
-        print(p[-3])
-        p[0]['class_name'] = p[-3]['value']
-        print('============================================-------------')
-        print('ma;ajsdflkjaslkfjlksdjflksjfljaslfjlsdjflsdflsjdlfkjchititya')
-        print(p[-2])
-        print('============================================-------------')
-        env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[2]['value'], p[1], param_types)
+        if type(p[-3]) is dict:
+            env.pres_env.enter_function(p[2]['value'], p[1], param_types, p[-3]['value'])
+            print('============================================-------------')
+            print(p[-3])
+            p[0]['class_name'] = p[-3]['value']
+            print('============================================-------------')
+            print('ma;ajsdflkjaslkfjlksdjflksjfljaslfjlsdjflsdflsjdlfkjchititya')
+            print(p[-2])
+            print('============================================-------------')
+            env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[2]['value'], p[1], param_types)
+        elif type(p[-2]) is dict:
+            env.pres_env.enter_function(p[2]['value'], p[1], param_types, p[-2]['value'])
+            print('============================================-------------')
+            print(p[-3])
+            p[0]['class_name'] = p[-2]['value']
+            print('============================================-------------')
+            print('ma;ajsdflkjaslkfjlksdjflksjfljaslfjlsdjflsdflsjdlfkjchititya')
+            print(p[-2])
+            print('============================================-------------')
+            env.global_env.enter_function(p[-2]['value'] + 'ooo' + p[2]['value'], p[1], param_types)
+
     else:
         # p[0] = ['method_header', p[1], p[2], p[3], '(', ')']
         p[0] = {}
@@ -490,12 +508,20 @@ def p_method_header(p):
         if params != None:
             param_types = [param['type'] for param in params]
         # param_num = len(params)
-        env.pres_env.enter_function(p[3]['value'], p[2], param_types, p[-3]['value'])
-        print('============================================-------------')
-        print('slkdjflkasjfl;ajsdflkjaslkfjlksdjflksjfljaslfjlsdjflsdflsjdlfkjchititya')
-        print(p[-3])
-        p[0]['class_name'] = p[-3]['value']
-        env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[3]['value'], p[2], param_types)
+        if type(p[-3]) is dict:
+            env.pres_env.enter_function(p[3]['value'], p[2], param_types, p[-3]['value'])
+            print('============================================-------------')
+            print('slkdjflkasjfl;ajsdflkjaslkfjlksdjflksjfljaslfjlsdjflsdflsjdlfkjchititya')
+            print(p[-3])
+            p[0]['class_name'] = p[-3]['value']
+            env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[3]['value'], p[2], param_types)
+        elif type(p[-2]) is dict:
+            env.pres_env.enter_function(p[3]['value'], p[2], param_types, p[-3]['value'])
+            print('============================================-------------')
+            print('slkdjflkasjfl;ajsdflkjaslkfjlksdjflksjfljaslfjlsdjflsdflsjdlfkjchititya')
+            print(p[-3])
+            p[0]['class_name'] = p[-3]['value']
+            env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[3]['value'], p[2], param_types)
 
     p[0]['category'] = 'function'
 
@@ -1995,9 +2021,7 @@ def print_tac(pclass):
         for line in member['code']:
             tmp = line.split(', ')
             if line is not "" and tmp[0] in check_op:
-       
-	
-		tring = str(c) + ', ' + tmp[0] + ', ' + tmp[1] + ', ' + tmp[3] + ', ' + tmp[2]
+                tring = str(c) + ', ' + tmp[0] + ', ' + tmp[1] + ', ' + tmp[3] + ', ' + tmp[2]
                
                 fin_str += tring + '\n'
                 c += 1
