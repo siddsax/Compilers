@@ -1,0 +1,29 @@
+# Features Implemented:
+     Data Types - int
+     Operators
+            int:
+                - Unary: !,-,~,+
+                - Assignment: = 
+                - Relational: <, >, ==, !=
+                - Arithmetic: +,-,/,%
+                - Bitwise: <<,>>,&,|,^
+                - Logical ops: &&,||
+            bool (realized as int 0 and 1):
+                - Unary: ! or ~
+                - Logical: &&,||
+                - Assignment: =
+
+     Iteration statement: while
+     Selection Statements: if
+     Classes
+    	- Only one class allowed in the program
+     Functions
+        - Allowed return types: int
+        - Allowed argument types: int
+        - Multiple params allowed
+     Scoping
+    	- Imlemented as a tree of symbol tables
+    
+USAGE:
+$ make
+$ bin/parser test/<NAME_OF_FILE>.cs
