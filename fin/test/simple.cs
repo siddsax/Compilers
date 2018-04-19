@@ -1,6 +1,7 @@
 class Test{
     void Main(){
-        int i = 0;
+        int i;
+        i = 0;
         while (i<=3)
         {
             i++;

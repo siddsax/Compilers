@@ -1,9 +1,6 @@
 class Program {
-    int d;
-    d = 2;
+    int d = 10;
     int l,m,p;
-    l = 6;
-    m = d;
     int fact(int y) {
         if (y <= 1) {
             return 1;
