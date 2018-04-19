@@ -3,9 +3,8 @@ class Test{
         int i = 0;
         while (i<=3)
         {
-//            break;
             i++;
         }
-
+	print(i);
     }
 }
