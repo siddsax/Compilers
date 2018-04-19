@@ -1,18 +1,18 @@
 ############################33333
 .section .data
-k:
-	.int 0
-q:
-	.int 0
-b:
+d:
 	.int 0
 p:
 	.int 0
-d:
+c:
+	.int 0
+q:
 	.int 0
 a:
 	.int 0
-c:
+k:
+	.int 0
+b:
 	.int 0
 format:
 	.ascii "%d\0"
@@ -28,75 +28,86 @@ main:
 
 	#1, =, arr, arr_init, 10, 
 
-	#2, =, a, 5, 
+	#2, =, a, 4, 
 	movl (a), %ebx
-movl $5, %ebx
+movl $4, %ebx
 
 	#3, =, q, 2, 
-	movl (q), %eax
-movl $2, %eax
+	movl (q), %edx
+movl $2, %edx
 
 	#4, =, b, 2, 
-	movl (b), %ecx
-movl $2, %ecx
+	movl %edx, q
+movl (b), %edx
+movl $2, %edx
 
 	#5, +, c, a, b, 
-	movl (c), %edx
-###-/--
-movl %ecx, %edx
-add %ebx, %edx
+	movl (c), %eax
+movl %edx, %eax
+add %ebx, %eax
 
 	#6, -, k, 2, 3, 
-	movl %eax, q
-movl $1, %eax
+	movl (k), %ecx
+movl $1, %ecx
 
-	#7, /, k, a, k, 
-	movl %eax, k
-	movl %edx, c
-	movl %ecx, b
+	#7, /, k, 1, k, 
+	movl %eax, c
+	movl %edx, b
+	movl %ecx, k
 	movl $0, %edx
 	movl (k), %eax
-	movl %ebx, %ecx
+	movl $1, %ecx
 	idiv %ecx
 
 	#8, <, p, k, c, 
-	movl (p), %ecx
-###-/--
-movl (c), %ecx
-cmp  %eax, %ecx
-movl $1,%ecx
+	movl (p), %edx
+movl (c), %edx
+cmp  %eax, %edx
+movl $1,%edx
 jl comparision_lbl_8
-movl $0,%ecx
+movl $0,%edx
 comparision_lbl_8:
 
 	#9, array_asgn, arr, a, b, 
-	movl $arr, %edx
-###-/--
-add a ,%edx
-	###----
-############
-movl b, (%edx)
-
-	#10, array_access, d, arr, k, 
+	movl %edx, p
+movl $arr, %edx
+addl a ,%edx
 	movl %eax, k
-movl $arr, %eax
-###-/--
-add (k) ,%eax
-	movl (d), %edx
-###-/--
-movl (%eax), %edx
+movl (b), %eax
+############
+movl %eax, (%edx)
 
-	#11, print, d, 
+	#10, array_access, d, arr, 4, 
+	movl $arr, %edx
+addl $4 ,%edx
+	movl (d), %ecx
+movl (%edx), %ecx
+
+	#11, print, a, 
 ### Flushing -----------
 	movl %ebx, a
-	movl %ecx, p
-	movl %edx, d
+	movl %eax, b
+	movl %ecx, d
+### Flushed ------------
+	pushl a
+	pushl $format1
+	call printf
+
+	#12, print, b, 
+### Flushing -----------
+### Flushed ------------
+	pushl b
+	pushl $format1
+	call printf
+
+	#13, print, d, 
+### Flushing -----------
 ### Flushed ------------
 	pushl d
 	pushl $format1
 	call printf
 
-	#12, exit, 
+	#14, exit, 
 	call exit
 ### Flushing -----------
 ### Flushed ------------
