@@ -18,6 +18,7 @@ asgn3/parsetab.pyc
 asgn3/right_derivation.html
 asgn3/*.pyc
 asgn3/errors.txt
+asgn3/src/*.pyc
 asgn4/__pycache__/
 asgn4/parser.out
 asgn4/parsetab.py
@@ -35,7 +36,12 @@ asgn4/*.zip
 fin/__pycache__/
 fin/parsetab.py
 fin/parser.out
+asgn2/.floo*
+asgn2/test/.gdb*
+asgn3/dangling_if_else.html
 fin/ir
 asgn2/ir
 fin/a.out
 fin/out.s
+fin/__pycache__/lexer.cpython-35.pyc
+fin/__pycache__/symbol_table.cpython-35.pyc

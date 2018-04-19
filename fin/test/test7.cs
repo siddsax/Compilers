@@ -1,5 +1,4 @@
-using System;
-public class goal
+class goal
 {
     int fn(int a, int c){
     if(a>c)         
@@ -17,7 +16,9 @@ public class goal
     }
     void main(){
         int c;
-        fn(c,fn(c, fn(c, c)));
-        int j = fn(c,c);
+        c = 2;
+        int a;
+        a = fn(c,fn(c, fn(c, c)));
+        print(a);        
     }
 }

@@ -19,5 +19,7 @@ class Program {
             }
             i = i + 1;
         }
+        print(num);
+        print(i);
     }
 }

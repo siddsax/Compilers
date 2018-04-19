@@ -6,7 +6,10 @@ class Program {
         return y*fact(y-1) ; 		
     }
     int Main() {
-        int y = 10;
-        int x = fact(y);
+        int y;
+        y = 7;
+        int x;
+        x = fact(y);
+        print(x);
     }
 }
