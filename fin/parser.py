@@ -410,11 +410,11 @@ def p_method_header(p):
         if(p[-3] is dict):
             print(p[-3])
             print(p[0]['name'])
+            env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[2]['value'], p[1], param_types)
         elif p[-2] is dict:
             print(p[-2])
-        print('fuck shit fuck')
-        print('============================================-------------')
-        env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[2]['value'], p[1], param_types)
+            env.global_env.enter_function(p[-2]['value'] + 'ooo' + p[2]['value'], p[1], param_types)
+        #env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[2]['value'], p[1], param_types)
     elif p[3] == '(':
         # p[0] = ['method_header', p[1], p[2], '(', p[4], ')']
         p[0] = {}
@@ -950,7 +950,8 @@ def p_iteration_statement(p):
     p[3]['True'] = p[1]['True']
     p[0]['code'] += ['label, ' + p[0]['begin']]
     p[0]['code'] += p[3]['code']
-    p[0]['code'] += ['conditional_goto, ==, 1, ' + p[3]['value'] + ", " + p[3]['True']]
+    t1 = env.prev_lookup(p[3]['value'], env.pres_env)
+    p[0]['code'] += ['conditional_goto, ==, 1, ' + p[3]['value'] + 'ooo' + str(t1['tab_no']) + ", " + p[3]['True']]
     p[0]['code'] += ['goto, ' + p[0]['next']]
     p[0]['code'] += ['label, ' + p[3]['True']]
     p[0]['code'] += p[5]['code']
@@ -1168,9 +1169,10 @@ def p_post_increment_expression(p):
     """
     # p[0] = ['post_increment_expression', p[1], p[2]]
     p[0] = dp(p[1])
-    p[0]['code'] += ["+, " + p[0]['value'] + ", 1, " + p[0]['value']]
+    t1 = env.prev_lookup(p[0]['value'], env.pres_env)
+    p[0]['code'] += ["+, " + p[0]['value'] + 'ooo' + str(t1['tab_no']) + ", 1, " + p[0]['value'] + 'ooo' + str(t1['tab_no'])]
     if('array_el' in p[1] and p[1]['array_el'] is True):
-        p[0]['code'] += ["array_asgn, " + p[0]['par_arr'] + ", " + p[0]['index'] + ", " + p[0]['value']]
+        p[0]['code'] += ["array_asgn, " + p[0]['par_arr'] + 'ooo' + str(t1['tab_no']) + ", " + p[0]['index'] + ", " + p[0]['value']]
 
 
 def p_post_decrement_expression(p):
@@ -1180,9 +1182,10 @@ def p_post_decrement_expression(p):
     # p[0] = ['post_decrement_expression', p[1], p[2]]
     # t = symbol_table.maketemp('int', symbol_table.curr_table)
     p[0] = dp(p[1])
-    p[0]['code'] += ["-, " + p[0]['value'] + ", 1, " + p[0]['value']]
+    t1 = env.prev_lookup(p[0]['value'], env.pres_env)
+    p[0]['code'] += ["-, " + p[0]['value'] + 'ooo' + str(t1['tab_no']) + ", 1, " + p[0]['value'] + 'ooo' + str(t1['tab_no'])]
     if('array_el' in p[1] and p[1]['array_el'] is True):
-        p[0]['code'] += ["array_asgn, " + p[0]['par_arr'] +
+        p[0]['code'] += ["array_asgn, " + p[0]['par_arr'] + 'ooo' + str(t1['tab_no']) +
                          ", " + p[0]['index'] + ", " + p[0]['value']]
 
 def p_object_creation_expression(p):
@@ -1756,13 +1759,19 @@ def p_additive_expression(p):
             p[0]['value'] = t
             p[0]['code'] = p[1]['code'] + p[3]['code']
             t = t + 'ooo' + str(tmp['tab_no'])
+            print('motherfucker')
+            print('=========================================================================')
             if p[1]['value'].isdigit() and p[3]['value'].isdigit():
+                print('in 1')
                 p[0]['code'] += ["+, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
             elif p[1]['value'].isdigit():
+                print('in 2')
                 p[0]['code'] += ["+, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + 'ooo' + str(tmp2['tab_no'])]
             elif p[3]['value'].isdigit():
+                print('in 3')
                 p[0]['code'] += ["+, " + t + ", " + p[1]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[3]['value']]
             else:
+                print('in 4')
                 p[0]['code'] += ["+, " + t + ", " + p[1]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[3]['value'] + 'ooo' + str(tmp2['tab_no'])]
 
         elif p[2] == '-':
@@ -1901,9 +1910,17 @@ def print_tac(pclass):
     print("")
     print("1, fn_call_1, Main")
     c = 2
+    check_op = ['+', '-', '*', '/', '<', '>', '<=', '>=', '%']
     fin_str = "1, fn_call_1, Main, 0\n"
     for member in [pclass]:
         for line in member['code']:
+            tmp = line.split(', ')
+            if line is not "" and tmp[0] in check_op:
+                tring = str(c) + ', ' + tmp[0] + ', ' + tmp[1] + ', ' + tmp[3] + ', ' + tmp[2]
+                print(tring)
+                fin_str += tring + '\n'
+                c += 1
+                continue
             if line != "":
                 #print(line)
                 print(str(c) + ", " + line)
