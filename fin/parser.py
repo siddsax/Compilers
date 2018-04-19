@@ -1714,13 +1714,13 @@ def p_equality_expression(p):
             p[0]['code'] = p[1]['code'] + p[3]['code']
             t = t + 'ooo' + str(tmp['tab_no'])
             if p[1]['value'].isdigit() and p[3]['value'].isdigit():
-                p[0]['code'] += ["~=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+                p[0]['code'] += ["~, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
             elif p[1]['value'].isdigit():
-                p[0]['code'] += ["~=, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + 'ooo' + str(tmp2['tab_no'])]
+                p[0]['code'] += ["~, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + 'ooo' + str(tmp2['tab_no'])]
             elif p[3]['value'].isdigit():
-                p[0]['code'] += ["~=, " + t + ", " + p[1]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+                p[0]['code'] += ["~, " + t + ", " + p[1]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[3]['value']]
             else:
-                p[0]['code'] += ["~=, " + t + ", " + p[1]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[3]['value'] + 'ooo' + str(tmp2['tab_no'])]
+                p[0]['code'] += ["~, " + t + ", " + p[1]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[3]['value'] + 'ooo' + str(tmp2['tab_no'])]
 
 def p_relational_expression(p):
     """ relational_expression : shift_expression
@@ -2037,26 +2037,31 @@ def print_tac(pclass):
     if pclass is None:
         print('Not parsable')
         exit(1)
-    print("")
-    print("1, fn_call_1, Main")
+    # print("")
+    # print("1, fn_call_1, Main")
     c = 2
     check_op = ['+', '-', '*', '/', '<', '>', '<=', '>=', '%']
     fin_str = "1, fn_call_1, Main, 0\n"
     for member in [pclass]:
         for line in member['code']:
+            # print(line)
+            # print(c)
+            # print("\n")
             tmp = line.split(', ')
             if line is not "" and tmp[0] in check_op:
                 tring = str(c) + ', ' + tmp[0] + ', ' + tmp[1] + ', ' + tmp[3] + ', ' + tmp[2]
                
                 fin_str += tring + '\n'
                 c += 1
-                continue
-            if line != "":
+            elif line != "":
                 #print(line)
-                print(str(c) + ", " + line)
-                fin_str += str(c) + ", " + line + '\n'
+                tring = str(c) + ", " + line + '\n'
+                fin_str += tring
                 c = c + 1
-    print(str(c) + ", exit")
+            
+            # print(tring)
+            # print("--===========\n")
+    # print(str(c) + ", exit")
     fin_str += str(c) + ", exit"
     print(fin_str)
     return fin_str
