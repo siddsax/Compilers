@@ -1728,9 +1728,9 @@ def p_relational_expression(p):
             if p[1]['value'].isdigit() and p[3]['value'].isdigit():
                 p[0]['code'] += ["<=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
             elif p[1]['value'].isdigit():
-                p[0]['code'] += ["<= , " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + 'ooo' + str(tmp2['tab_no'])]
+                p[0]['code'] += ["<=, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + 'ooo' + str(tmp2['tab_no'])]
             elif p[3]['value'].isdigit():
-                p[0]['code'] += ["<= , " + t + ", " + p[1]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+                p[0]['code'] += ["<=, " + t + ", " + p[1]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[3]['value']]
             else:
                 p[0]['code'] += ["<=, " + t + ", " + p[1]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[3]['value'] + 'ooo' + str(tmp2['tab_no'])]
 
@@ -1976,8 +1976,10 @@ def print_tac(pclass):
         for line in member['code']:
             tmp = line.split(', ')
             if line is not "" and tmp[0] in check_op:
-                tring = str(c) + ', ' + tmp[0] + ', ' + tmp[1] + ', ' + tmp[3] + ', ' + tmp[2]
-                print(tring)
+       
+	
+		tring = str(c) + ', ' + tmp[0] + ', ' + tmp[1] + ', ' + tmp[3] + ', ' + tmp[2]
+               
                 fin_str += tring + '\n'
                 c += 1
                 continue
@@ -1988,6 +1990,7 @@ def print_tac(pclass):
                 c = c + 1
     print(str(c) + ", exit")
     fin_str += str(c) + ", exit"
+    print(fin_str)
     return fin_str
 print('----------------------------------------------')
 print(result)
