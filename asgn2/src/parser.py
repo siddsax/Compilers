@@ -46,31 +46,39 @@ def parser(instr, variable_list):
         varz["op"].append('scan')
         varz["killed"].append(instr[-1])
 
-    if instr[1] == 'return':
-        varz["op"].append('return')
-        if instr[-1] in variable_list:
-            varz["used"].append(instr[-1])            
-    if instr[1] == 'conditional_goto':
-        varz["op"].append('conditional_goto')
-    if instr[1] == 'goto':
-        varz["op"].append('goto')
-    if instr[1] == 'fn_call_1':
-        varz["op"].append('fn_call')
-    if instr[1] == 'fn_call_2':
-        varz["op"].append('fn_call')
-        varz["killed"].append(instr[-1])
-    if instr[1] == 'fn_def':
-        varz["op"].append('fn_def')
-        
-    if instr[1] == 'fn_call_1' or instr[1] == 'fn_call_2' or instr[1] == 'fn_def':
-        for i in range(int(instr[3])):
-            varz["used"].append(instr[4+i])
-    
-    if instr[1] == 'array_asgn':
-        if instr[-1] in variable_list:
-            varz["used"].append(instr[-1])
+	if instr[1] == 'return':
+		varz["op"].append('return')
+		if instr[-1] in variable_list:
+			varz["used"].append(instr[-1])			
+	if instr[1] == 'conditional_goto':
+		varz["op"].append('conditional_goto')
+	if instr[1] == 'goto':
+		varz["op"].append('goto')
+	if instr[1] == 'fn_call_1':
+		varz["op"].append('fn_call')
+	if instr[1] == 'fn_call_2':
+		varz["op"].append('fn_call')
+		varz["killed"].append(instr[-1])
+	if instr[1] == 'fn_def':
+		varz["op"].append('fn_def')
+		
+	if instr[1] == 'fn_call_1' or instr[1] == 'fn_call_2' or instr[1] == 'fn_def':
+		for i in range(int(instr[3])):
+			varz["used"].append(instr[4+i])
+	
+	if instr[1] == 'array_asgn':
+		if instr[-1] in variable_list:
+			varz["used"].append(instr[-1])
+		if instr[3] in variable_list:
+			varz["used"].append(instr[3])
+		varz["used"].append(instr[2])
+		varz['op'] = 'array_asgn'
 
-    if instr[1] == 'array_access':
-        varz["killed"].append(instr[2])
+	if instr[1] == 'array_access':
+		varz["killed"].append(instr[2])
+		if instr[-1] in variable_list:
+			varz["used"].append(instr[-1])
+		varz["used"].append(instr[3])
+		varz['op'] = 'array_access'
 
     return varz

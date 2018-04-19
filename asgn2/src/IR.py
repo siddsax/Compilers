@@ -62,15 +62,10 @@ class IR:
 			if(len(cur_func)):
 				if(instr[1] in self.operators):
 					# Arrays are always global
-					if len(instr) > 3:
-						if instr[3] == 'arr_init':
+					if len(instr) > 3 and instr[3] == 'arr_init':
 							var = instr[2]
 							if(var not in arr_varz.keys()):
 								arr_varz[var] = int(instr[4])
-						else:
-							var = instr[2]
-							if(var not in var_dict.keys() and var not in varz):
-								var_dict[var] = cur_func
 
 					else:
 						var = instr[2]
@@ -131,6 +126,7 @@ class IR:
 		for x in arr_varz.keys():
 			self.address_descriptor[x] = x
 
+		# print(varz)
 		return varz,arr_varz,var_dict
 
 
