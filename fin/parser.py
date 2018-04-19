@@ -159,12 +159,20 @@ def p_field_declaration(p):
         print(p[1])
         print(p[2])
         for var in p[2]:
-            p[0]['code'] += var['code']
+            #print(var['code'])
             if env.pres_env.lookup(var['name']) is None:
                 if not p[1].dict['isarray']:
                     env.pres_env.enter_var(var['name'], p[1])
                 else:
                     env.pres_env.enter_var(var['name'], p[1], 'arr')
+                #p[0]['code'] += var['code']
+                t = env.prev_lookup(var['name'], env.pres_env)
+                if var['init']:
+                    if var['init'].isdigit():
+                        p[0]['code'] += ['=, ' + var['name'] + 'ooo' + str(t['tab_no']) + ', ' + var['init']]
+                    else:
+                        t2 = env.prev_lookup(var['init'], env.pres_env)
+                        p[0]['code'] += ['=, ' + var['name'] + 'ooo' + str(t['tab_no']) + ', ' + var['init'] + 'ooo' + str(t2['tab_no'])]
             else:
                 print('Error, var declared again')
         print('---------------------')
@@ -173,12 +181,17 @@ def p_field_declaration(p):
         p[0]['code'] = ['']
         p[0]['value'] = None
         for var in p[3]:
-            p[0]['code'] += var['code']
             if env.pres_env.lookup(var['name']) is None:
                 env.pres_env.enter_var(var['name'], p[2])
+                t = env.prev_lookup(var['name'], env.pres_env)
+                if var['init']:
+                    if var['init'].isdigit():
+                        p[0]['code'] += ['=, ' + var['name'] + 'ooo' + str(t['tab_no']) + ', ' + var['init']]
+                    else:
+                        t2 = env.prev_lookup(var['init'], env.pres_env)
+                        p[0]['code'] += ['=, ' + var['name'] + 'ooo' + str(t['tab_no']) + ', ' + var['init'] + 'ooo' + str(t2['tab_no'])]
             else:
                 print('Error, var declared again')
-
 
 def p_type(p):
     """type : reference_type
@@ -290,8 +303,10 @@ def p_variable_declarator(p):
     if len(p) == 2:
         # p[0] = ['variable_declarator', p[1]]
         p[0]['name'] = p[1]['value']
+        p[0]['init'] = None
     else:
         p[0]['code'] = ['=, ' + p[1]['value'] + ', ' + p[3]['value']]
+        p[0]['init'] = p[3]['value']
         # p[0] = ['variable_declarator', p[1], '=', p[3]]
         p[0]['name'] = p[1]['value']
 
@@ -454,15 +469,15 @@ def p_method_header(p):
         if params != None:
             param_types = [param['type'] for param in params]
         # param_num = len(params)
-        env.pres_env.enter_function(p[2]['value'], p[1], param_types, p[-2]['value'])
+        env.pres_env.enter_function(p[2]['value'], p[1], param_types, p[-3]['value'])
         print('============================================-------------')
         print(p[-3])
-        p[0]['class_name'] = p[-2]['value']
+        p[0]['class_name'] = p[-3]['value']
         print('============================================-------------')
         print('ma;ajsdflkjaslkfjlksdjflksjfljaslfjlsdjflsdflsjdlfkjchititya')
         print(p[-2])
         print('============================================-------------')
-        env.global_env.enter_function(p[-2]['value'] + 'ooo' + p[2]['value'], p[1], param_types)
+        env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[2]['value'], p[1], param_types)
     else:
         # p[0] = ['method_header', p[1], p[2], p[3], '(', ')']
         p[0] = {}
@@ -800,7 +815,12 @@ def p_local_variable_declaration(p):
                     arr_flag = True
 
                 env.pres_env.enter_var(name, typ,arr=arr_flag)
-                p[0]['code'] += ['=, ' + name + ', ' + init['value']]
+                t = env.prev_lookup(name, env.pres_env)
+                if init['value'].isdigit():
+                    p[0]['code'] += ['=, ' + name + 'ooo' + str(t['tab_no']) + ', ' + init['value']]
+                else:
+                    t2 = env.prev_lookup(init['value'], env.pres_env)
+                    p[0]['code'] += ['=, ' + name + 'ooo' + str(t['tab_no']) + ', ' + init['value'] + 'ooo' + str(t2['tab_no'])]
         else:
             print('Double declaration')
             exit()
