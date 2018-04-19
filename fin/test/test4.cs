@@ -7,9 +7,9 @@ class Program {
     }
     int Main() {
         int y;
-        y = 10;
+        y = 7;
         int x;
-       x = fact(y);
-       print(x);
+        x = fact(y);
+        print(x);
     }
 }
