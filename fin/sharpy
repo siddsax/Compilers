@@ -1,7 +1,8 @@
 #!/bin/bash
 
 echo 'test'
-python3 parser.py $1
+python parser.py $1
 #cd ../asgn2/src
-python3 ../asgn2/src/main.py ir > out.s
+python ../asgn2/src/main.py ir > out.s
+#cat out.s
 gcc -m32 out.s

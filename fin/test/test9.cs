@@ -19,7 +19,7 @@ public class Program
      int Main()
     {
         int x, y;
-        x = 10;
+        y = 12;
         x = 9;
         print(GCD(x, y));
     }
