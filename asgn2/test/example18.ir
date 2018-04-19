@@ -1,8 +1,12 @@
 1, =, arr, arr_init, 10
 2, =, a, 5
-3, =, b, 2
-4, +, c, a, b
-5, array_asgn, arr, 0, c
-6, array_access, d, arr, 0
-7, print, d
-8, exit
+3, =, q, 2
+4, =, b, 2
+5, +, c, a, b
+6, -, k, 2, 3
+7, /, k, a, k
+8, <, p, k, c
+9, array_asgn, arr, a, b
+10, array_access, d, arr, k
+11, print, d
+12, exit
