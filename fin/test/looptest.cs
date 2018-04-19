@@ -1,6 +1,6 @@
 class Bleckh
 {
-	int main(){
+	int Main(){
 	
 	int i,j,k,res;
     res = 0;
@@ -17,5 +17,6 @@ class Bleckh
 		}
         i++;
 	}	
+    print(res);
 }
 }

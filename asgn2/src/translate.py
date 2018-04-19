@@ -434,7 +434,7 @@ def translate(instruction, leader, ir,register):
 		local_list = []
 		for var, fun in ir.var_dict.items():
 			if (fun == instruction[2]):
-				local_list = local_list.append(var)
+				local_list.append(var)
 				param = isMem(ir.address_descriptor[var],register.regdict.keys())
 				generated_code += '\t'+ 'pushl ' + param + '\n'
 
@@ -454,7 +454,7 @@ def translate(instruction, leader, ir,register):
 		# Load back the local variables
 		for i in range(len(local_list)):
 			var = local_list[-(i+1)]
-			param = isMem(ir.address_descriptor[param],register.regdict.keys())
+			param = isMem(ir.address_descriptor[var],register.regdict.keys())
 			generated_code += '\t' + 'popl ' + param + '\n'
 
 	elif instruction[1] == 'fn_call_2':
