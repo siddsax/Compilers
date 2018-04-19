@@ -5,3 +5,4 @@ python3 parser.py $1
 #cd ../asgn2/src
 python3 ../asgn2/src/main.py ir > out.s
 gcc -m32 out.s
+./a.out
