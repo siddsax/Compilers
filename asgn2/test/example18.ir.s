@@ -1,18 +1,18 @@
 ############################33333
 .section .data
+a:
+	.int 0
+b:
+	.int 0
 d:
+	.int 0
+k:
+	.int 0
+q:
 	.int 0
 p:
 	.int 0
 c:
-	.int 0
-q:
-	.int 0
-a:
-	.int 0
-k:
-	.int 0
-b:
 	.int 0
 format:
 	.ascii "%d\0"
@@ -29,8 +29,8 @@ main:
 	#1, =, arr, arr_init, 10, 
 
 	#2, =, a, 4, 
-	movl (a), %ebx
-movl $4, %ebx
+	movl (a), %eax
+movl $4, %eax
 
 	#3, =, q, 2, 
 	movl (q), %edx
@@ -42,16 +42,16 @@ movl (b), %edx
 movl $2, %edx
 
 	#5, +, c, a, b, 
-	movl (c), %eax
-movl %edx, %eax
-add %ebx, %eax
+	movl (c), %ebx
+movl %edx, %ebx
+add %eax, %ebx
 
 	#6, -, k, 2, 3, 
 	movl (k), %ecx
 movl $1, %ecx
 
 	#7, /, k, 1, k, 
-	movl %eax, c
+	movl %eax, a
 	movl %edx, b
 	movl %ecx, k
 	movl $0, %edx
@@ -61,7 +61,7 @@ movl $1, %ecx
 
 	#8, <, p, k, c, 
 	movl (p), %edx
-movl (c), %edx
+movl %ebx, %edx
 cmp  %eax, %edx
 movl $1,%edx
 jl comparision_lbl_8
@@ -69,25 +69,25 @@ movl $0,%edx
 comparision_lbl_8:
 
 	#9, array_asgn, arr, a, b, 
-	movl %edx, p
-movl $arr, %edx
-addl a ,%edx
 	movl %eax, k
-movl (b), %eax
+movl $arr, %eax
+add a ,%eax
+	movl %edx, p
+movl (b), %edx
 ############
-movl %eax, (%edx)
+movl %edx, (%eax)
 
 	#10, array_access, d, arr, 4, 
-	movl $arr, %edx
-addl $4 ,%edx
-	movl (d), %ecx
-movl (%edx), %ecx
+	movl $arr, %eax
+add $4 ,%eax
+	movl %ebx, c
+movl (d), %ebx
+movl (%eax), %ebx
 
 	#11, print, a, 
 ### Flushing -----------
-	movl %ebx, a
-	movl %eax, b
-	movl %ecx, d
+	movl %edx, b
+	movl %ebx, d
 ### Flushed ------------
 	pushl a
 	pushl $format1
