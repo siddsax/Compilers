@@ -1,6 +1,9 @@
 class Program {
-    int d = 2;
-    int l = 6, m = d, p;
+    int d;
+    d = 2;
+    int l,m,p;
+    l = 6;
+    m = d;
     int fact(int y) {
         if (y <= 1) {
             return 1;
@@ -11,8 +14,10 @@ class Program {
         return d*fact(x);
     }
     int Main() {
-        int y = 10;
-        int x = fact(y);
+        int y;
+        y = 10;
+        int x;
+        x = fact(y);
         print(x);
     }
 }

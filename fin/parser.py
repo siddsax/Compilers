@@ -454,15 +454,16 @@ def p_method_header(p):
         if params != None:
             param_types = [param['type'] for param in params]
         # param_num = len(params)
-        env.pres_env.enter_function(p[2]['value'], p[1], param_types, p[-2]['value'])
+        # print('^^^^^^^^^^^^',p[-3])
+        env.pres_env.enter_function(p[2]['value'], p[1], param_types, p[-3]['value'])
         print('============================================-------------')
         print(p[-3])
-        p[0]['class_name'] = p[-2]['value']
+        p[0]['class_name'] = p[-3]['value']
         print('============================================-------------')
         print('ma;ajsdflkjaslkfjlksdjflksjfljaslfjlsdjflsdflsjdlfkjchititya')
-        print(p[-2])
+        print(p[-3])
         print('============================================-------------')
-        env.global_env.enter_function(p[-2]['value'] + 'ooo' + p[2]['value'], p[1], param_types)
+        env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[2]['value'], p[1], param_types)
     else:
         # p[0] = ['method_header', p[1], p[2], p[3], '(', ')']
         p[0] = {}
