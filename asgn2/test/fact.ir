@@ -1,0 +1,14 @@
+1, =, a, 4
+2, +, a, a, 1
+3, =, c, 0
+4, fn_call_2, fact, 1, a, c
+5, print, c
+6, exit
+7, fn_def, fact, 1, b
+8, =, dm, 1
+9, conditional_goto, leq, b, 1, bcase
+10, -, f, 1, b
+11, fn_call_2, fact, 1, f, dm
+12, *, dm, dm, b
+13, label, bcase
+14, return, dm

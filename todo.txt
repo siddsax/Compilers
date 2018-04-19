@@ -3,4 +3,5 @@ function call args
 type checking
 classes = struct + function
 chars
-Add '||' and '&&' and '^'(XOR) and '&' and '==' and  and '<=' and '>=' and '<' and '>'
+Add '||' and '&&' and '^'(XOR) and '&' and '==' and '~=' and '<=' and '>=' and '<' and '>'
+Fix order of operations in - and /

@@ -29,5 +29,7 @@ asgn2/src/*.pyc
 asgn2/src/__pycache__
 *.out
 *.s
+asgn4/src/*.pyc
 asgn2/src/a.out
-
+asgn4/*.zip
+fin/__pycache__

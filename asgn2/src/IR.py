@@ -19,7 +19,9 @@ class IR:
 		self.instrtype = ['=', '+', '-', '<<','>>','<','>' ,'/', '*', '%', '&&', 'conditional_goto', 'goto', 'fn_call', 'fn_def', 'print', 'print_char', 'scan', 'return', 'exit',]
 		self.Blocks = self.Build_Blocks() #  dict { leader_no. : last_line_no }
 		self.address_descriptor = {}
+		# var_dict : local variable {localvar_name:function_name}
 		self.variable_list, self.arr_varz, self.var_dict = self.Build_varlist()
+		# self.variable_list = self.variable_list + list(self.var_dict.keys())
 		# list of dicts(blocks) where each key(variables) is a list pf list (use lines of that var in that live range)
 		self.next_use_table, self.lineVars = self.Build_next_use_table() 
 		
@@ -67,12 +69,12 @@ class IR:
 								arr_varz[var] = int(instr[4])
 						else:
 							var = instr[2]
-							if(var not in var_dict.keys()):
+							if(var not in var_dict.keys() and var not in varz):
 								var_dict[var] = cur_func
 
 					else:
 						var = instr[2]
-						if(var not in var_dict.keys()):
+						if(var not in var_dict.keys() and var not in varz):
 							var_dict[var] = cur_func
 							# varz.append(var)
 
@@ -82,7 +84,7 @@ class IR:
 				# 			varz.append(instr[4+i])
 
 				elif instr[1] == 'fn_call_2' or instr[1] == 'array_asgn':
-					if (instr[1] not in var_dict.keys()):
+					if (instr[1] not in var_dict.keys()  and instr[1] not in varz):
 						var_dict[instr[-1]] = cur_func
 				
 				elif instr[1] == 'return':
@@ -123,7 +125,7 @@ class IR:
 				elif instr[1] == 'fn_call_2' or instr[1] == 'array_asgn':
 					if (instr[-1] not in varz):
 						varz.append(instr[-1])
-		
+		varz = varz + list(var_dict.keys())
 		for x in varz:
 			self.address_descriptor[x] = x
 		for x in arr_varz.keys():
