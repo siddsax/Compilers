@@ -1,4 +1,3 @@
-
 class Program {
     int Main() {
         int num;

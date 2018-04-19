@@ -1689,13 +1689,13 @@ def p_equality_expression(p):
             p[0]['code'] = p[1]['code'] + p[3]['code']
             t = t + 'ooo' + str(tmp['tab_no'])
             if p[1]['value'].isdigit() and p[3]['value'].isdigit():
-                p[0]['code'] += ["~=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
+                p[0]['code'] += ["~, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
             elif p[1]['value'].isdigit():
-                p[0]['code'] += ["~=, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + 'ooo' + str(tmp2['tab_no'])]
+                p[0]['code'] += ["~, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + 'ooo' + str(tmp2['tab_no'])]
             elif p[3]['value'].isdigit():
-                p[0]['code'] += ["~=, " + t + ", " + p[1]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+                p[0]['code'] += ["~, " + t + ", " + p[1]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[3]['value']]
             else:
-                p[0]['code'] += ["~=, " + t + ", " + p[1]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[3]['value'] + 'ooo' + str(tmp2['tab_no'])]
+                p[0]['code'] += ["~, " + t + ", " + p[1]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[3]['value'] + 'ooo' + str(tmp2['tab_no'])]
 
 def p_relational_expression(p):
     """ relational_expression : shift_expression
