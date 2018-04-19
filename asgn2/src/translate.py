@@ -394,7 +394,7 @@ def translate(instruction, leader, ir,register):
 		# iterate over the parameters
 		for i in range(int(arg_num)):
 			param = instruction[4+i]
-			displacement = 4*(int(arg_num) - i)
+			displacement = 4*(int(arg_num) - i) + 4
 			if ir.address_descriptor[param] not in register.regdict.keys():
 				ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list, param)
 			generated_code += asm
