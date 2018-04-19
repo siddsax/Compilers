@@ -47,3 +47,8 @@ fin/__pycache__/lexer.cpython-35.pyc
 fin/__pycache__/symbol_table.cpython-35.pyc
 asgn2/src/peda-session-a.out.txt
 asgn2/test/example18.ir.s
+.vscode/
+asgn3/src/__pycache__/lexer.cpython-35.pyc
+asgn3/src/__pycache__/lexer.cpython-35.pyc
+asgn3/src/__pycache__/parsetab.cpython-35.pyc
+fin/.gdb_history

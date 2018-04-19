@@ -337,12 +337,8 @@ def p_method_declaration(p):
     p[0] = {'code':[], 'value':None}
     #if return_type != 'void':
     # TODO: Add arguments x86 code
+    print(p[1])
     print('calling function', method_name)
-    if len(method_params) is not 0:
-        p[0]['code'] += ['fn_def, ' + method_name + ', ' + str(len(method_params)) + ', ' + ', '.join(x['value'] for x in method_params)]
-    else:
-        p[0]['code'] += ['fn_def, ' + method_name + ', ' + str(len(method_params))]
-    print(method_params)
     for x in method_params:
         print('==-=-=-=-=-')
         print(x['type'].dict)
@@ -351,10 +347,27 @@ def p_method_declaration(p):
         else:
             symtab.enter_var(x['value'], x['type'].dict['name'][1])
         #symtab.print_symbol_table()
-    if method_params != None:
-        for param in method_params:
+    method_params_2 = []
+    for x in method_params:
+        t = env.prev_lookup(x['value'], symtab)
+        print(t)
+        method_params_2.append(x['value'] + 'ooo' + str(t['tab_no']))
+    if len(method_params) is not 0:
+        if method_name != 'Main':
+            p[0]['code'] += ['fn_def, ' + p[1]['class_name'] + 'ooo' + method_name + ', ' + str(len(method_params)) + ', ' + ', '.join(x for x in method_params_2)]
+        else:
+            p[0]['code'] += ['fn_def, ' + method_name + ', ' + str(len(method_params)) + ', ' + ', '.join(x for x in method_params_2)]
+    else:
+        if method_name != 'Main':
+            p[0]['code'] += ['fn_def, ' + p[1]['class_name'] + 'ooo' + method_name + ', ' + str(len(method_params))]
+        else:
+            p[0]['code'] += ['fn_def, ' + method_name + ', ' + str(len(method_params))] 
+    print(method_params)
+
+    #if method_params != None:
+    #    for param in method_params:
             # parameters would have been pushed to the stack, so we just pop them off
-            p[0]['code'] += ['pop, ' + param['value']]
+    #        p[0]['code'] += ['pop, ' + param['value']]
     p[0]['code'] += p[2]['code']
 
 #def p_qualified_identifier(p):
@@ -382,13 +395,14 @@ def p_method_header(p):
         p[0]['type'] = p[2]
         p[0]['name'] = p[3]['value']
         p[0]['params'] = p[5]
+        p[0]['class_name'] = p[-3]['value']
         params = p[5]
         param_types = []
         # param_num = 0
         if params != None:
             param_types = [param['type'] for param in params]
         # param_num = len(params)
-        env.pres_env.enter_function(p[3]['value'], p[2], param_types)
+        env.pres_env.enter_function(p[3]['value'], p[2], param_types, p[-3]['value'])
         print('============================================-------------')
         print(p[-3])
         env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[3]['value'], p[2], param_types)
@@ -404,16 +418,29 @@ def p_method_header(p):
         if params != None:
             param_types = [param['type'] for param in params]
         # param_num = len(params)
-        env.pres_env.enter_function(p[2]['value'], p[1], param_types)
         # TODO: check here whether to use p[-2] or p[-3]
         print('============================================-------------')
-        if(p[-3] is dict):
-            print(p[-3])
-            print(p[0]['name'])
-            env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[2]['value'], p[1], param_types)
-        elif p[-2] is dict:
-            print(p[-2])
-            env.global_env.enter_function(p[-2]['value'] + 'ooo' + p[2]['value'], p[1], param_types)
+        if p[2]['value'] != 'Main':
+            if type(p[-3]) is dict:
+                p[0]['class_name'] = p[-3]['value']
+                env.pres_env.enter_function(p[2]['value'], p[1], param_types, p[-3]['value'])
+                env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[2]['value'], p[1], param_types)
+            elif type(p[-2]) is dict:
+                p[0]['class_name'] = p[-2]['value']
+                env.pres_env.enter_function(p[2]['value'], p[1], param_types, p[-2]['value'])
+                env.global_env.enter_function(p[-2]['value'] + 'ooo' + p[2]['value'], p[1], param_types)
+            else:
+                print('Some error')
+        else:
+            if type(p[-3]) is dict:
+                p[0]['class_name'] = p[-3]['value']
+                env.pres_env.enter_function(p[2]['value'], p[1], param_types, p[-3]['value'])
+            elif type(p[-2]) is dict:
+                p[0]['class_name'] = p[-2]['value']
+                env.pres_env.enter_function(p[2]['value'], p[1], param_types, p[-2]['value'])
+            env.global_env.enter_function(p[2]['value'], p[1], param_types)
+        print('slkdjflkasjfl;ajsdflkjaslkfjlksdjflksjfljaslfjlsdjflsdflsjdlfkjchititya')
+        print(p[0]['class_name'])
         #env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[2]['value'], p[1], param_types)
     elif p[3] == '(':
         # p[0] = ['method_header', p[1], p[2], '(', p[4], ')']
@@ -427,9 +454,14 @@ def p_method_header(p):
         if params != None:
             param_types = [param['type'] for param in params]
         # param_num = len(params)
-        env.pres_env.enter_function(p[2]['value'], p[1], param_types)
+        env.pres_env.enter_function(p[2]['value'], p[1], param_types, p[-2]['value'])
         print('============================================-------------')
         print(p[-3])
+        p[0]['class_name'] = p[-2]['value']
+        print('============================================-------------')
+        print('ma;ajsdflkjaslkfjlksdjflksjfljaslfjlsdjflsdflsjdlfkjchititya')
+        print(p[-2])
+        print('============================================-------------')
         env.global_env.enter_function(p[-2]['value'] + 'ooo' + p[2]['value'], p[1], param_types)
     else:
         # p[0] = ['method_header', p[1], p[2], p[3], '(', ')']
@@ -443,9 +475,11 @@ def p_method_header(p):
         if params != None:
             param_types = [param['type'] for param in params]
         # param_num = len(params)
-        env.pres_env.enter_function(p[3]['value'], p[2], param_types)
+        env.pres_env.enter_function(p[3]['value'], p[2], param_types, p[-3]['value'])
         print('============================================-------------')
+        print('slkdjflkasjfl;ajsdflkjaslkfjlksdjflksjfljaslfjlsdjflsdflsjdlfkjchititya')
         print(p[-3])
+        p[0]['class_name'] = p[-3]['value']
         env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[3]['value'], p[2], param_types)
 
     p[0]['category'] = 'function'
@@ -728,7 +762,11 @@ def p_return_statement(p):
         p[0] = {'code':[], 'value':None}
         p[0]['code'] += p[2]['code']
         p[0]['value'] = p[2]['value']
-        p[0]['code'] += ['return, ' + p[2]['value']]
+        t = env.prev_lookup(p[2]['value'], env.pres_env)
+        if not p[2]['value'].isdigit():
+            p[0]['code'] += ['return, ' + p[2]['value'] + 'ooo' + str(t['tab_no'])]
+        else:
+            p[0]['code'] += ['return, ' + p[2]['value']]
 
 def p_literal(p):
     """literal : INTCONST
@@ -830,7 +868,15 @@ def p_invocation_expression(p):
     p[0]['value'] = None
     #function = env.prev_lookup(p[1]['value'], env.pres_env)
     print('-==-=-=-=-=-=-=-=-=-=-=-=-=-')
-    function = env.global_env.lookup(p[1]['fn_type'].dict['name'] + 'ooo' + p[1]['fn_name'])
+    print(p[1])
+    test = env.prev_lookup(p[1]['value'], env.pres_env)
+    print(test)
+    if test['category'] == 'function' and 'fn_type' not in p[1]:
+        function = env.global_env.lookup(test['class_name'] + 'ooo' + p[1]['value'])
+        print(function)
+    else:
+        function = env.global_env.lookup(p[1]['fn_type'].dict['name'] + 'ooo' + p[1]['fn_name'])
+    #print(p[1]['fn_type'].dict['name'] + 'ooo' + p[1]['fn_name'])
     print(function)
     env.global_env.print_symbol_table()
     print('-==-=-=-=-=-=-=-=-=-=-=-=-=-')
@@ -851,7 +897,10 @@ def p_invocation_expression(p):
                     print(str(function['type']) + ' is the funciton type')
                     p[0]['value'] = t
                     if 'fn_name' not in p[1]:
-                        code = 'fn_call_2, ' + p[1]['value'] + ', ' + str(argc)
+                        if p[1]['value'] == 'Main':
+                            code = 'fn_call_2, ' + p[1]['value'] + ', ' + str(argc)
+                        else:
+                            code = 'fn_call_2, ' + test['class_name'] + 'ooo' + p[1]['value'] + ', ' + str(argc)
                     else:
                         prev = p[1]['prev_member']
                         type_prev = env.prev_lookup(prev, env.pres_env)
@@ -863,7 +912,11 @@ def p_invocation_expression(p):
                             if not env.prev_lookup(arg['value'], env.pres_env) and not arg['value'].isdigit():
                                 print("Undeclared vars in fn call")
                                 exit()
-                            code += ',' + arg['value']
+                            if not arg['value'].isdigit():
+                                tst = env.prev_lookup(arg['value'], env.pres_env)
+                                code += ', ' + arg['value'] + 'ooo' + str(tst['tab_no'])
+                            else:
+                                code += ', ' + arg['value']
                     tmp = env.prev_lookup(t, env.pres_env)
                     p[0]['code'] += [code + ', ' + t + 'ooo' + str(tmp['tab_no'])]
                 else:
@@ -873,7 +926,11 @@ def p_invocation_expression(p):
                             if not env.prev_lookup(arg['value'], env.pres_env) and not arg['value'].isdigit():
                                 print("Undeclared vars in fn call")
                                 exit()
-                            code += ',' + arg['value']
+                            if not arg['value'].isdigit():
+                                tst = env.prev_lookup(arg['value'], env.pres_env)
+                                code += ', ' + arg['value'] + 'ooo' + str(tst['tab_no'])
+                            else:
+                                code += ', ' + arg['value']
                     p[0]['code'] += [code]
             else:
                 print("error in Line No. ", p.lineno(1), "Function", p[1]['value'], "needs exactly", env.pres_env.entries[p[1]['value']]['arg_num'], "parameters, given", len(p[3]))
@@ -994,11 +1051,13 @@ def p_assignment(p):
         p[0]['code'] = dp(p[3]['code'])
         p[0]['code'] += p[1]['code']
         t2 = env.prev_lookup(p[3]['value'], env.pres_env)
+        print('gaaaaaaaaaandu')
         if t2 or p[3]['value'].isdigit():
             if not p[3]['value'].isdigit():
                 p[0]['code'] += ['=, ' + p[0]['value'] + 'ooo' + str(t['tab_no']) + ', ' + p[3]['value'] + 'ooo' + str(t2['tab_no'])]
             else:
                 p[0]['code'] += ['=, ' + p[0]['value'] + 'ooo' + str(t['tab_no']) + ', ' + p[3]['value']]
+            print(p[0]['code'])
         else:
             print("ERROR: symbol " + p[3]['value'] + " used without declaration")
             print("Compilation Terminated")

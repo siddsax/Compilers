@@ -28,9 +28,6 @@ class B{
         C z;
         x = y+z;
         a = x.func();
-        x.func2();
-        y.func2();
-        z.func2();
     }
 
 }

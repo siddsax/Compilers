@@ -90,6 +90,7 @@ class IR:
 					num_args = int(instr[3])
 					cur_func = instr[2]
 					for i in range(num_args):
+                        var = instr[2]
 						if(var in var_dict.keys()):
 							print("Error, variable used twice in same funcion defination")
 							exit()
