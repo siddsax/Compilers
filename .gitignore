@@ -32,7 +32,9 @@ asgn2/src/__pycache__
 asgn4/src/*.pyc
 asgn2/src/a.out
 asgn4/*.zip
-fin/__pycache__
+fin/__pycache__/
+fin/parsetab.py
+fin/parser.out
 fin/ir
 asgn2/ir
 fin/a.out
