@@ -40,13 +40,14 @@ class table:
         elif tmp:
             self.entries[name]['category'] = 'temp'
 
-    def enter_function(self, method_name, return_type, param_types):
+    def enter_function(self, method_name, return_type, param_types, class_name = ""):
         if method_name not in self.entries:
             self.entries[method_name] = {}
             self.entries[method_name]['type'] = return_type
             self.entries[method_name]['category'] = 'function'
             self.entries[method_name]['arg_types'] = param_types
             self.entries[method_name]['arg_num'] = len(param_types)
+            self.entries[method_name]['class_name'] = class_name
 
     def lookup(self, name):
         if name in self.entries.keys():
