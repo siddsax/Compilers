@@ -308,7 +308,7 @@ def translate(instruction, leader, ir,register):
 		if isNumeric(instruction[3]):
 			generated_code += "add $" + instruction[3] + " ," + new_place + '\n'
 		else:
-			generated_code += "add " + instruction[3] + " ," + new_place + '\n'
+			generated_code += "add " + ir.address_descriptor[instruction[3]] + " ," + new_place + '\n'
 
 		if isNumeric(instruction[4]):
 			generated_code += "movl $" + instruction[4] + ", (" + new_place + ')' + "\n"

@@ -106,7 +106,7 @@ class Reg:
         asm += 'movl (' + var + '), ' + best_k + '\n'
         self.regdict[best_k] = var
         address_descriptor[var] = best_k
-        address_descriptor[best_v] = var
+        address_descriptor[best_v] = best_v
 
         return address_descriptor, asm
 
