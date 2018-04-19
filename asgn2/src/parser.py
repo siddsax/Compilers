@@ -69,8 +69,16 @@ def parser(instr, variable_list):
 	if instr[1] == 'array_asgn':
 		if instr[-1] in variable_list:
 			varz["used"].append(instr[-1])
+		if instr[3] in variable_list:
+			varz["used"].append(instr[3])
+		varz["used"].append(instr[2])
+		varz['op'] = 'array_asgn'
 
 	if instr[1] == 'array_access':
 		varz["killed"].append(instr[2])
+		if instr[-1] in variable_list:
+			varz["used"].append(instr[-1])
+		varz["used"].append(instr[3])
+		varz['op'] = 'array_access'
 
 	return varz

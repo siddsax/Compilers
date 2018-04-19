@@ -34,7 +34,7 @@ class Reg:
                 self.regdict[k] = var1
                 address_descriptor[var1] = k
                 return True
-        return False;
+        return False
 
     # If ccondition 1 and 2 fail, var1 has a next use
     def condition_3(self, var1, lineno, blockNextUseTable, address_descriptor):
@@ -122,6 +122,11 @@ class Reg:
                     asm = self.condition_3(v, int(instr[0]), blockNextUseTable, address_descriptor)
                     if not (asm):
                         self.condition_4(v,address_descriptor)
+                        self.asm += "###----\n"
+                    else:
+                        self.asm += "###---\n"
+                else:
+                    self.asm += "###-/--\n"
 
 
         if self.asm:
