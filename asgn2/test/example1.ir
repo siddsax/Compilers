@@ -1,12 +1,6 @@
-1, =, a, 10
-2, label, kshit
-3, =, b, 7
-4, +, a, a, b
-5, print, a
-6, conditional_goto, leq, a, 50, kshit
-7, fn_call_2, foo, dst
-8, print, dst
-9, exit
-10, fn_def, foo, 0
-11, =, k, 200
-12, return, k
+1, =, b, 9
+2, =, a, 8
+3, =, c, 10
+4, >, b, c, a
+5, print, b
+6, exit

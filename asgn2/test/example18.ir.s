@@ -1,9 +1,10 @@
+############################33333
 .section .data
 a:
 	.int 0
-d:
-	.int 0
 c:
+	.int 0
+d:
 	.int 0
 b:
 	.int 0
@@ -11,6 +12,8 @@ format:
 	.ascii "%d\0"
 format1:
 	.ascii "%d\n\0"
+format2:
+	.ascii "%c\n\0"
 arr:  .fill 10, 4, 0 
 .section .bss
 .section .text
@@ -38,13 +41,15 @@ add %eax, %ebx
 
 	#6, array_access, d, arr, 0, 
 	movl (d), %edx
-movl (arr+0), %edx
+	movl (0), %ecx
+movl (arr+ $0), %edx
 
 	#7, print, d, 
 ### Flushing -----------
 	movl %eax, a
 	movl %ebx, c
 	movl %edx, d
+	movl %ecx, 0
 ### Flushed ------------
 	pushl d
 	pushl $format1

@@ -3,16 +3,16 @@
 3, =, c, 4
 4, =, d, 6
 5, +, a, a, 10
-6, fn_call_2, foo, 2, a, c
+6, fn_call_2, foo, 2, b, a, c
 7, print, c
-8, fn_call_2, doob, d, a, 44, beam
+8, fn_call_2, doob, 3, d, a, 44, beam
 9, fn_def, foo, 2, e, f
 10, +, dm, e, f
 11, return, dm
 12, +, a, 4, a
 12, fn_def, doob, 3, m, t, k
 13, =, r, k 
-14, fn_call_2, foo, r, t, z
+14, fn_call_2, foo, 3, r, t, z
 15, return, z
 16, =, team, 3, beam
 17, exit 

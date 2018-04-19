@@ -16,7 +16,8 @@ def parser(instr, variable_list):
 				varz["used"].append(instr[-1])
 
 	if instr[1] == '+' or instr[1] == '-' or instr[1] == '*' or instr[1] == '/' or instr[1] == '%' \
-		or instr[1] =='<<' or instr[1] == '>>':
+		or instr[1] == '<<' or instr[1] == '>>' or instr[1] == '||' or instr[1] == '&&' or instr[1] == '=='\
+		or instr[1] == '<=' or instr[1] == '>=' or instr[1] == '<' or instr[1] == '>':
 		varz["op"].append('=')
 		varz["killed"].append(instr[-3])
 		if instr[-1] in variable_list:
