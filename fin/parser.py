@@ -338,7 +338,10 @@ def p_method_declaration(p):
     #if return_type != 'void':
     # TODO: Add arguments x86 code
     print('calling function', method_name)
-    p[0]['code'] += ['fn_def, ' + method_name + ', ' + str(len(method_params)) + ', ' + ', '.join(x['value'] for x in method_params)]
+    if len(method_params) is not 0:
+        p[0]['code'] += ['fn_def, ' + method_name + ', ' + str(len(method_params)) + ', ' + ', '.join(x['value'] for x in method_params)]
+    else:
+        p[0]['code'] += ['fn_def, ' + method_name + ', ' + str(len(method_params))]
     print(method_params)
     for x in method_params:
         print('==-=-=-=-=-')
@@ -655,8 +658,9 @@ def p_print_statement(p):
     p[0] = {}
     p[0]['code'] = p[3]['code']
     # print(p[3]['value'], '^^^^^^^^^^^^^^^^^^^^^^^^^')
+    t = env.prev_lookup(p[3]['value'], env.pres_env)
     if env.prev_lookup(p[3]['value'], env.pres_env):
-        p[0]['code'] += ['print, ' + p[3]['value']]
+        p[0]['code'] += ['print, ' + p[3]['value'] + 'ooo' + str(t['tab_no'])]
     else:
         print(" variable to print not defined")
         exit()
@@ -843,6 +847,8 @@ def p_invocation_expression(p):
                         p[0]['code'] += arg['code']
                 if function['type'] is not 'void':
                     t = env.mktemp(function['type'])
+                    print('============================================')
+                    print(str(function['type']) + ' is the funciton type')
                     p[0]['value'] = t
                     if 'fn_name' not in p[1]:
                         code = 'fn_call_2, ' + p[1]['value'] + ', ' + str(argc)
@@ -893,7 +899,8 @@ def p_if_statement(p):
         p[3]['False'] = p[1]['False']#env.mklabel()
         p[0]['code'] += p[1]['code']
         p[0]['code'] += p[3]['code']
-        p[0]['code'] += ['conditional_goto, ==, 1, ' + p[3]['value'] + ", " + p[3]['True']]
+        t1 = env.prev_lookup(p[3]['value'], env.pres_env)
+        p[0]['code'] += ['conditional_goto, ==, 1, ' + p[3]['value'] + 'ooo' + str(t1['tab_no']) + ", " + p[3]['True']]
         p[0]['code'] += ['goto, ' + p[3]['False']]
         p[0]['code'] += ['label, ' + p[3]['True']]
         p[0]['code'] += p[5]['code']
@@ -907,7 +914,8 @@ def p_if_statement(p):
         p[0]['next'] = p[1]['next']#env.mklabel()
         p[0]['code'] += p[1]['code']
         p[0]['code'] += p[3]['code']
-        p[0]['code'] += ['conditional_goto, ==, 1, ' + p[3]['value'] + ", " + p[3]['True']]
+        t1 = env.prev_lookup(p[3]['value'], env.pres_env)
+        p[0]['code'] += ['conditional_goto, ==, 1, ' + p[3]['value'] + 'ooo' + str(t1['tab_no']) + ", " + p[3]['True']]
         p[0]['code'] += p[7]['code']
         p[0]['code'] += ['goto, ' + p[0]['next']]
         p[0]['code'] += ['label, ' + p[3]['True']]
@@ -1893,11 +1901,19 @@ def print_tac(pclass):
     print("")
     print("1, fn_call_1, Main")
     c = 2
+    fin_str = "1, fn_call_1, Main, 0\n"
     for member in [pclass]:
         for line in member['code']:
             if line != "":
-                print(line)
+                #print(line)
                 print(str(c) + ", " + line)
+                fin_str += str(c) + ", " + line + '\n'
                 c = c + 1
     print(str(c) + ", exit")
-print_tac(result)
+    fin_str += str(c) + ", exit"
+    return fin_str
+print('----------------------------------------------')
+print(result)
+ir = print_tac(result)
+with open('ir', 'w') as outf:
+    outf.write(ir)
