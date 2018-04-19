@@ -66,29 +66,36 @@ class Reg:
         address_descriptor[var1] = var1
 
     # Assigns register for a given variable
-    def getRegister(self, var, address_descriptor, blockNextUseTable, lineno):
+    def getRegister(self, var, address_descriptor, nextUseList, usedlist=[]):
         latest = 0
         best_k = ''
         best_v = ''
+        if len(usedlist) > 3:
+            print(" Error, trying to use more than 4 variables in a line")
+            exit()
         if var in self.regdict.values():
             return address_descriptor, ''
         
-        nextUseList = blockNextUseTable[lineno]
+        # nextUseList = blockNextUseTable[lineno]
         for k, v in self.regdict.items():
             if v:
-                if v in nextUseList.keys():
+                if v in usedlist:
+                    continue
+                elif v in nextUseList.keys():
                     if nextUseList[v] > latest:
                         best_v = v
                         best_k = k
                         latest = nextUseList[v]
                 else:
                     asm = 'movl ' + k + ', ' + v + '\n'
+                    asm += 'movl (' + var + '), ' + k + '\n'
                     self.regdict[k] = var
                     address_descriptor[var] = k
                     address_descriptor[v] = v
                     return address_descriptor, asm
             else:
-                asm = 'movl (' + address_descriptor[var] + '), ' + k + '\n'
+                asm = 'movl (' + var + '), ' + k + '\n'
+                # asm += 'movl (' + var + '), ' + k + '\n'
                 self.regdict[k] = var
                 address_descriptor[var] = k
                 return address_descriptor, asm
@@ -107,27 +114,33 @@ class Reg:
         asm = ''
         self.asm = ''
         parsed = parser(instr, variable_list)
+
+        if parsed["op"]  == 'fn_def':
+            usedlist = []
+        else:
+            usedlist = parsed["used"]
+
         if(var):
             v = var
         else:
             v = parsed['killed'][0]
         if v:
-            if not parsed['used']:
-                if not self.condition_1_2(v,address_descriptor,blockNextUseTable[int(instr[0])]):
-                    asm = self.condition_3(v, int(instr[0]), blockNextUseTable, address_descriptor)
-                    if not (asm):
-                        self.condition_4(v,address_descriptor)
-            else:
-                if not self.condition_1_2(v, address_descriptor, blockNextUseTable[int(instr[0])], parsed["used"][0]):
-                    asm = self.condition_3(v, int(instr[0]), blockNextUseTable, address_descriptor)
-                    if not (asm):
-                        self.condition_4(v,address_descriptor)
-                        self.asm += "###----\n"
-                    else:
-                        self.asm += "###---\n"
-                else:
-                    self.asm += "###-/--\n"
-
+            address_descriptor, asm = self.getRegister(v, address_descriptor, blockNextUseTable[int(instr[0])], usedlist= usedlist)
+        #     if not parsed['used']:
+        #         if not self.condition_1_2(v,address_descriptor,blockNextUseTable[int(instr[0])]):
+        #             asm = self.condition_3(v, int(instr[0]), blockNextUseTable, address_descriptor)
+        #             if not (asm):
+        #                 self.condition_4(v,address_descriptor)
+        #     else:
+        #         if not self.condition_1_2(v, address_descriptor, blockNextUseTable[int(instr[0])], parsed["used"][0]):
+        #             asm = self.condition_3(v, int(instr[0]), blockNextUseTable, address_descriptor)
+        #             if not (asm):
+        #                 self.condition_4(v,address_descriptor)
+        #                 self.asm += "###----\n"
+        #             else:
+        #                 self.asm += "###---\n"
+        #         else:
+        #             self.asm += "###-/--\n"
 
         if self.asm:
             asm = self.asm
