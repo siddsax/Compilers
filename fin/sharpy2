@@ -1,0 +1,9 @@
+#!/bin/bash
+
+echo 'test'
+python parser.py $1
+#cd ../asgn2/src
+python ../asgn2/src/main.py ir > out.s
+#cat out.s
+gcc -m32 out.s
+./a.out

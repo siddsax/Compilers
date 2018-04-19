@@ -2012,26 +2012,31 @@ def print_tac(pclass):
     if pclass is None:
         print('Not parsable')
         exit(1)
-    print("")
-    print("1, fn_call_1, Main")
+    # print("")
+    # print("1, fn_call_1, Main")
     c = 2
     check_op = ['+', '-', '*', '/', '<', '>', '<=', '>=', '%']
     fin_str = "1, fn_call_1, Main, 0\n"
     for member in [pclass]:
         for line in member['code']:
+            # print(line)
+            # print(c)
+            # print("\n")
             tmp = line.split(', ')
             if line is not "" and tmp[0] in check_op:
                 tring = str(c) + ', ' + tmp[0] + ', ' + tmp[1] + ', ' + tmp[3] + ', ' + tmp[2]
                
                 fin_str += tring + '\n'
                 c += 1
-                continue
-            if line != "":
+            elif line != "":
                 #print(line)
-                print(str(c) + ", " + line)
-                fin_str += str(c) + ", " + line + '\n'
+                tring = str(c) + ", " + line + '\n'
+                fin_str += tring
                 c = c + 1
-    print(str(c) + ", exit")
+            
+            # print(tring)
+            # print("--===========\n")
+    # print(str(c) + ", exit")
     fin_str += str(c) + ", exit"
     print(fin_str)
     return fin_str
