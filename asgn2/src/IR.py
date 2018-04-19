@@ -13,7 +13,7 @@ class IR:
         self.instrlist = []
         self.instrlist = ircode.split('\n')
         self.operators = ['=', '+', '-', '<<', '>>', '/', '*', 'scan', 'array_access','||', '&&',\
-                          '==', '<=', '>=', '<', '>'
+                          '==', '<=', '>=', '<', '>', '~', '%'
                          ]
 
         self.instrtype = ['=', '+', '-', '<<','>>','<','>' ,'/', '*', '%', '&&', 'conditional_goto', 'goto', 'fn_call', 'fn_def', 'print', 'print_char', 'scan', 'return', 'exit',]
