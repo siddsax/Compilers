@@ -339,7 +339,7 @@ def translate(instruction, leader, ir,register):
 			generated_code += '\t'+ 'pushl ' + param + '\n'
 		
 		generated_code += '\t' + 'call ' + instruction[2] + '\n'
-		generated_code += '\t' + 'add ' + str(4*int(arg_num))+ ', %esp' + '\n'
+		generated_code += '\t' + 'addl ' + str(4*int(arg_num))+ ', %esp' + '\n'
 
 		# Load back the local variables
 		for i in range(len(local_list)):
@@ -370,7 +370,7 @@ def translate(instruction, leader, ir,register):
 			generated_code += '\t'+ 'pushl ' + param + '\n'
 		
 		generated_code += '\t' + 'call ' + instruction[2] + '\n'
-		generated_code += '\t' + 'add $' + str(4*int(arg_num)) + ', %esp' + '\n'
+		generated_code += '\t' + 'addl $' + str(4*int(arg_num)) + ', %esp' + '\n'
 		
 		# Load back the local variables
 		for i in range(len(local_list)):
