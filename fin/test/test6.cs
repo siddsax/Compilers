@@ -2,7 +2,7 @@ class Program {
     int d = 2;
     int l = 6, m = d, p;
     int fact(int y) {
-        if (y == 1) {
+        if (y <= 1) {
             return 1;
         }
         return y*fact(y-1) ;
@@ -13,5 +13,6 @@ class Program {
     int Main() {
         int y = 10;
         int x = fact(y);
+        print(x);
     }
 }

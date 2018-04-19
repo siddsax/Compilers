@@ -18,8 +18,8 @@ public class Program
  
      int Main()
     {
-        x = 10;
         int x, y;
+        x = 10;
         x = 9;
         print(GCD(x, y));
     }
