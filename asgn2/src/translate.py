@@ -265,7 +265,7 @@ def translate(instruction, leader, ir,register):
 
 	elif instruction[1] == "~" or instruction[1] == "=" :
 		if instruction[3] ==  'arr_init':
-			print("############################33333")
+			print("############################")
 			# pass
 		else:
 			if isNumeric(instruction[3]):

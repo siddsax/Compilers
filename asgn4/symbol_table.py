@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from copy import deepcopy
+
 class type:
     def __init__(self, name, isbasic, isarray, length, data_width, arr_elem_type):
         self.dict = {}
@@ -25,24 +27,27 @@ class table:
         self.keywords_list = ['print', 'scan', 'int', 'abstract']
         self.keywords()
         self.is_func_table = False
+        self.number = 0
         # Add list of all keywords
 
     def enter_var(self, name, Dtype, arr=None, tmp=False):
         self.entries[name] = {}
         self.entries[name]['type'] = Dtype
         self.entries[name]['category'] = 'var'
+        self.entries[name]['tab_no'] = deepcopy(self.number)
         if(arr):
             self.entries[name]['category'] = 'arr'
         elif tmp:
             self.entries[name]['category'] = 'temp'
 
-    def enter_function(self, method_name, return_type, param_types):
+    def enter_function(self, method_name, return_type, param_types, class_name = ""):
         if method_name not in self.entries:
             self.entries[method_name] = {}
             self.entries[method_name]['type'] = return_type
             self.entries[method_name]['category'] = 'function'
             self.entries[method_name]['arg_types'] = param_types
             self.entries[method_name]['arg_num'] = len(param_types)
+            self.entries[method_name]['class_name'] = class_name
 
     def lookup(self, name):
         if name in self.entries.keys():
@@ -78,6 +83,8 @@ class environment:
         self.pres_env = self.global_env
         self.label_count = 0
         self.temp_count = 0
+        self.table_count = 1
+        self.global_env.number = self.table_count
 
     def mklabel(self):
         label_name = 'l' + str(self.label_count)
@@ -88,10 +95,10 @@ class environment:
 
     def mktemp(self, Dtype):
         self.temp_count += 1
-        temp_name = '_t' + str(self.temp_count)
+        temp_name = 't' + str(self.temp_count)
         while self.prev_lookup(temp_name, self.pres_env):
             self.temp_count += 1
-            temp_name = '_t' + str(self.temp_count)
+            temp_name = 't' + str(self.temp_count)
 
         self.pres_env.enter_var(temp_name, Dtype, tmp=True)
         return temp_name
@@ -100,6 +107,8 @@ class environment:
         new_env = table(self.pres_env)
         self.pres_env.children.append(new_env)
         self.pres_env = new_env
+        self.table_count += 1
+        self.pres_env.number = deepcopy(self.table_count)
         return self.pres_env
 
     def close_scope(self):
