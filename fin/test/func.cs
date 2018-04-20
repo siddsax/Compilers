@@ -5,16 +5,15 @@ void bar (int x, int y, int z){
 
 void foo ( int x, int y)
 {
-    x = y;
+    //x = y;
     bar(x, y, x);
 }
 
 void Main(){
     int x, y, a;
-    int[] b;
+    int[] b = new int[3];
     b[1] = 2;
     a= foo( x, y);
-    return x;
 }
 }
 

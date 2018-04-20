@@ -2092,15 +2092,17 @@ def print_tac2(pclass):
     c = 1
     check_op = ['+', '-', '*', '/', '<', '>', '<=', '>=', '%']
     fin_str = ""
+    check_print_main = False
     for member in [pclass]:
         for line in member['code']:
-            if 'fn_def' in line:
+            if check_print_main is Fasle and 'fn_def' in line:
                 tring = str(c) + ', ' + 'fn_call_1, Main, 0'
                 fin_str += tring + '\n'
                 c += 1
                 tring = str(c) + ', ' + line
                 fin_str += tring + '\n'
                 c += 1
+                check_print_main = True
                 continue
 
             # print(line)

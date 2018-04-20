@@ -1,35 +1,33 @@
 class Hello 
 {
-	void foo(int s)
-	{
-		print(foo(s));
-	}	
-
+//	void foo(int s)
+//	{
+//		print(foo(s));
+//	}	
 	int fact(int n)
 	{
 		int ans=1;
 		int j = 2;
-		int[] b;
+		int[] b = new int[5];
 		b[3] = 3;
 		while(j<=n){
 			ans = ans*j;
 			j++;
-			while(j<20){
-				int k;
-				b[4] = k < 20;
-			}
+			//while(j<20){
+				//int k;
+				//b[4] = k < 20;
+			//}
 			
 		}
-		foo(ans);
+	//	foo(ans);
 		return ans;
 	}
 
-	int Main() 
+	void Main() 
 	{	
-		int[] a;
-		a[2] = 4;
-		int f = fact(a[2]);
+		int[] a = new int[3];
+		a[2] = 3;
+		int f = fact(fact(a[2]));
 		print(f);
-		return 0;
 	}
 }

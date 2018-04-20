@@ -10,10 +10,10 @@ class Program {
         }
         // print(max);
     }
-    int Main() {
+    void Main() {
         int max;
         int num =1;
-        int[] numbers ;
+        int[] numbers = new int[10];
         int i = 1;
         while (i< 6)
         {
@@ -26,7 +26,11 @@ class Program {
         while ( max > num && num < 3) {
             num = num + 1;
         }
+        print(num);
+        print(y);
+        print(numbers[2]);
+        print(numbers[1]);
+        print(numbers[5]);
         max = num = 1;
-        return 0;
     }
 }
