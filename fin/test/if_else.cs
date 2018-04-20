@@ -5,6 +5,7 @@ class test
 		int i = 0;
 		// char j="charvar";
 		int[] a = new int[10];
+		// int k = a[i];
 		a[i] = 3;
 		if (i < 4)
 			a[i]++;

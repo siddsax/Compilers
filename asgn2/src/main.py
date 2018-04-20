@@ -41,7 +41,10 @@ for key,val in example.Blocks.items():
 			for k, v in nextUseList.items():
 				registers.regdict[lst[indx]] = k
 				example.address_descriptor[k] = lst[indx]
-				text_section += 'movl (' + k + '), ' +  lst[indx] + '\n'
+				if(k in example.arr_varz.keys()):
+					text_section += 'movl $' + k + ', '+ lst[indx] + '\n'
+				else:
+					text_section += 'movl (' + k + '), ' +  lst[indx] + '\n'
 				indx+=1 
 				if(indx==4):
 					break
