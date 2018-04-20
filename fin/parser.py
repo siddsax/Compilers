@@ -1293,7 +1293,7 @@ def p_post_increment_expression(p):
     # p[0] = ['post_increment_expression', p[1], p[2]]
     p[0] = dp(p[1])
     t1 = env.prev_lookup(p[0]['value'], env.pres_env)
-    p[0]['code'] += ["+, " + p[0]['value'] + 'ooo' + str(t1['tab_no']) + ", 1, " + p[0]['value'] + 'ooo' + str(t1['tab_no'])]
+    p[0]['code'] += ["+, " + p[0]['value'] + 'ooo' + str(t1['tab_no']) + ", " + p[0]['value'] + 'ooo' + str(t1['tab_no']) + ', 1']
     if('array_el' in p[1] and p[1]['array_el'] is True):
         t2 = env.prev_lookup(p[0]['par_arr'], env.pres_env)
         t3 = env.prev_lookup(p[0]['index'], env.pres_env)
@@ -1309,7 +1309,7 @@ def p_post_decrement_expression(p):
     # t = symbol_table.maketemp('int', symbol_table.curr_table)
     p[0] = dp(p[1])
     t1 = env.prev_lookup(p[0]['value'], env.pres_env)
-    p[0]['code'] += ["-, " + p[0]['value'] + 'ooo' + str(t1['tab_no']) + ", 1, " + p[0]['value'] + 'ooo' + str(t1['tab_no'])]
+    p[0]['code'] += ["-, " + p[0]['value'] + 'ooo' + str(t1['tab_no']) + ", " + p[0]['value'] + 'ooo' + str(t1['tab_no']) + ', 1']
     if('array_el' in p[1] and p[1]['array_el'] is True):
         t2 = env.prev_lookup(p[0]['par_arr'], env.pres_env)
         t3 = env.prev_lookup(p[0]['index'], env.pres_env)
@@ -2080,9 +2080,11 @@ def print_tac2(pclass):
     for member in [pclass]:
         for line in member['code']:
             if 'fn_def' in line:
-                fin_str += str(c) + ', ' + 'fn_call_1, Main, 0\n'
+                tring = str(c) + ', ' + 'fn_call_1, Main, 0'
+                fin_str += tring + '\n'
                 c += 1
-                fin_str += str(c) + ', ' + line + '\n'
+                tring = str(c) + ', ' + line
+                fin_str += tring + '\n'
                 c += 1
                 continue
 
@@ -2091,6 +2093,7 @@ def print_tac2(pclass):
             # print("\n")
             tmp = line.split(', ')
             if line is not "" and tmp[0] in check_op:
+                # print(tmp[0])
                 tring = str(c) + ', ' + tmp[0] + ', ' + tmp[1] + ', ' + tmp[3] + ', ' + tmp[2]
                
                 fin_str += tring + '\n'
@@ -2101,7 +2104,6 @@ def print_tac2(pclass):
                 fin_str += tring
                 c = c + 1
             
-            # print(tring)
             # print("--===========\n")
     # print(str(c) + ", exit")
     fin_str += str(c) + ", exit"
