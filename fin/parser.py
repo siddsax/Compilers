@@ -379,6 +379,13 @@ def p_method_declaration(p):
             p[0]['code'] += ['fn_def, ' + method_name + ', ' + str(len(method_params))] 
     print(method_params)
 
+    if method_name != 'Main':
+        print('========================yesh]]]]]]]]]]]]]]]]]]]]')
+        if 'return' not in p[2]['code'][-1]:
+            print("Void function must have return statement")
+            exit(1)
+        print('========================yesh]]]]]]]]]]]]]]]]]]]]')
+
     #if method_params != None:
     #    for param in method_params:
             # parameters would have been pushed to the stack, so we just pop them off
