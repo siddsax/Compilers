@@ -2095,7 +2095,7 @@ def print_tac2(pclass):
     check_print_main = False
     for member in [pclass]:
         for line in member['code']:
-            if check_print_main is Fasle and 'fn_def' in line:
+            if check_print_main is False and 'fn_def' in line:
                 tring = str(c) + ', ' + 'fn_call_1, Main, 0'
                 fin_str += tring + '\n'
                 c += 1
