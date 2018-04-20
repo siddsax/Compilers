@@ -385,6 +385,10 @@ def p_method_declaration(p):
             print("Void function must have return statement")
             exit(1)
         print('========================yesh]]]]]]]]]]]]]]]]]]]]')
+    else:
+         if 'return' in p[2]['code'][-1]:
+             print('Main function does not return anywhere')
+             exit(1)   
 
     #if method_params != None:
     #    for param in method_params:
@@ -744,8 +748,11 @@ def p_print_statement(p):
     if env.prev_lookup(p[3]['value'], env.pres_env):
         p[0]['code'] += ['print, ' + p[3]['value'] + 'ooo' + str(t['tab_no'])]
     else:
-        print(" variable to print not defined")
-        exit()
+        if p[3]['value'].isdigit():
+            p[0]['code'] += ['print, ' + p[3]['value']]
+        else:
+            print(" variable to print not defined")
+            exit()
 
 def p_break_statement(p):
     """break_statement : BREAK TERMINATOR
