@@ -4,7 +4,7 @@ class Test{
 
 // Does not care if the type of funtion is void or int - Need to be fixed
 // Seg fault due to return (exit issue)
-    int Main(){
+    void Main(){
         int i=8;
         // int b=0;
         // int c=1;
@@ -28,7 +28,6 @@ class Test{
                 // i++;
             }
     }
-    return 0;
 }
 }
 
