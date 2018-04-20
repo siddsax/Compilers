@@ -22,7 +22,7 @@ class Hello
 			// }
 			
 		}
-		foo(ans);
+	//	foo(ans);
 		return ans;
 	}
 
