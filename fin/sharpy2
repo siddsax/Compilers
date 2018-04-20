@@ -1,6 +1,8 @@
 #!/bin/bash
 
 echo 'test'
+rm ir
+rm out.s
 python parser.py $1
 #cd ../asgn2/src
 python ../asgn2/src/main.py ir 

@@ -1153,12 +1153,23 @@ def p_unary_expression(p):
             t = env.mktemp('int')
             p[0]['value'] = t
             p[0]['code'] = dp(p[2]['code'])
-            p[0]['code'] += ["-, " + p[0]['value'] + ", " + p[2]['value'] + ", 0"]
+            tmp1 = env.prev_lookup(p[0]['value'], env.pres_env)
+            tmp2 = env.prev_lookup(p[2]['value'], env.pres_env)
+            if p[2]['value'].isdigit():
+                p[0]['code'] += ["-, " + p[0]['value'] + 'ooo' + str(tmp1['tab_no']) + ", 0, "+ p[2]['value']]
+            else:
+                p[0]['code'] += ["-, " + p[0]['value'] + 'ooo' + str(tmp1['tab_no']) + ", "  + "0, " + p[2]['value'] + 'ooo' + str(tmp2['tab_no'])]
         elif p[1] is '~' or '!':
             t = env.mktemp('int')
             p[0]['value'] = t
             p[0]['code'] = dp(p[2]['code'])
-            p[0]['code'] += ["~, " + p[0]['value'] + ", " + p[2]['value'] ]
+            tmp1 = env.prev_lookup(p[0]['value'], env.pres_env)
+            tmp2 = env.prev_lookup(p[2]['value'], env.pres_env)
+            if p[2]['value'].isdigit():
+                p[0]['code'] += ["~, " + p[0]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[2]['value'] + ", 0"]
+            else:
+                p[0]['code'] += ["~, " + p[0]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[2]['value'] + 'ooo' + str(tmp2['tab_no']) + ", 0"]
+            #p[0]['code'] += ["~, " + p[0]['value'] + ", " + p[2]['value'] ]
 
 def p_primary_expression(p):
     """primary_expression : primary_no_array_creation_expression
@@ -1261,7 +1272,11 @@ def p_element_access(p):
             #print(array['type'].dict['arr_elem_type'].dict['arr_elem_type'].dict)
             #exit()
             tmp5 = env.prev_lookup(p[1]['value'], env.pres_env)
-            p[0]['code'] += ['*, ' + t2 + 'ooo' + str(tmp2['tab_no']) + ', ' + t1 + 'ooo' + str(tmp1['tab_no']) + ', ' + str(array['type'].dict['arr_elem_type'].dict['arr_elem_type'].dict['data_width'])]
+            if array['type'].dict['arr_elem_type'].dict['arr_elem_type']:
+                p[0]['code'] += ['*, ' + t2 + 'ooo' + str(tmp2['tab_no']) + ', ' + t1 + 'ooo' + str(tmp1['tab_no']) + ', ' + str(array['type'].dict['arr_elem_type'].dict['arr_elem_type'].dict['data_width'])]
+            else:
+                print("No array type declared")
+                exit(1)
             p[0]['code'] += ['array_access, ' + t + 'ooo' + str(tmp3['tab_no']) + ', ' + p[1]['value'] + 'ooo' + str(tmp5['tab_no']) + ', ' + t2 + 'ooo' + str(tmp2['tab_no'])]
             p[0]['value'] = t
             p[0]['array_el'] = True
@@ -2077,15 +2092,17 @@ def print_tac2(pclass):
     c = 1
     check_op = ['+', '-', '*', '/', '<', '>', '<=', '>=', '%']
     fin_str = ""
+    check_print_main = False
     for member in [pclass]:
         for line in member['code']:
-            if 'fn_def' in line:
+            if check_print_main is False and 'fn_def' in line:
                 tring = str(c) + ', ' + 'fn_call_1, Main, 0'
                 fin_str += tring + '\n'
                 c += 1
                 tring = str(c) + ', ' + line
                 fin_str += tring + '\n'
                 c += 1
+                check_print_main = True
                 continue
 
             # print(line)
