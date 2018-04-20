@@ -225,9 +225,11 @@ def p_proper_identifier(p):
     """
     # p[0] = ['proper_identifier', p[1], p[2]]
     p[0] = {}
-    p[0]['value'] = p[1]['value'] + p[2]['value']
+    p[0]['value'] = p[1]['value']
+    p[0]['is_prop_iden'] = True
     p[0]['code'] = ['']
     p[0]['fn_name'] = p[2]['value']
+    p[0]['access_value'] = p[2]['value']
     prev_member = p[1]['prev_member']['value']
     p[0]['prev_member'] = prev_member
     #print('chitlksjdflkjsdlfjsldfjldfj')
@@ -243,7 +245,7 @@ def p_prefix(p):
     if len(p) == 3:
         # p[0] = ['prefix', p[1], '.']
         p[0] = {}
-        p[0]['value'] = p[1]['value'] + str(p[2])
+        p[0]['value'] = p[1]['value']
         p[0]['prev_member'] = p[1]
     else:
         # p[0] = ['prefix', p[1], p[2], '.']
@@ -317,6 +319,7 @@ def p_variable_initializer(p):
     # p[0] = ['variable_initializer', p[1]]
     p[0] = {}
     p[0]['value'] = p[1]['value']
+    p[0]['type'] = p[1]['type']
 
 # def p_array_initializer(p):
 #     """array_initializer : LBRACE variable_initializer_list RBRACE
@@ -802,7 +805,17 @@ def p_return_statement(p):
         # p[0] = ['return_statement', 'RETURN', p[2]]
         p[0] = {'code':[], 'value':None}
         p[0]['code'] = ['return']
+        p[0]['ret_type'] = 'void'
     else:
+        if p[-3]['type'].dict['name'] != p[2]['type']:
+            print('Returning wrong type')
+            exit()
+        print('slkfjlksdjfkljsdflkjsdfklj')
+        print(p[-4])
+        print(p[-3])
+        print(p[-2])
+        print(p[-1])
+        print('slkjflksjdflksjdfljsdlfjdlfj')
         # p[0] = ['return_statement', 'RETURN', p[2], p[3]]
         if not env.prev_lookup(p[2]['value'], env.pres_env) and not p[2]['value'].isdigit():
             print("No var declared. Error in return")
@@ -823,7 +836,12 @@ def p_literal(p):
     """
     p[0] = {}
     p[0]['code'] = [""]
-    p[0]['value'] = p[1]
+    if p[1].isdigit():
+        p[0]['value'] = p[1]
+        p[0]['type'] = 'int'
+    else:
+        p[0]['value'] = p[1][1]
+        p[0]['type'] = 'char'
 
 def p_local_variable_declaration(p):
     """local_variable_declaration : type local_variable_declarators
@@ -1098,6 +1116,7 @@ def p_assignment(p):
     """
     #p[0] = ['assignment', p[1], p[2], p[3]]
     p[0] = {}
+    p[0]['type'] = 'int'
     print('========================')
     print(p[1]['value'])
     print(env.prev_lookup(p[1]['value'] , env.pres_env))
@@ -1535,6 +1554,7 @@ def p_conditional_or_expression(p):
     else:
         # p[0] = ['conditional_or_expression', p[1], p[2], p[3]]
         p[0] = {}
+        p[0]['type'] = 'int'
         t = env.mktemp('int')
         if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
             print("error in 1190")
@@ -1567,6 +1587,7 @@ def p_conditional_and_expression(p):
     else:
         # p[0] = ['conditional_and_expression', p[1], p[2], p[3]]
         p[0] = {}
+        p[0]['type'] = 'int'
         t = env.mktemp('int')
         if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
             print("error in 1211")
@@ -1601,6 +1622,7 @@ def p_inclusive_or_expression(p):
     else:
         # p[0] = ['inclusive_or_expression', p[1], p[2], p[3]]
         p[0] = {}
+        p[0]['type'] = 'int'
         t = env.mktemp('int')
         if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
             print("error in 1232")
@@ -1633,6 +1655,7 @@ def p_exclusive_or_expression(p):
     else:
         # p[0] = ['exclusive_or_expression', p[1], p[2], p[3]]
         p[0] = {}
+        p[0]['type'] = 'int'
         t = env.mktemp('int')
         if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
             print("error in 1253")
@@ -1665,6 +1688,7 @@ def p_and_expression(p):
     else:
         # p[0] = ['and_expression', p[1], p[2], p[3]]
         p[0] = {}
+        p[0]['type'] = 'int'
         t = env.mktemp('int')
         if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
             print("error in line 1296")
@@ -1701,6 +1725,7 @@ def p_equality_expression(p):
         p[0] = dp(p[1])
     else:
         p[0] = {}
+        p[0]['type'] = 'int'
         t = env.mktemp('int')
         if p[2] == '==':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
@@ -1761,6 +1786,7 @@ def p_relational_expression(p):
         p[0] = dp(p[1])
     else:
         p[0] = {}
+        p[0]['type'] = 'int'
         t = env.mktemp('int')
         if p[2] == '<':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
@@ -1864,6 +1890,7 @@ def p_shift_expression(p):
         p[0] = dp(p[1])
     else:
         p[0] = {}
+        p[0]['type'] = 'int'
         t = env.mktemp('int')
         p[0]['value'] = t
         p[0]['code'] = p[1]['code'] + p[3]['code']
@@ -1899,6 +1926,7 @@ def p_additive_expression(p):
         p[0] = dp(p[1])
     else:
         p[0] = {}
+        p[0]['type'] = 'int'
         t = env.mktemp('int')
         if p[2] == '+':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
@@ -1954,6 +1982,7 @@ def p_additive_expression(p):
 
 def p_multiplicative_expression(p):
     """multiplicative_expression : unary_expression
+                                | proper_identifier
                                 | identifier
                                 | multiplicative_expression TIMES unary_expression
                                 | multiplicative_expression DIVIDE unary_expression
@@ -1961,12 +1990,16 @@ def p_multiplicative_expression(p):
                                 | multiplicative_expression TIMES identifier
                                 | multiplicative_expression DIVIDE identifier
                                 | multiplicative_expression MOD identifier
+                                | multiplicative_expression TIMES proper_identifier
+                                | multiplicative_expression DIVIDE proper_identifier
+                                | multiplicative_expression MOD proper_identifier
     """
     if len(p) == 2:
         #p[0] = ['multiplicative_expression', p[1]]
         p[0] = dp(p[1])
     else:
         p[0] = {}
+        #p[0]['type'] = 'int'
         t = env.mktemp('int')
         if p[2] == '*':
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:

@@ -6,6 +6,7 @@ class A{
     }
     void func2(){
         x = 1;
+        return;
     }
 }
 
@@ -17,6 +18,7 @@ class C{
     }
     void func2(){
         x = 1;
+        return;
     }
 }
 
@@ -27,6 +29,7 @@ class B{
         A x, y;
         C z;
         x = y+z;
+        a = x.x + y.x;
         a = x.func();
     }
 
