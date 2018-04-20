@@ -33,7 +33,7 @@ class Test{
             print(a[i]);
         }
             //a[i] = 1;
-        // print(a[0]);
+        print(a[0]);
     }
 }
 
