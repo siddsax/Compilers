@@ -1016,6 +1016,7 @@ def p_if_statement(p):
         #     exit()
     else:
         # p[0] = ['if_statement', p[1], p[2], p[3], p[4], p[5], p[6], p[7]]
+        print("#@##@#@#$%#%^%#$%^%$$%^%$$%^%$^%$%^")
         p[3]['True'] = p[1]['True']#env.mklabel()
         p[0]['next'] = p[1]['next']#env.mklabel()
         p[0]['code'] += p[1]['code']
@@ -1028,6 +1029,7 @@ def p_if_statement(p):
         p[0]['code'] += p[5]['code']
         p[0]['code'] += ['label, ' + p[0]['next']]
 
+        print(p[0]['code'])
 def p_if(p):
     """if : IF
     """
