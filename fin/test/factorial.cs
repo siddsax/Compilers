@@ -4,6 +4,7 @@ class Hello
 	void foo(int s)
 	{
 		print(s);
+		return;
 	}	
 
 	int fact(int n)
@@ -29,7 +30,7 @@ class Hello
 	void Main() 
 	{	
 		int[] a = new int[3];
-		a[2] = 4;
+		a[2] = 7;
 		int f = fact(a[2]);
 		foo(f);
 		// return 0;
