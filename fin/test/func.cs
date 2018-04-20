@@ -1,19 +1,29 @@
 class Test{
-void bar (int x, int y, int z){
-    int i = x+y;
+void pr(int var){
+    print(var);
+    return;
+}
+int bar (int x, int y, int z){
+    int i = x*z + y;
+    pr(i);
+    return i ;
 }
 
-void foo ( int x, int y)
+int foo ( int x, int y)
 {
     //x = y;
-    bar(x, y, x);
+    return bar(x, y, bar(y,y,y));
+    // return;
 }
 
 void Main(){
     int x, y, a;
     int[] b = new int[3];
     b[1] = 2;
-    a= foo( x, y);
+    x = 8;
+    y = 9;
+    a = foo( x, y);
+    print(a);
 }
 }
 

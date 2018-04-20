@@ -19,8 +19,8 @@ public class Program
      int Main()
     {
         int x, y;
-        y = 100;
-        x = 125;
+        y = 3060;
+        x = 675;
         print(GCD(x, y));
     }
 }
