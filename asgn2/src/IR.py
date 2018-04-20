@@ -13,7 +13,7 @@ class IR:
         self.instrlist = []
         self.instrlist = ircode.split('\n')
         self.operators = ['=', '+', '-', '<<', '>>', '/', '*', 'scan', 'array_access','||', '&&',\
-                          '==', '<=', '>=', '<', '>'
+                          '==', '<=', '>=', '<', '>', '~', '%'
                          ]
 
         self.instrtype = ['=', '+', '-', '<<','>>','<','>' ,'/', '*', '%', '&&', 'conditional_goto', 'goto', 'fn_call', 'fn_def', 'print', 'print_char', 'scan', 'return', 'exit',]
@@ -127,7 +127,6 @@ class IR:
         for x in arr_varz.keys():
             self.address_descriptor[x] = x
 
-        # print(varz)
         return varz,arr_varz,var_dict
 
 
@@ -147,7 +146,7 @@ class IR:
                         instr = instr.split(', ')
                         line[i] = dict(line[i+1])
                         for v in varz["killed"]:
-                            line[i][v] = 0
+                            line[i][v] = 10000
                         for v in varz["used"]:
                             line[i][v] = int(instr[0])
                     else:

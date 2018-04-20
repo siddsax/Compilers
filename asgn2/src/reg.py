@@ -75,7 +75,6 @@ class Reg:
             exit()
         if var in self.regdict.values():
             return address_descriptor, ''
-        
         # nextUseList = blockNextUseTable[lineno]
         for k, v in self.regdict.items():
             if v:
@@ -99,7 +98,6 @@ class Reg:
                 self.regdict[k] = var
                 address_descriptor[var] = k
                 return address_descriptor, asm
-
 
         asm = ''
         asm += 'movl ' + best_k + ', ' + best_v + '\n'
