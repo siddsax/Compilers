@@ -509,19 +509,19 @@ def p_method_header(p):
             param_types = [param['type'] for param in params]
         # param_num = len(params)
         if type(p[-3]) is dict:
-            env.pres_env.enter_function(p[3]['value'], p[2], param_types, p[-3]['value'])
+            env.pres_env.enter_function(p[3]['value'], p[2], param_types, p[-2]['value'])
             print('============================================-------------')
             print('slkdjflkasjfl;ajsdflkjaslkfjlksdjflksjfljaslfjlsdjflsdflsjdlfkjchititya')
             print(p[-3])
             p[0]['class_name'] = p[-3]['value']
             env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[3]['value'], p[2], param_types)
         elif type(p[-2]) is dict:
-            env.pres_env.enter_function(p[3]['value'], p[2], param_types, p[-3]['value'])
+            env.pres_env.enter_function(p[3]['value'], p[2], param_types, p[-2]['value'])
             print('============================================-------------')
             print('slkdjflkasjfl;ajsdflkjaslkfjlksdjflksjfljaslfjlsdjflsdflsjdlfkjchititya')
-            print(p[-3])
-            p[0]['class_name'] = p[-3]['value']
-            env.global_env.enter_function(p[-3]['value'] + 'ooo' + p[3]['value'], p[2], param_types)
+            print(p[-2])
+            p[0]['class_name'] = p[-2]['value']
+            env.global_env.enter_function(p[-2]['value'] + 'ooo' + p[3]['value'], p[2], param_types)
 
     p[0]['category'] = 'function'
 
@@ -1008,9 +1008,9 @@ def p_if_statement(p):
         p[0]['code'] += ['label, ' + p[3]['True']]
         p[0]['code'] += p[5]['code']
         p[0]['code'] += ['label, ' + p[3]['False']]
-        if('break' in p[5]):
-            print("Error, break allowed only in if part of if-else")
-            exit()
+        # if('break' in p[5]):
+        #     print("Error, break allowed only in if part of if-else")
+        #     exit()
     else:
         # p[0] = ['if_statement', p[1], p[2], p[3], p[4], p[5], p[6], p[7]]
         p[3]['True'] = p[1]['True']#env.mklabel()
@@ -1795,9 +1795,9 @@ def p_relational_expression(p):
             if p[1]['value'].isdigit() and p[3]['value'].isdigit():
                 p[0]['code'] += [">=, " + t + ", " + p[1]['value'] + ", " + p[3]['value']]
             elif p[1]['value'].isdigit():
-                p[0]['code'] += [">= , " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + 'ooo' + str(tmp2['tab_no'])]
+                p[0]['code'] += [">=, " + t + ", " + p[1]['value'] + ", " + p[3]['value'] + 'ooo' + str(tmp2['tab_no'])]
             elif p[3]['value'].isdigit():
-                p[0]['code'] += [">= , " + t + ", " + p[1]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[3]['value']]
+                p[0]['code'] += [">=, " + t + ", " + p[1]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[3]['value']]
             else:
                 p[0]['code'] += [">=, " + t + ", " + p[1]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[3]['value'] + 'ooo' + str(tmp2['tab_no'])]
 

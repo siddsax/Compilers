@@ -3,24 +3,14 @@ class Test
 {
     void Main() 
     {
-        int i = 5;
-        while (i > 3)
-        {
-            if (i > 2)
-            {
-                int c = 3;
-                i++;
-                c++;
+        int i =5;
+        int d =1;
+        while (d){
+            print(i);
+            if (i==2){
+                break;
             }
-            else
-            {
-                while (i > 2)
-                {
-                    break;
-                    // break;
-                    i++;
-                }
-            }
-        }  
+            i--;
+        } 
     }
 }

@@ -14,7 +14,7 @@ class goal
                }
     return a;
     }
-    void main(){
+    void Main(){
         int c;
         c = 2;
         int a;
