@@ -1041,7 +1041,7 @@ def p_if(p):
     """if : IF
     """
     p[0] = {'code': [''], 'value': None}
-    p[0]['category'] = 'if'
+    # p[0]['category'] = 'if'
     p[0]['True'] = env.mklabel()
     p[0]['False'] = env.mklabel()
     p[0]['begin'] = env.mklabel()
