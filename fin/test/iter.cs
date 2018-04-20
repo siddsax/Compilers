@@ -1,6 +1,6 @@
 class Hello 
 {
-	int Main() 
+	void Main() 
 	{
 		int i = 6;
 		char a;
@@ -9,6 +9,6 @@ class Hello
 			print(i);
 			i++;
 		}
-		return 0;
+		// return 0;
 	}
 }

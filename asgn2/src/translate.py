@@ -108,9 +108,7 @@ def translate(instruction, leader, ir,register):
 	
 	elif instruction[1] in comps2:
 		lbl = "comparision_lbl_" + instruction[0]
-		print("#**************************************")
 		if isNumeric(instruction[3]) and isNumeric(instruction[4]):
-			print("#==========================================")
 			ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list)
 			generated_code += '\t' + asm
 			new_place = ir.address_descriptor[instruction[2]]
@@ -118,7 +116,6 @@ def translate(instruction, leader, ir,register):
 			
 		elif isNumeric(instruction[3]) and not isNumeric(instruction[4]):
 
-			print("#---------------------------------------------------")
 			ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list)
 			generated_code += '\t' + asm
 			new_place = ir.address_descriptor[instruction[2]]
@@ -134,7 +131,6 @@ def translate(instruction, leader, ir,register):
 			#  new place has one variable and the other is an integer
 
 		elif not isNumeric(instruction[3]) and isNumeric(instruction[4]):
-			print("#++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 			ir.address_descriptor, asm  = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list)
 			generated_code += '\t' + asm
 			new_place = ir.address_descriptor[instruction[2]]
@@ -154,7 +150,6 @@ def translate(instruction, leader, ir,register):
 			generated_code += lbl + ':\n'
 
 		else:
-			print("#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 			ir.address_descriptor , asm = register.getReg(ir.next_use_table[leader], instruction, ir.address_descriptor, ir.variable_list)
 			generated_code += '\t' + asm
 			new_place = ir.address_descriptor[instruction[2]]
@@ -306,8 +301,6 @@ def translate(instruction, leader, ir,register):
 			asm = "".join(asm)
 			generated_code += '\t' + asm
 
-		# print(ir.address_descriptor)
-		# print(register.regdict)
 		new_place = ir.address_descriptor[instruction[2]]
 		if isNumeric(instruction[3]):
 			generated_code += "add $" + instruction[3] + " ," + new_place + '\n'
@@ -317,10 +310,7 @@ def translate(instruction, leader, ir,register):
 		if isNumeric(instruction[4]):
 			generated_code += "movl $" + instruction[4] + ", (" + new_place + ')' + "\n"
 		else:
-			# print(ir.address_descriptor)
-			# print(instruction[4])
 			ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list,var=instruction[4])
-			# print(ir.address_descriptor)
 			generated_code += '\t' + asm
 			generated_code += "############\n"
 			generated_code += "movl " + ir.address_descriptor[instruction[4]] + ", (" + new_place + ')' + "\n"
@@ -331,7 +321,6 @@ def translate(instruction, leader, ir,register):
 	elif instruction[1] == 'array_access':
 
 		ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list,var=instruction[3])
-		# print(asm)
 		if(asm):
 			idx = asm.find(instruction[3])
 			asm = list(asm)
@@ -369,7 +358,6 @@ def translate(instruction, leader, ir,register):
 		#		 generated_code += "movl " + "(" + ir.address_descriptor[instruction[2]] + '), ' + ir.address_descriptor[instruction[2]] + "\n"
 		#	 # ir.address_descriptor, asm = register.getReg(ir.next_use_table[leader],instruction,ir.address_descriptor, ir.variable_list,var=instruction[4])
 		#	 # generated_code += '\t' + asm
-		#	 # print(ir.address_descriptor)
 		#	 # generated_code += "movl " + "(" + instruction[3] + '+' + ir.address_descriptor[instruction[4]] + '), ' + ir.address_descriptor[instruction[2]] + "\n"
 		# else:
 		#	 generated_code += "movl " + "(" + instruction[3] + '+ ' + instruction[4] + '), ' + ir.address_descriptor[instruction[2]] + "\n"
@@ -463,9 +451,6 @@ def translate(instruction, leader, ir,register):
 
 	elif instruction[1] == 'fn_call_2':
 		# Push the local variables on the stack
-		# print(instruction)
-		# print(ir.var_dict)
-		# print(ir.address_descriptor)
 		
 		local_list = []
 		for var, fun in ir.var_dict.items():
