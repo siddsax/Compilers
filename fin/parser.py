@@ -162,14 +162,32 @@ def p_field_declaration(p):
             #print(var['code'])
             if env.pres_env.lookup(var['name']) is None:
                 if not p[1].dict['isarray']:
+                    print("asddddddddddddddddd")
                     env.pres_env.enter_var(var['name'], p[1])
                 else:
-                    env.pres_env.enter_var(var['name'], p[1], 'arr')
+                    print("22222222222222222111")
+                    print(p[1])
+                    # el_typ = dp(typ)
+                    typ = p[1]
+                    typ.dict['isarray'] = True
+                    typ.dict['arr_elem_type'] = dp(p[1])
+                    typ.dict['length'] = int(var['init'].split(',')[1])
+                    arr_flag = True
+
+                    env.pres_env.enter_var(var['name'], typ,arr=arr_flag)
                 #p[0]['code'] += var['code']
                 t = env.prev_lookup(var['name'], env.pres_env)
                 if var['init']:
+                    k = var['init'].split(',')
+                    # print(k)
                     if var['init'].isdigit():
                         p[0]['code'] += ['=, ' + var['name'] + 'ooo' + str(t['tab_no']) + ', ' + var['init']]
+                    elif k[0] == 'arr_init':
+                        print("==================------------")
+                        print(k[1])
+                        print(var['name'])
+                        p[0]['code'] += ['=, ' + var['name'] + 'ooo' + str(t['tab_no']) + ', arr_init,' + k[1]]
+                            # '=, ' + var['name'] + 'ooo' + str(t['tab_no']) + ', ' + var['init'] + 'ooo' + str(t2['tab_no'])]
                     else:
                         t2 = env.prev_lookup(var['init'], env.pres_env)
                         p[0]['code'] += ['=, ' + var['name'] + 'ooo' + str(t['tab_no']) + ', ' + var['init'] + 'ooo' + str(t2['tab_no'])]
@@ -182,11 +200,32 @@ def p_field_declaration(p):
         p[0]['value'] = None
         for var in p[3]:
             if env.pres_env.lookup(var['name']) is None:
-                env.pres_env.enter_var(var['name'], p[2])
+                if not p[2].dict['isarray']:
+                    # print("asddddddddddddddddd")
+                    env.pres_env.enter_var(var['name'], p[2])
+                else:
+                    # print("22222222222222222111")
+                    # print(p[1])
+                    # el_typ = dp(typ)
+                    typ = p[2]
+                    typ.dict['isarray'] = True
+                    typ.dict['arr_elem_type'] = dp(p[2])
+                    typ.dict['length'] = int(var['init'].split(',')[1])
+                    arr_flag = True
+
+                    env.pres_env.enter_var(var['name'], typ,arr=arr_flag)
+
+                # env.pres_env.enter_var(var['name'], p[2])
                 t = env.prev_lookup(var['name'], env.pres_env)
                 if var['init']:
+                    k = var['init'].split(',') 
                     if var['init'].isdigit():
                         p[0]['code'] += ['=, ' + var['name'] + 'ooo' + str(t['tab_no']) + ', ' + var['init']]
+                    elif k == 'arr_init':
+                        print("==================------------")
+                        print(k[1])
+                        print(var['name'])
+                        p[0]['code'] += ['=, ' + var['name'] + 'ooo' + str(t['tab_no']) + ', arr_init,' + k[1]]
                     else:
                         t2 = env.prev_lookup(var['init'], env.pres_env)
                         p[0]['code'] += ['=, ' + var['name'] + 'ooo' + str(t['tab_no']) + ', ' + var['init'] + 'ooo' + str(t2['tab_no'])]
@@ -1792,6 +1831,7 @@ def p_relational_expression(p):
                 p[0]['code'] += ["<, " + t + ", " + p[1]['value'] + 'ooo' + str(tmp1['tab_no']) + ", " + p[3]['value'] + 'ooo' + str(tmp2['tab_no'])]
 
         elif p[2] == '>':
+            print('&&&&&&&&&', p[1])
             if not p[1]['value'].isdigit() and env.prev_lookup(p[1]['value'], env.pres_env) is False:
                 print("error in 1370")
                 exit()
