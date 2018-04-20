@@ -269,7 +269,6 @@ def translate(instruction, leader, ir,register):
 # ---------------------------------------------------------------------------------------
 
 	elif instruction[1] == "~" or instruction[1] == "=" :
-
 		if instruction[3] ==  'arr_init':
 			print("############################33333")
 			# pass
@@ -293,6 +292,7 @@ def translate(instruction, leader, ir,register):
 					# generated_code += "movl " + ir.address_descriptor[instruction[3]] + ", " + new_place + "\n"
 				if(instruction[1] == '~'):
 					generated_code += "notl " + new_place + "\n"
+			
 
 			# register.regdict["%edx"] = ""
 			# ir.address_descriptor[instruction[2]] = ""

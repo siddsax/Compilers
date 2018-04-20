@@ -12,8 +12,8 @@ class Program
     {
         int num, sum = 0, r;
         // print("Enter a Number : ");
-        num = 0;
-        while (num != 0)
+        num = 12;
+        while (num > 0)
         {
             r = num % 10;
             num = num / 10;
