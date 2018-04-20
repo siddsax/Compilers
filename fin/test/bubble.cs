@@ -19,7 +19,7 @@ class bubblesort
            int i,j;
            i=0;
            j=0;
-           while(j<5-2)
+           while(j<=5-2)
            // for (int j = 0; j <= a.Length - 2; j++)
            {
                i=0;
