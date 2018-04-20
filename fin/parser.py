@@ -2065,8 +2065,49 @@ def print_tac(pclass):
     fin_str += str(c) + ", exit"
     print(fin_str)
     return fin_str
+
+def print_tac2(pclass):
+    if pclass is None:
+        print('Not parsable')
+        exit(1)
+    # print("")
+    # print("1, fn_call_1, Main")
+    c = 1
+    check_op = ['+', '-', '*', '/', '<', '>', '<=', '>=', '%']
+    fin_str = ""
+    for member in [pclass]:
+        for line in member['code']:
+            if 'fn_def' in line:
+                fin_str += str(c) + ', ' + 'fn_call_1, Main, 0\n'
+                c += 1
+                fin_str += str(c) + ', ' + line + '\n'
+                c += 1
+                continue
+
+            # print(line)
+            # print(c)
+            # print("\n")
+            tmp = line.split(', ')
+            if line is not "" and tmp[0] in check_op:
+                tring = str(c) + ', ' + tmp[0] + ', ' + tmp[1] + ', ' + tmp[3] + ', ' + tmp[2]
+               
+                fin_str += tring + '\n'
+                c += 1
+            elif line != "":
+                #print(line)
+                tring = str(c) + ", " + line + '\n'
+                fin_str += tring
+                c = c + 1
+            
+            # print(tring)
+            # print("--===========\n")
+    # print(str(c) + ", exit")
+    fin_str += str(c) + ", exit"
+    print(fin_str)
+    return fin_str
+
 print('----------------------------------------------')
 print(result)
-ir = print_tac(result)
+ir = print_tac2(result)
 with open('ir', 'w') as outf:
     outf.write(ir)

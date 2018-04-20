@@ -14,7 +14,7 @@ class Program {
         int y;
         y = 10;
         int x;
-        x = fact(y);
+        x = doublefact(y);
         print(x);
     }
 }
