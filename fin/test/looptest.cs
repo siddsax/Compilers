@@ -1,22 +1,22 @@
 class Bleckh
 {
-	int Main(){
-	
-	int i,j,k,res;
-    res = 0;
-    i = 0;
-	while(i < 10){
-        j = 0;
-		while(j < 10){
-            k = 0;
-			while(k < 10){
-				res++;
-                k++;
+	void Main()
+	{
+		int i,j,k,res;
+		res = 0;
+		i = 0;
+		while(i < 10){
+			j = 0;
+			while(j < 10){
+				k = 0;
+				while(k < 10){
+					res++;
+					k++;
+				}
+				j++;
 			}
-            j++;
-		}
-        i++;
-	}	
+			i++;
+		}	
     print(res);
-}
+	}
 }

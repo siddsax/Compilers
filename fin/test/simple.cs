@@ -8,6 +8,6 @@ class Test{
             a[i] = i;
             i++;
         }
-	print(a[11]);
+	print(a[3]);
     }
 }
