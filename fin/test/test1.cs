@@ -32,5 +32,6 @@ class Program {
         print(numbers[1]);
         print(numbers[5]);
         max = num = 1;
+//	return;
     }
 }

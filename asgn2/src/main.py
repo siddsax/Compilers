@@ -28,30 +28,13 @@ for var, num in zip(example.arr_varz.keys(), example.arr_varz.values()):
 bss_section = ".section .bss\n"
 text_section = ".section .text\n" + ".globl main\n" + "main:\n"
 
-# text_section+=
-# print(example.Blocks.items())
 for key,val in example.Blocks.items():
 	flag = 0
 	fl2 = 0
 	for line in range(key,val+1):
-		# print(line)
-		# if line is not 1:
-		# 	print(line == key)	
-		# 	print(example.instrlist[line-1].split(', ')[1] == 'conditional_goto')
-		# 	print(example.instrlist)
-		# 	if len(example.instrlist[line].split(', ')) >1:
-		# 		print((example.instrlist[line].split(', ')[1] is not 'goto'))
-		# 	print(line)
-		# 	print(example.instrlist[line-1].split(', ')[1])
-		# 	print(example.instrlist[line].split(', ')[1])
-		# 	print(key)
-		# 	print("----------")
 
 		# if line is not 1 and (line == key) and (example.instrlist[line-2].split(', ')[1] == 'conditional_goto') \
 		# 	and (example.instrlist[line-1].split(', ')[1] != 'goto') and (line is not 2):
-		# 	print("==================oooooooo")
-		# 	print(example.instrlist[line-1].split(', ')[1])
-		# 	print(example.instrlist[line-2].split(', ')[1])
 		# 	fl2 = 1
 		# 	text_section += "## loading\n"
 		# 	nextUseList = example.next_use_table[key][key]
@@ -119,4 +102,3 @@ FinalCode = data_section + bss_section + text_section
 f = open('out.s', 'w')
 f.write(FinalCode)
 f.close()
-# print(FinalCode) 
